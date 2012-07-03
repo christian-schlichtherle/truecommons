@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Copyright (C) 2012 Schlichtherle IT Services.
+  - All rights reserved. Use is subject to license terms.
+  -->
+<actions>
+    <action>
+        <actionName>CUSTOM-site site:stage</actionName>
+        <displayName>site site:stage</displayName>
+        <goals>
+            <goal>site</goal>
+            <goal>site:stage</goal>
+        </goals>
+    </action>
+</actions>
