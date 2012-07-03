@@ -62,8 +62,6 @@ public abstract class DecoratingOutputStream extends OutputStream {
      */
     @Override
     public String toString() {
-        return String.format("%s[out=%s]",
-                getClass().getName(),
-                out);
+        return String.format("%s[out=%s]", getClass().getName(), out);
     }
 }

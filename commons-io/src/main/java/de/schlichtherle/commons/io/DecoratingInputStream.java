@@ -82,8 +82,6 @@ public abstract class DecoratingInputStream extends InputStream {
      */
     @Override
     public String toString() {
-        return String.format("%s[in=%s]",
-                getClass().getName(),
-                in);
+        return String.format("%s[in=%s]", getClass().getName(), in);
     }
 }

@@ -25,8 +25,7 @@ import javax.annotation.WillCloseWhenClosed;
  *
  * @author Christian Schlichtherle
  */
-public abstract class DecoratingSeekableChannel
-implements SeekableByteChannel {
+public abstract class DecoratingSeekableChannel implements SeekableByteChannel {
 
     /** The nullable decorated seekable byte channel. */
     protected @Nullable SeekableByteChannel channel;
@@ -97,8 +96,6 @@ implements SeekableByteChannel {
      */
     @Override
     public String toString() {
-        return String.format("%s[channel=%s]",
-                getClass().getName(),
-                channel);
+        return String.format("%s[channel=%s]", getClass().getName(), channel);
     }
 }
