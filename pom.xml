@@ -121,9 +121,9 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <configuration>
+                    <!--configuration>
                         <show>private</show>
-                    </configuration>
+                    </configuration-->
                 </plugin>
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
