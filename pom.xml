@@ -21,6 +21,7 @@
 
     <name>TrueCommons</name>
     <description>Common components for True* open source projects.</description>
+    <url>http://truecommons.java.net</url>
     <inceptionYear>2012</inceptionYear>
     <licenses>
         <license>
@@ -29,6 +30,37 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    <!--mailingLists>
+        <mailingList>
+            <name>Announce Mailing List</name>
+            <subscribe>mailto:sympa@truecommons.java.net?subject=subscribe%20announce</subscribe>
+            <unsubscribe>mailto:sympa@truecommons.java.net?subject=unsubscribe%20announce</unsubscribe>
+            <archive>http://java.net/projects/truecommons/lists/announce/archive</archive>
+        </mailingList>
+        <mailingList>
+            <name>Users Mailing List</name>
+            <subscribe>mailto:sympa@truecommons.java.net?subject=subscribe%20users</subscribe>
+            <unsubscribe>mailto:sympa@truecommons.java.net?subject=unsubscribe%20users</unsubscribe>
+            <post>users@truecommon.java.net</post>
+            <archive>http://java.net/projects/truecommons/lists/users/archive</archive>
+        </mailingList>
+        <mailingList>
+            <name>Developers Mailing List</name>
+            <subscribe>mailto:sympa@truecommons.java.net?subject=subscribe%20dev</subscribe>
+            <unsubscribe>mailto:sympa@truecommons.java.net?subject=unsubscribe%20dev</unsubscribe>
+            <post>dev@truecommons.java.net</post>
+            <archive>http://java.net/projects/truecommons/lists/dev/archive</archive>
+        </mailingList>
+    </mailingLists-->
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://java.net/jira/browse/TRUECOMMONS</url>
+    </issueManagement>
+    <scm>
+        <connection>scm:hg:https://hg.java.net/hg/truecommons~v1</connection>
+        <developerConnection>scm:hg:ssh://hg.java.net/truecommons~v1</developerConnection>
+        <url>http://java.net/projects/truecommons/sources/skin/show</url>
+    </scm>
 
     <properties>
         <maven.enforcer.requireJavaVersion>${maven.compiler.source}</maven.enforcer.requireJavaVersion> <!-- forward reference -->
@@ -46,6 +78,7 @@
 
     <modules>
         <module>truecommons-io</module>
+        <module>truecommons-skin</module>
     </modules>
 
     <dependencyManagement>
