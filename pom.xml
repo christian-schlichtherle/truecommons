@@ -14,13 +14,13 @@
         <version>17</version>
     </parent>
 
-    <groupId>de.schlichtherle.commons</groupId>
-    <artifactId>commons</artifactId>
+    <groupId>de.schlichtherle.truecommons</groupId>
+    <artifactId>truecommons</artifactId>
     <version>1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Commons</name>
-    <description>Provides common services.</description>
+    <name>TrueCommons</name>
+    <description>Common components for True* open source projects.</description>
     <inceptionYear>2012</inceptionYear>
     <licenses>
         <license>
@@ -45,14 +45,14 @@
     </properties>
 
     <modules>
-        <module>commons-io</module>
+        <module>truecommons-io</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>commons-io</artifactId>
+                <artifactId>truecommons-io</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -258,9 +258,9 @@
 
     <distributionManagement>
         <site>
-            <id>commons-website</id>
+            <id>truecommons-website</id>
             <name>Commons Website</name>
-            <url>file:/C:/Users/christian/Documents/Schlichtherle_IT_Services/Projekte/commons~web</url>
+            <url>file:/C:/Users/christian/Documents/Schlichtherle_IT_Services/Projekte/truecommons~web</url>
         </site>
     </distributionManagement>
 </project>
