@@ -2,7 +2,8 @@
 <!--
   - Copyright (C) 2012 Schlichtherle IT Services.
   - All rights reserved. Use is subject to license terms.
-  --><actions>
+  -->
+<actions>
     <action>
         <actionName>CUSTOM-site:run</actionName>
         <displayName>site:run</displayName>
@@ -11,17 +12,48 @@
         </goals>
     </action>
     <action>
-            <actionName>CUSTOM-help:effective-pom</actionName>
-            <displayName>help:effective-pom</displayName>
-            <goals>
-                <goal>help:effective-pom</goal>
-            </goals>
-        </action>
+        <actionName>CUSTOM-help:effective-pom</actionName>
+        <displayName>help:effective-pom</displayName>
+        <goals>
+            <goal>help:effective-pom</goal>
+        </goals>
+    </action>
     <action>
-            <actionName>CUSTOM-scala:doc</actionName>
-            <displayName>scala:doc</displayName>
-            <goals>
-                <goal>scala:doc</goal>
-            </goals>
-        </action>
+        <actionName>CUSTOM-scala:doc</actionName>
+        <displayName>scala:doc</displayName>
+        <goals>
+            <goal>scala:doc</goal>
+        </goals>
+    </action>
+    <action>
+        <actionName>CUSTOM-release:prepare</actionName>
+        <displayName>release:prepare</displayName>
+        <goals>
+            <goal>release:prepare</goal>
+        </goals>
+        <properties>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+        </properties>
+    </action>
+    <action>
+        <actionName>CUSTOM-release:perform</actionName>
+        <displayName>release:perform</displayName>
+        <goals>
+            <goal>release:perform</goal>
+        </goals>
+    </action>
+    <action>
+        <actionName>CUSTOM-release:rollback</actionName>
+        <displayName>release:rollback</displayName>
+        <goals>
+            <goal>release:rollback</goal>
+        </goals>
+    </action>
+    <action>
+        <actionName>CUSTOM-release:clean</actionName>
+        <displayName>release:clean</displayName>
+        <goals>
+            <goal>release:clean</goal>
+        </goals>
+    </action>
 </actions>
