@@ -8,9 +8,9 @@
             xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd">
     <publishDate position="bottom"/>
     <skin>
-        <groupId>de.schlichtherle.truezip</groupId>
-        <artifactId>truezip-skin</artifactId>
-        <version>7</version>
+        <groupId>de.schlichtherle.truecommons</groupId>
+        <artifactId>truecommons-skin</artifactId>
+        <version>1</version>
     </skin>
     <body>
         <breadcrumbs>
