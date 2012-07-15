@@ -22,7 +22,7 @@ import javax.annotation.WillCloseWhenClosed;
 public abstract class DecoratingOutputStream extends OutputStream {
 
     /** The nullable decorated output stream. */
-    protected @Nullable OutputStream out;
+    protected @Nullable @WillCloseWhenClosed OutputStream out;
 
     protected DecoratingOutputStream() { }
 
