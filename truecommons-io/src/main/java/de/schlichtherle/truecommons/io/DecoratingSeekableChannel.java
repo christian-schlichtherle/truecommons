@@ -27,7 +27,7 @@ import javax.annotation.WillCloseWhenClosed;
 public abstract class DecoratingSeekableChannel extends AbstractSeekableChannel {
 
     /** The nullable decorated seekable byte channel. */
-    protected @Nullable SeekableByteChannel channel;
+    protected @Nullable @WillCloseWhenClosed SeekableByteChannel channel;
 
     protected DecoratingSeekableChannel() { }
 
