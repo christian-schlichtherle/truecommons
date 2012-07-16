@@ -62,10 +62,7 @@
   </scm>
 
     <properties>
-        <maven.enforcer.requireJavaVersion>${maven.compiler.source}</maven.enforcer.requireJavaVersion> <!-- forward reference -->
         <netbeans.hint.jdkPlatform>JDK_1.7</netbeans.hint.jdkPlatform>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
         <scala.version>2.9.2</scala.version>
 
         <!-- maven-surefire-plugin && maven-failsafe-plugin -->
@@ -77,6 +74,7 @@
 
     <modules>
         <module>truecommons-io</module>
+        <module>truecommons-services</module>
         <module>truecommons-skin</module>
     </modules>
 
