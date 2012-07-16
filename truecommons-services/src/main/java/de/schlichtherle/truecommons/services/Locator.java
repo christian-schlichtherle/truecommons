@@ -6,11 +6,12 @@ package de.schlichtherle.truecommons.services;
 
 import java.text.MessageFormat;
 import java.util.*;
-import static java.util.logging.Level.CONFIG;
-import static java.util.logging.Level.WARNING;
-import java.util.logging.Logger;
 import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.ThreadSafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 /**
  * Creates containers or factories of products with some decorators.
@@ -28,8 +29,9 @@ public final class Locator {
 
     private static final ResourceBundle
             bundle = ResourceBundle.getBundle(Locator.class.getName());
-    private static final Logger
-            logger = Logger.getLogger(Locator.class.getName(), Locator.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Locator.class);
+    private static final String MSG = "{}";
+    private static final Marker CONFIG = MarkerFactory.getMarker("CONFIG");
 
     private final Loader loader;
 
@@ -137,7 +139,7 @@ public final class Locator {
         if (null == service) {
             for (final Iterator<S> i = loader.allInstancesOf(spec); i.hasNext(); ) {
                 final S newService = i.next();
-                logger.log(CONFIG, "located", newService);
+                logger.debug(CONFIG, MSG, new Msg("located", newService));
                 if (null == service) {
                     service = newService;
                 } else {
@@ -151,8 +153,8 @@ public final class Locator {
                         // different class loaders.
                         if (!service.getClass().getName()
                                 .equals(newService.getClass().getName()))
-                            logger.log(WARNING, "collision",
-                                    new Object[] { op, service, newService });
+                            logger.warn(MSG, new Msg("collision",
+                                    op, service, newService));
                     }
                 }
             }
@@ -160,7 +162,7 @@ public final class Locator {
         if (null == service)
             throw new ServiceConfigurationError(
                     MessageFormat.format(bundle.getString("null"), spec));
-        logger.log(CONFIG, "applying", service);
+        logger.debug(CONFIG, MSG, new Msg("selecting", service));
         return service;
     }
 
@@ -189,9 +191,12 @@ public final class Locator {
         final DecoratorService<P>[] array = (DecoratorService<P>[])
                 collection.toArray(new DecoratorService<?>[collection.size()]);
         Arrays.sort(array, new ServiceComparator());
-        for (final DecoratorService<P> service : array) {
-            logger.log(CONFIG, "applying", service);
-        }
+        for (final DecoratorService<P> service : array)
+            logger.debug(CONFIG, MSG, new Msg("selecting", service));
         return array;
+    }
+
+    private static final class Msg extends Message {
+        Msg(String key, Object... args) { super(bundle, key, args); }
     }
 }
