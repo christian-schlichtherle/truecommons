@@ -37,9 +37,8 @@ class LocatorSpec extends WordSpec with ShouldMatchers {
       val c = l.container[String, FactoryService[String], DecoratorService[String]]
 
       "always reproduce the expected product" in {
-        val p = "Hello Christian! How do you do?"
-        c.apply should equal (p)
-        c.apply should equal (p)
+        c.apply should equal (expected)
+        c.apply should equal (expected)
       }
 
       "provide the same product" in {
@@ -53,9 +52,8 @@ class LocatorSpec extends WordSpec with ShouldMatchers {
       val f = l.factory[String, FactoryService[String], DecoratorService[String]]
 
       "always reproduce the expected product" in {
-        val p = "Hello Christian! How do you do?"
-        f.apply should equal (p)
-        f.apply should equal (p)
+        f.apply should equal (expected)
+        f.apply should equal (expected)
       }
 
       "provide an equal, but not same product" in {
@@ -69,6 +67,9 @@ class LocatorSpec extends WordSpec with ShouldMatchers {
 }
 
 object LocatorSpec {
+
+  val expected  = "Hello Christian! How do you do?"
+
   final class LocatorSugar {
     private[this] val l = new Locator(classOf[LocatorSpec])
 
