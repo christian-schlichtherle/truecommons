@@ -17,6 +17,11 @@
     <name>TrueCommons I/O</name>
     <description>Common I/O components for True* open source projects.</description>
 
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.scala-lang</groupId>
