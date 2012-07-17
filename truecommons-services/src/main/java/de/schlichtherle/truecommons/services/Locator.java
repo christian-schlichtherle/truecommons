@@ -5,7 +5,6 @@
 package de.schlichtherle.truecommons.services;
 
 import java.lang.reflect.Array;
-import java.text.MessageFormat;
 import java.util.*;
 import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.ThreadSafe;
@@ -168,8 +167,7 @@ public final class Locator {
             }
         }
         if (null == service)
-            throw new ServiceConfigurationError(
-                    MessageFormat.format(bundle.getString("null"), spec));
+            throw new ServiceConfigurationError(new Msg("null", spec).toString());
         logger.debug(CONFIG, MSG, new Msg("selecting", service));
         return service;
     }
