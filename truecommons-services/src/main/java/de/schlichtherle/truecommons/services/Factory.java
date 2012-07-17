@@ -18,9 +18,9 @@ import javax.annotation.concurrent.ThreadSafe;
 public interface Factory<P> extends Provider<P> {
 
     /**
-     * Creates a new product.
+     * Returns a <em>new</em> product upon each call.
      *
-     * @return A new product.
+     * @return A <em>new</em> product.
      */
     @Override
     P apply();

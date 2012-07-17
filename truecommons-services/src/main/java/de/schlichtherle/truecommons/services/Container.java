@@ -18,9 +18,9 @@ import javax.annotation.concurrent.ThreadSafe;
 public interface Container<P> extends Provider<P> {
 
     /**
-     * Returns the contained product.
+     * Returns the <em>same</em> contained product upon each call.
      *
-     * @return The contained product.
+     * @return the <em>same</em> contained product.
      */
     @Override
     P apply();

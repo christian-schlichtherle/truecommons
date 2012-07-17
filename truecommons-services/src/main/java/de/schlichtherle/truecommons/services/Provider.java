@@ -19,10 +19,6 @@ public interface Provider<P> {
 
     /**
      * Provides a product.
-     * <p>
-     * Implementations are free to return the same instance (property method)
-     * or a new instance (factory method) upon each call.
-     * So clients may need to cache the result for future reuse.
      *
      * @return A product.
      */

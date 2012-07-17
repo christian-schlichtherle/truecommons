@@ -7,9 +7,9 @@ package de.schlichtherle.truecommons.services;
 /**
  * @author Christian Schlichtherle
  */
-final class FactoryWithSomeDecorators<P>
-extends ProviderWithSomeDecorators<P> implements Factory<P> {
-    FactoryWithSomeDecorators(Factory<P> factory, Decorator<P>[] decorators) {
-        super(factory, decorators);
+final class FactoryWithSomeFunctions<P>
+extends ProviderWithSomeFunctions<P> implements Factory<P> {
+    FactoryWithSomeFunctions(Factory<P> factory, Function<P>[] functions) {
+        super(factory, functions);
     }
 }

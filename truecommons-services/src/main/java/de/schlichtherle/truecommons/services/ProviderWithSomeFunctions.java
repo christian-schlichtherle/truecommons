@@ -7,24 +7,24 @@ package de.schlichtherle.truecommons.services;
 /**
  * @author Christian Schlichtherle
  */
-class ProviderWithSomeDecorators<P> implements Provider<P> {
-    final Provider<P> provider;
-    final Decorator<P>[] decorators;
+class ProviderWithSomeFunctions<P> implements Provider<P> {
+    private final Provider<P> provider;
+    private final Function<P>[] functions;
 
-    ProviderWithSomeDecorators(
+    ProviderWithSomeFunctions(
             final Provider<P> provider,
-            final Decorator<P>[] decorators) {
+            final Function<P>[] functions) {
         assert null != provider;
-        assert 0 != decorators.length;
+        assert 0 != functions.length;
         this.provider = provider;
-        this.decorators = decorators;
+        this.functions = functions;
     }
 
     @Override
     public P apply() {
         P product = provider.apply();
-        for (Decorator<P> decorator : decorators)
-            product = decorator.apply(product);
+        for (Function<P> function : functions)
+            product = function.apply(product);
         return product;
     }
 }
