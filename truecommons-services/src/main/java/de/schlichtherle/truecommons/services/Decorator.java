@@ -15,13 +15,16 @@ import javax.annotation.concurrent.ThreadSafe;
  * @author Christian Schlichtherle
  */
 @ThreadSafe
-public interface Decorator<P> {
+public interface Decorator<P> extends Function<P> {
 
     /**
-     * Decorates the given product.
+     * Possibly decorates the given {@code product} and returns the result,
+     * leaving the given product unmodified.
      * 
      * @param  product the product to decorate.
-     * @return The decorated product.
+     * @return A <em>new</em> decorating product or the same, but strictly
+     *         unmodified, product.
      */
+    @Override
     P apply(P product);
 }

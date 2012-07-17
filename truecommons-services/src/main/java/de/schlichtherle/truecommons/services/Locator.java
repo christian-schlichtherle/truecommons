@@ -4,6 +4,7 @@
  */
 package de.schlichtherle.truecommons.services;
 
+import java.lang.reflect.Array;
 import java.text.MessageFormat;
 import java.util.*;
 import javax.annotation.CheckForNull;
@@ -14,13 +15,37 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 /**
- * Creates containers or factories of products with some decorators.
+ * Creates containers or factories of products with some applied decorators.
+ * Resolving service instances is done in several steps:
  * <p>
- * If the class loader provided to the constructor is the current thread's
- * context class loader, then the methods of this class will locate services
- * using only this class loader.
- * Otherwise, the given class loader is used first. Second, the current
- * thread's context class loader is used.
+ * First, the name of a given <em>provider</em> service class is used as the
+ * key string to lookup a {@link System#getProperty system property}.
+ * If this yields a value then it's supposed to name a class which gets loaded
+ * and instantiated by calling its public no-argument constructor.
+ * <p>
+ * Otherwise, the class path is searched for any resource files with the name
+ * {@code "META-INF/services/"} plus the name of the given provider service
+ * class.
+ * If this yields no results, a {@link ServiceConfigurationError} is thrown.
+ * <p>
+ * Otherwise the classes with the names contained in these files get loaded and
+ * instantiated by calling their public no-argument constructor.
+ * Next, the service instances are filtered according to their
+ * {@linkplain Service#getPriority() priority}.
+ * Only the service instance with the highest priority is kept for future use.
+ * <p>
+ * Next, the class is searched again for any resource files with the name
+ * {@code "META-INF/services/"} plus the name of a given <em>decorator</em>
+ * service class.
+ * If this yields some results, the classes with the names contained in these
+ * files get loaded and instantiated by calling their public no-argument
+ * constructor.
+ * Next, the service instances get sorted in ascending order of their
+ * {@linkplain DecoratorService#getPriority() priority} and kept for future use.
+ * <p>
+ * Finally, depending on the requesting method either a container or a factory
+ * gets created which will use the located provider service instance and the
+ * decorator service instances to obtain a product and decorate it in order.
  *
  * @author Christian Schlichtherle
  */
@@ -37,47 +62,13 @@ public final class Locator {
 
     /**
      * Constructs a new locator which uses the class loader of the given client
-     * class first.
+     * class before using the current thread context's class loader unless the
+     * latter is identical to the former.
      *
      * @param client the class which identifies the calling client.
      */
     public Locator(final Class<?> client) {
         this.loader = new Loader(client.getClassLoader());
-    }
-
-    /**
-     * Creates a new container of a single product.
-     * 
-     * @param  <P> the type of the product to contain.
-     * @param  provider the class of the provider service for the product.
-     * @return A new container of a single product.
-     * @throws ServiceConfigurationError if loading or instantiating
-     *         a service implementation class fails for some reason.
-     */
-    public <P> Container<P> container(Class<? extends ProviderService<P>> provider)
-    throws ServiceConfigurationError {
-        return container(provider, null);
-    }
-
-    /**
-     * Creates a new container of a single product.
-     * 
-     * @param  <P> the type of the product to contain.
-     * @param  provider the class of the provider service for the product.
-     * @param  decorator the class of the decoractor service for the product.
-     * @return A new container of a single product.
-     * @throws ServiceConfigurationError if loading or instantiating
-     *         a service implementation class fails for some reason.
-     */
-    public <P> Container<P> container(
-            final Class<? extends ProviderService<P>> provider,
-            final @CheckForNull Class<? extends DecoratorService<P>> decorator)
-    throws ServiceConfigurationError {
-        final ProviderService<P> p = service(provider);
-        final DecoratorService<P>[] d = null == decorator ? null
-                : decorators(decorator);
-        return new Store<P>(null == d || 0 == d.length ? p
-                : new ProviderWithSomeDecorators<P>(p, d));
     }
 
     /**
@@ -99,41 +90,58 @@ public final class Locator {
      * 
      * @param  <P> the type of the products to create.
      * @param  factory the class of the factory service for the products.
-     * @param  decorator the class of the decoractor service for the products.
+     * @param  functions the class of the function services for the products.
      * @return A new factory of products.
      * @throws ServiceConfigurationError if loading or instantiating
      *         a service implementation class fails for some reason.
      */
     public <P> Factory<P> factory(
             final Class<? extends FactoryService<P>> factory,
-            final @CheckForNull Class<? extends DecoratorService<P>> decorator)
+            final @CheckForNull Class<? extends FunctionService<P>> functions)
     throws ServiceConfigurationError {
-        final FactoryService<P> f = service(factory);
-        final DecoratorService<P>[] d = null == decorator ? null
-                : decorators(decorator);
-        return null == d || 0 == d.length ? f
-                : new FactoryWithSomeDecorators<P>(f, d);
+        final FactoryService<P> p = provider(factory);
+        final FunctionService<P>[] f = null == functions ? null
+                : functions(functions);
+        return null == f || 0 == f.length ? p
+                : new FactoryWithSomeFunctions<P>(p, f);
     }
 
     /**
-     * Instantiates a service implementation class of the given specification
-     * class.
-     * If multiple service implementation classes are locatable on the class
-     * path at run time, the service with the greatest
-     * {@linkplain ProviderService#getPriority() priority} gets selected.
-     * If multiple decorator services are locatable on the class path at run
-     * time, they are applied in ascending order of their
-     * {@linkplain DecoratorService#getPriority() priority} so that the product
-     * of the decorator service with the greatest number becomes the head of
-     * the resulting product chain.
+     * Creates a new container of a single product.
      * 
-     * @param  <S> the type of the service.
-     * @param  spec the specification class of the service.
-     * @return The prioritized instance of the service.
+     * @param  <P> the type of the product to contain.
+     * @param  provider the class of the provider service for the product.
+     * @return A new container of a single product.
      * @throws ServiceConfigurationError if loading or instantiating
      *         a service implementation class fails for some reason.
      */
-    private <S extends Service> S service(final Class<S> spec)
+    public <P> Container<P> container(Class<? extends ProviderService<P>> provider)
+    throws ServiceConfigurationError {
+        return container(provider, null);
+    }
+
+    /**
+     * Creates a new container of a single product.
+     * 
+     * @param  <P> the type of the product to contain.
+     * @param  provider the class of the provider service for the product.
+     * @param  decorator the class of the decoractor services for the product.
+     * @return A new container of a single product.
+     * @throws ServiceConfigurationError if loading or instantiating
+     *         a service implementation class fails for some reason.
+     */
+    public <P> Container<P> container(
+            final Class<? extends ProviderService<P>> provider,
+            final @CheckForNull Class<? extends DecoratorService<P>> decorator)
+    throws ServiceConfigurationError {
+        final ProviderService<P> p = provider(provider);
+        final DecoratorService<P>[] d = null == decorator ? null
+                : functions(decorator);
+        return new Store<P>(null == d || 0 == d.length ? p
+                : new ProviderWithSomeFunctions<P>(p, d));
+    }
+
+    private <S extends ProviderService<?>> S provider(final Class<S> spec)
     throws ServiceConfigurationError {
         S service = loader.instanceOf(spec, null);
         if (null == service) {
@@ -166,32 +174,15 @@ public final class Locator {
         return service;
     }
 
-    /**
-     * Instantiates all decorator service implementation classes of the given
-     * specification class.
-     * If multiple decorator services are locatable on the class path at run
-     * time, they are sorted in ascending order of their
-     * {@linkplain DecoratorService#getPriority() priority} so that when
-     * applied in order, the product of the decorator service with the greatest
-     * priority would become the head of the resulting product chain.
-     * 
-     * @param  <P> the type of the product.
-     * @param  spec the specification class of the decorator service.
-     * @return The ordered instances of the decorator service.
-     * @throws ServiceConfigurationError if loading or instantiating
-     *         a decorator service implementation class fails for some reason.
-     */
-    private <P> DecoratorService<P>[] decorators(
-            final Class<? extends DecoratorService<P>> spec)
+    private <S extends FunctionService<?>> S[] functions(final Class<S> spec)
     throws ServiceConfigurationError {
-        final Collection<? extends DecoratorService<P>> collection
-                = Loader.collectionWithUniqueClassNames(
-                    loader.allInstancesOf(spec));
+        final Collection<S> collection = Loader.collectionWithUniqueClassNames(
+                loader.allInstancesOf(spec));
         @SuppressWarnings("unchecked")
-        final DecoratorService<P>[] array = (DecoratorService<P>[])
-                collection.toArray(new DecoratorService<?>[collection.size()]);
+        final S[] array = collection.toArray(
+                (S[]) Array.newInstance(spec, collection.size()));
         Arrays.sort(array, new ServiceComparator());
-        for (final DecoratorService<P> service : array)
+        for (final S service : array)
             logger.debug(CONFIG, MSG, new Msg("selecting", service));
         return array;
     }
