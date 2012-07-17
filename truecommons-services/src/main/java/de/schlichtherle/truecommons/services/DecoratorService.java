@@ -9,11 +9,70 @@ import javax.annotation.concurrent.ThreadSafe;
 /**
  * An abstract service for decorating products.
  * Decorator services are subject to service location by {@link Locator}s.
- * If multiple decoration services are locatable on the class path at run
+ * For best results, clients should create another abstract subclass which just
+ * specifies the type parameter {@code P}.
+ * The following example accompanies the example for {@link ContainerService},
+ * so the type parameter is specified as {@link String} again:
+ * <pre>{@code
+ * package com.company.spec;
+ * 
+ * import de.schlichtherle.truecommons.services.DecoratorService;
+ * 
+ * public abstract class StringDecorator
+ * extends DecoratorService<StringBuilder> {
+ * }
+ * }</pre>
+ * <p>
+ * An implementation could now implement this service as follows:
+ * <pre>{@code
+ * package com.company.impl;
+ * 
+ * import com.company.spec.StringDecorator;
+ * 
+ * public class SmalltalkDecorator extends StringDecorator {
+ *     @Override
+ *     public String apply(String s) {
+ *         // decorate the given string with a new string and return it!
+ *         return s + " How do you do?";
+ *     }
+ * }
+ * }</pre>
+ * <p>
+ * Next, the implementation needs to advertise its service by providing a file
+ * with the name {@code META-INF/services/com.company.spec.StringDecorator}
+ * on the run time class path with the following single line content:
+ * <pre>{@code
+ * com.company.impl.SmalltalkDecorator
+ * }</pre>
+ * <p>
+ * If multiple modifier services are locatable on the class path at run
  * time, they are applied in ascending order of their
- * {@linkplain #getPriority() priority} so that the result of the decorator
+ * {@linkplain #getPriority() priority} so that the result of the modifier
  * service with the greatest number becomes the result of the entire
- * decorator chain.
+ * modifier chain.
+ * <p>
+ * Finally, a client could now simply compose a container with some decorators
+ * according to the {@code StringContainer} and
+ * {@link StringDecorator} specification by calling:
+ * <pre>{@code
+ * package com.company.client;
+ * 
+ * import de.schlichtherle.truecommons.services.Locator;
+ * import com.company.spec.StringContainer;
+ * import com.company.spec.StringDecorator;
+ * 
+ * public class Main {
+ *     public static void main(String[] args) {
+ *         Locator l = new Locator(Main.class); // specify calling class
+ *         Container<String> c = l.factory(StringContainer.class,
+ *                                         StringDecorator.class);
+ *         String s = c.apply(); // obtain product
+ *         System.out.println(s); // use product
+ *     }
+ * }
+ * <p>
+ * Note that multiple calls to {@code c.apply()} would always return the same
+ * product again because {@code c} is a container, not a factory.
  * <p>
  * Implementations should be thread-safe.
  * 
