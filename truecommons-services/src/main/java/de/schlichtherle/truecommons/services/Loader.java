@@ -54,7 +54,7 @@ public final class Loader {
      * name which are loaded by different class loaders according to the
      * constructor parameters!
      * If this is undesirable, then call
-     * {@link #asCollectionWithUniqueClassNames(Iterator)} on the result.
+     * {@link #collectionWithUniqueClassNames(Iterator)} on the result.
      * 
      * @param  <S> the type of the service.
      * @param  spec the specification class of the service.
