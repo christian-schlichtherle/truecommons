@@ -9,6 +9,7 @@ import javax.annotation.concurrent.ThreadSafe;
 /**
  * An abstract service for mapping products.
  * Function services are subject to service location by {@link Locator}s.
+ * <p>
  * If multiple function services are locatable on the class path at run time,
  * they are applied in ascending order of their
  * {@linkplain #getPriority() priority} so that the result of the function

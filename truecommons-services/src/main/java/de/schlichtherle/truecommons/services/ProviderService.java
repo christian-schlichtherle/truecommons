@@ -9,6 +9,7 @@ import javax.annotation.concurrent.ThreadSafe;
 /**
  * An abstract service which provides products.
  * Provider services are subject to service location by {@link Locator}s.
+ * <p>
  * If multiple provider services are locatable on the class path at run
  * time, a vendor will select the provider service with the greatest
  * {@linkplain #getPriority() priority}.
