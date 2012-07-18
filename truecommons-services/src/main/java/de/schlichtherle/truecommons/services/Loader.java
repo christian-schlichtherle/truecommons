@@ -176,7 +176,8 @@ public final class Loader {
      * calling it's public no-argument constructor.
      * </li>
      * <li>
-     * Finally, {@code object} is cast to {@code T} and returned.
+     * Finally, {@code object} is {@linkplain Class#cast cast} to {@code T} and
+     * returned.
      * </li>
      * </ol>
      * 
