@@ -4,6 +4,8 @@
  */
 package de.schlichtherle.truecommons.services;
 
+import javax.inject.Provider;
+
 /**
  * @author Christian Schlichtherle
  */
@@ -21,8 +23,8 @@ class ProviderWithSomeFunctions<P> implements Provider<P> {
     }
 
     @Override
-    public P apply() {
-        P product = provider.apply();
+    public P get() {
+        P product = provider.get();
         for (Function<P> function : functions)
             product = function.apply(product);
         return product;

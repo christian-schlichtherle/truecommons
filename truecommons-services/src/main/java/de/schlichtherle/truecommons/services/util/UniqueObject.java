@@ -2,7 +2,7 @@
  * Copyright (C) 2012 Schlichtherle IT Services.
  * All rights reserved. Use is subject to license terms.
  */
-package de.schlichtherle.truecommons.services;
+package de.schlichtherle.truecommons.services.util;
 
 /**
  * A unique object {@linkplain #equals(Object) compares equal} only to itself

@@ -5,6 +5,7 @@
 package de.schlichtherle.truecommons.services;
 
 import javax.annotation.concurrent.ThreadSafe;
+import javax.inject.Provider;
 
 /**
  * An abstract service which provides products.

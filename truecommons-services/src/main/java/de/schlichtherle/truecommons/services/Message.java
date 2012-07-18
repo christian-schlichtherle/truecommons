@@ -4,6 +4,7 @@
  */
 package de.schlichtherle.truecommons.services;
 
+import de.schlichtherle.truecommons.services.util.UniqueObject;
 import java.util.Formatter;
 import java.util.ResourceBundle;
 

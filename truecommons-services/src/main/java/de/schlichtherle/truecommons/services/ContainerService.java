@@ -31,7 +31,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * 
  * public class GreetingContainer extends StringContainer {
  *     @Override
- *     public String apply() {
+ *     public String get() {
  *         // Return the same instance on each call!
  *         return "Hello Christian!";
  *     }
@@ -61,12 +61,12 @@ import javax.annotation.concurrent.ThreadSafe;
  *     public static void main(String[] args) {
  *         Locator l = new Locator(Main.class); // specify calling class
  *         Container<String> c = l.container(StringContainer.class);
- *         String s = c.apply(); // obtain product
+ *         String s = c.get(); // obtain product
  *         System.out.println(s); // use product
  *     }
  * }
  * <p>
- * Note that multiple calls to {@code c.apply()} would always return the same
+ * Note that multiple calls to {@code c.get()} would always return the same
  * product again because {@code c} is a container, not a factory.
  * <p>
  * Implementations should be thread-safe.

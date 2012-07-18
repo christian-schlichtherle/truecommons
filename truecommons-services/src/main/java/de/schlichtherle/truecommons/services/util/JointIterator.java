@@ -2,7 +2,7 @@
  * Copyright (C) 2005-2012 Schlichtherle IT Services.
  * All rights reserved. Use is subject to license terms.
  */
-package de.schlichtherle.truecommons.services;
+package de.schlichtherle.truecommons.services.util;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -15,16 +15,10 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @author Christian Schlichtherle
  */
 @NotThreadSafe
-final class JointIterator<E> implements Iterator<E> {
+public final class JointIterator<E> implements Iterator<E> {
     private Iterator<? extends E> i1, i2;
 
-    /**
-     * Constructs a new {@code JointIterator} from the given iterators.
-     *
-     * @param  i1 the first iterator.
-     * @param  i2 the second iterator.
-     */
-    JointIterator(
+    public JointIterator(
             final Iterator<? extends E> i1,
             final Iterator<? extends E> i2) {
         if (null == (this.i1 = i1)) throw new NullPointerException();

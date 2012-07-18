@@ -4,6 +4,8 @@
  */
 package de.schlichtherle.truecommons.services;
 
+import de.schlichtherle.truecommons.services.util.UniqueObject;
+
 /**
  * Defines common properties of locatable services.
  * 
