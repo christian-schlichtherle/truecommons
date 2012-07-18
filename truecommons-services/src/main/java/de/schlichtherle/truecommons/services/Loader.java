@@ -4,40 +4,68 @@
  */
 package de.schlichtherle.truecommons.services;
 
+import de.schlichtherle.truecommons.services.util.JointEnumeration;
+import de.schlichtherle.truecommons.services.util.JointIterator;
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
- * Loads classes and instantiates service providers on the class path.
- * <p>
- * If the class loader provided to the constructor is the current thread's
- * context class loader, then the methods of this class will classFor classes
- * using only this class loader.
- * Otherwise, the given class loader is used first. Second, the current
- * thread's context class loader is used.
- * <p>
- * When iterating classes, the results of both class loaders are
- * concatenated, so a class may get iterated twice!
- * If this is undesirable, then you should create a set from the iteration
- * results.
+ * Loads resources and classes on the class path by using a given class loader
+ * and eventually the current thread context's class loader in order.
+ * If the primary class loader is the current thread context's class loader,
+ * then only the primary class loader will be used.
+ * Note that using two class loaders may result in duplicate results - see
+ * method Javadoc.
+ * If this is undesirable, then you should create a set from the results.
  *
  * @author Christian Schlichtherle
  */
 @ThreadSafe
 public final class Loader {
 
-    private final ClassLoader l1;
+    private final ClassLoader primary;
 
     /**
-     * Constructs a new loader which uses the given class loader first.
+     * Constructs a new loader which uses the given class loader before using
+     * the current thread context's class loader unless the latter is identical
+     * to the former.
      *
-     * @param loader the nullable class loader.
+     * @param loader the nullable primary class loader.
      *        If this is {@code null}, then the system class loader is used.
      */
     public Loader(final @CheckForNull ClassLoader loader) {
-        this.l1 = null != loader ? loader : ClassLoader.getSystemClassLoader();
+        this.primary = null != loader ? loader : ClassLoader.getSystemClassLoader();
+    }
+
+    /**
+     * Enumerates resources according to the algorithm described in the class
+     * Javadoc.
+     * <p>
+     * When enumerating resources, the results of both class loaders are
+     * concatenated, so a resource may get enumerated twice!
+     * If this is undesirable, then you should create a set from the enumeration
+     * results.
+     *
+     * @param  name The fully qualified name of the resources to locate.
+     * @return A concatenated enumeration for the resource on the class path.
+     * @throws ServiceConfigurationError if locating the resources fails for
+     *         some reason.
+     */
+    public Enumeration<URL> resourcesFor(final String name)
+    throws ServiceConfigurationError {
+        ClassLoader secondary = Thread.currentThread().getContextClassLoader();
+        try {
+            return primary == secondary
+                    ? primary.getResources(name)
+                    : new JointEnumeration<URL>(primary.getResources(name),
+                                                secondary.getResources(name));
+        } catch (final IOException ex) {
+            throw new ServiceConfigurationError(ex.toString(), ex);
+        }
     }
 
     /**
@@ -64,11 +92,11 @@ public final class Loader {
      */
     public <S> Iterator<S> allInstancesOf(final Class<S> spec)
     throws ServiceConfigurationError {
-        final ClassLoader l2 = Thread.currentThread().getContextClassLoader();
-        return l1 == l2
-                ? ServiceLoader.load(spec, l1).iterator()
-                : new JointIterator<S>( ServiceLoader.load(spec, l1).iterator(),
-                                        ServiceLoader.load(spec, l2).iterator());
+        final ClassLoader secondary = Thread.currentThread().getContextClassLoader();
+        return primary == secondary
+                ? ServiceLoader.load(spec, primary).iterator()
+                : new JointIterator<S>( ServiceLoader.load(spec, primary).iterator(),
+                                        ServiceLoader.load(spec, secondary).iterator());
     }
 
     /**
@@ -147,10 +175,10 @@ public final class Loader {
     throws ServiceConfigurationError {
         try {
             try {
-                return l1.loadClass(name);
+                return primary.loadClass(name);
             } catch (final ClassNotFoundException ex) {
                 ClassLoader l2 = Thread.currentThread().getContextClassLoader();
-                if (l1 == l2) throw ex; // there's no point in trying this twice.
+                if (primary == l2) throw ex; // there's no point in trying this twice.
                 return l2.loadClass(name);
             }
         } catch (final ClassNotFoundException ex2) {

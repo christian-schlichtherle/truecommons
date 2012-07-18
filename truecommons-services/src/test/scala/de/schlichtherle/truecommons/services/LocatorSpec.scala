@@ -29,7 +29,7 @@ class LocatorSpec extends WordSpec with ShouldMatchers {
 
       "not report a service configuration error if it can't locate a decorator" in {
         val c = l.container[String, FactoryService[String], UnknownDecorator]
-        c.apply should not be (null)
+        c.get should not be (null)
       }
     }
 
@@ -37,13 +37,13 @@ class LocatorSpec extends WordSpec with ShouldMatchers {
       val c = l.container[String, FactoryService[String], DecoratorService[String]]
 
       "always reproduce the expected product" in {
-        c.apply should equal (expected)
-        c.apply should equal (expected)
+        c.get should equal (expected)
+        c.get should equal (expected)
       }
 
       "provide the same product" in {
-        val p1 = c.apply
-        val p2 = c.apply
+        val p1 = c.get
+        val p2 = c.get
         p1 should be theSameInstanceAs(p2)
       }
     }
@@ -52,13 +52,13 @@ class LocatorSpec extends WordSpec with ShouldMatchers {
       val f = l.factory[String, FactoryService[String], DecoratorService[String]]
 
       "always reproduce the expected product" in {
-        f.apply should equal (expected)
-        f.apply should equal (expected)
+        f.get should equal (expected)
+        f.get should equal (expected)
       }
 
       "provide an equal, but not same product" in {
-        val p1 = f.apply
-        val p2 = f.apply
+        val p1 = f.get
+        val p2 = f.get
         p1 should equal (p2)
         p1 should not be theSameInstanceAs(p2)
       }
@@ -93,12 +93,12 @@ abstract class UnknownFactory extends FactoryService[String]
 abstract class UnknownDecorator extends DecoratorService[String]
 
 final class World extends FactoryService[String] {
-  def apply = new String("World") // return a new string upon each call
+  def get = new String("World") // return a new string upon each call
   override def getPriority = -1
 }
 
 final class Christian extends FactoryService[String] {
-  def apply = new String("Christian") // return a new string upon each call
+  def get = new String("Christian") // return a new string upon each call
 }
 
 final class Salutation extends DecoratorService[String] {

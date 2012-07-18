@@ -31,7 +31,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * 
  * public class GreetingFactory extends StringBuilderFactory {
  *     @Override
- *     public StringBuilder apply() {
+ *     public StringBuilder get() {
  *         // Return a new instance on each call!
  *         return new StringBuilder("Hello Christian!");
  *     }
@@ -61,12 +61,12 @@ import javax.annotation.concurrent.ThreadSafe;
  *     public static void main(String[] args) {
  *         Locator l = new Locator(Main.class); // specify calling class
  *         Factory<StringBuilder> f = l.factory(StringBuilderFactory.class);
- *         StringBuilder b = f.apply(); // create product
+ *         StringBuilder b = f.get(); // create product
  *         System.out.println(b.toString()); // use product
  *     }
  * }
  * <p>
- * Note that multiple calls to {@code f.apply()} would always return a new
+ * Note that multiple calls to {@code f.get()} would always return a new
  * product because {@code f} is a factory, not a container.
  * <p>
  * Implementations should be thread-safe.

@@ -16,8 +16,9 @@
 
     <name>TrueCommons Services</name>
     <description>
-        Provides Service Location which is designed to work well in both OSGi
-        and JEE environments and perfectly fits the Dependency Injection idiom.
+        Provides Service Location which is designed to work well in both JEE
+        and OSGi environments and perfectly fits the Dependency Injection idiom
+        with support for JSR 330.
     </description>
 
     <properties>
@@ -26,6 +27,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>1</version>
+            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
@@ -41,6 +47,10 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

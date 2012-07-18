@@ -31,7 +31,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * 
  * public class SmalltalkModifier extends StringBuilderModifier {
  *     @Override
- *     public StringBuilder apply(StringBuilder b) {
+ *     public StringBuilder get(StringBuilder b) {
  *         // Modify and return the same instance on each call!
  *         return b.append(" How do you do?");
  *     }
@@ -66,12 +66,12 @@ import javax.annotation.concurrent.ThreadSafe;
  *         Locator l = new Locator(Main.class); // specify calling class
  *         Factory<StringBuilder> f = l.factory(StringBuilderFactory.class,
  *                                              StringBuilderModifier.class);
- *         StringBuilder b = f.apply(); // create product
+ *         StringBuilder b = f.get(); // create product
  *         System.out.println(b.toString()); // use product
  *     }
  * }
  * <p>
- * Note that multiple calls to {@code f.apply()} would always return a new
+ * Note that multiple calls to {@code f.get()} would always return a new
  * product because {@code f} is a factory, not a container.
  * <p>
  * Implementations should be thread-safe.

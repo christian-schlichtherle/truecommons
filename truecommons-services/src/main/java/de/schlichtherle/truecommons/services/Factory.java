@@ -5,6 +5,7 @@
 package de.schlichtherle.truecommons.services;
 
 import javax.annotation.concurrent.ThreadSafe;
+import javax.inject.Provider;
 
 /**
  * Creates products.
@@ -23,5 +24,5 @@ public interface Factory<P> extends Provider<P> {
      * @return A <em>new</em> product.
      */
     @Override
-    P apply();
+    P get();
 }

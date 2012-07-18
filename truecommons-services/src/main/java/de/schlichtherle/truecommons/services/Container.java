@@ -5,6 +5,7 @@
 package de.schlichtherle.truecommons.services;
 
 import javax.annotation.concurrent.ThreadSafe;
+import javax.inject.Provider;
 
 /**
  * Contains a single product.
@@ -23,5 +24,5 @@ public interface Container<P> extends Provider<P> {
      * @return the <em>same</em> contained product.
      */
     @Override
-    P apply();
+    P get();
 }
