@@ -41,18 +41,18 @@ final class Loan[A <: AutoCloseable](resource: A) {
     * @param block the function with the nullable resource parameter.
     */
   def to[B](block: A => B) = {
-    var ex: Throwable = null
+    var t: Throwable = null
     try {
       block(resource)
     } catch {
-      case ex2 => ex = ex2; throw ex2
+      case x => t = x; throw x
     } finally {
       if (resource != null) {
-        if (ex != null) {
+        if (t != null) {
           try {
             resource.close()
           } catch {
-            case ex2 => ex.addSuppressed(ex2)
+            case y => t.addSuppressed(y)
           }
         } else {
           resource.close()
