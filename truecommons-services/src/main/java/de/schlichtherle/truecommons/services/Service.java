@@ -4,15 +4,13 @@
  */
 package de.schlichtherle.truecommons.services;
 
-import de.schlichtherle.truecommons.services.util.UniqueObject;
-
 /**
  * Defines common properties of locatable services.
  * 
  * @see    Locator
  * @author Christian Schlichtherle
  */
-public abstract class Service extends UniqueObject {
+public abstract class Service {
 
     /**
      * Returns a priority to help {@link Locator}s to prioritize this service.

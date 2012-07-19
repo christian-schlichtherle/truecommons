@@ -4,12 +4,13 @@
  */
 package de.schlichtherle.truecommons.services;
 
+import de.schlichtherle.truecommons.logging.BundledMessage;
+import de.schlichtherle.truecommons.logging.LocalizedLogger;
 import java.lang.reflect.Array;
 import java.util.*;
 import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
@@ -51,10 +52,7 @@ import org.slf4j.MarkerFactory;
 @ThreadSafe
 public final class Locator {
 
-    private static final ResourceBundle
-            bundle = ResourceBundle.getBundle(Locator.class.getName());
-    private static final Logger logger = LoggerFactory.getLogger(Locator.class);
-    private static final String MSG = "{}";
+    private static final Logger logger = new LocalizedLogger(Locator.class);
     private static final Marker CONFIG = MarkerFactory.getMarker("CONFIG");
 
     private final Loader loader;
@@ -146,7 +144,7 @@ public final class Locator {
         if (null == service) {
             for (final Iterator<S> i = loader.allInstancesOf(spec); i.hasNext(); ) {
                 final S newService = i.next();
-                logger.debug(CONFIG, MSG, new Msg("located", newService));
+                logger.debug(CONFIG, "located", newService);
                 if (null == service) {
                     service = newService;
                 } else {
@@ -160,15 +158,16 @@ public final class Locator {
                         // different class loaders.
                         if (!service.getClass().getName()
                                 .equals(newService.getClass().getName()))
-                            logger.warn(MSG, new Msg("collision",
-                                    op, service, newService));
+                            logger.warn("collision",
+                                    new Object[] { op, service, newService });
                     }
                 }
             }
         }
         if (null == service)
-            throw new ServiceConfigurationError(new Msg("null", spec).toString());
-        logger.debug(CONFIG, MSG, new Msg("selecting", service));
+            throw new ServiceConfigurationError(
+                    new BundledMessage(Locator.class, "null", spec).toString());
+        logger.debug(CONFIG, "selecting", service);
         return service;
     }
 
@@ -181,11 +180,7 @@ public final class Locator {
                 (S[]) Array.newInstance(spec, collection.size()));
         Arrays.sort(array, new ServiceComparator());
         for (final S service : array)
-            logger.debug(CONFIG, MSG, new Msg("selecting", service));
+            logger.debug(CONFIG, "selecting", service);
         return array;
-    }
-
-    private static final class Msg extends Message {
-        Msg(String key, Object... args) { super(bundle, key, args); }
     }
 }
