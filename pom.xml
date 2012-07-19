@@ -74,6 +74,7 @@
 
     <modules>
         <module>truecommons-io</module>
+        <module>truecommons-logging</module>
         <module>truecommons-services</module>
         <module>truecommons-skin</module>
     </modules>
@@ -82,7 +83,7 @@
         <dependencies>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>truecommons-io</artifactId>
+                <artifactId>truecommons-logging</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

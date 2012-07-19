@@ -12,13 +12,11 @@
         <version>1.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>truecommons-services</artifactId>
+    <artifactId>truecommons-logging</artifactId>
 
-    <name>TrueCommons Services</name>
+    <name>TrueCommons Logging</name>
     <description>
-        Provides Service Location which is designed to work well in both JEE
-        and OSGi environments and perfectly fits the Dependency Injection idiom
-        with support for JSR 330.
+        An adapter to add simple support for localized messages to SLF4J.
     </description>
 
     <properties>
@@ -28,40 +26,17 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>javax.inject</groupId>
-                <artifactId>javax.inject</artifactId>
-                <version>1</version>
-            </dependency>
-            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>1.6.6</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>1.0.6</version>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>truecommons-logging</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
         </dependency>
     </dependencies>
 </project>
