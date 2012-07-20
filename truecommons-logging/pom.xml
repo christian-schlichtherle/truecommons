@@ -16,7 +16,7 @@
 
     <name>TrueCommons Logging</name>
     <description>
-        An adapter to add simple support for localized messages to SLF4J.
+        A simple adapter to add support for localized messages to SLF4J.
     </description>
 
     <properties>
