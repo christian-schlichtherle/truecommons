@@ -4,10 +4,13 @@
  */
 package de.schlichtherle.truecommons.services;
 
-import de.schlichtherle.truecommons.logging.BundledMessage;
-import de.schlichtherle.truecommons.logging.LocalizedLogger;
+import de.schlichtherle.truecommons.log.BundledMessage;
+import de.schlichtherle.truecommons.log.LocalizedLogger;
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.ServiceConfigurationError;
 import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.Logger;
