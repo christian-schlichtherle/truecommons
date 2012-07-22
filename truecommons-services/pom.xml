@@ -28,7 +28,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>truecommons-logging</artifactId>
+            <artifactId>truecommons-log</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.inject</groupId>

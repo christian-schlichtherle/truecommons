@@ -2,7 +2,7 @@
  * Copyright (C) 2012 Schlichtherle IT Services.
  * All rights reserved. Use is subject to license terms.
  */
-package de.schlichtherle.truecommons.logging;
+package de.schlichtherle.truecommons.log;
 
 import java.text.MessageFormat;
 import java.util.Formatter;
