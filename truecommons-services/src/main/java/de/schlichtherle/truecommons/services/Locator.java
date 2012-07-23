@@ -4,8 +4,8 @@
  */
 package de.schlichtherle.truecommons.services;
 
-import de.schlichtherle.truecommons.log.BundledMessage;
-import de.schlichtherle.truecommons.log.LocalizedLogger;
+import de.schlichtherle.truecommons.logging.BundledMessage;
+import de.schlichtherle.truecommons.logging.LocalizedLogger;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
