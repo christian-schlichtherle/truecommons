@@ -4,7 +4,6 @@
  */
 package de.schlichtherle.truecommons.io;
 
-import de.schlichtherle.truecommons.io.PowerBuffer;
 import java.io.IOException;
 import static java.lang.Math.max;
 import java.nio.ByteBuffer;
