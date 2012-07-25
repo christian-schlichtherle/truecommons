@@ -30,7 +30,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * import com.company.spec.StringContainer;
  * 
  * public class GreetingContainer extends StringContainer {
- *     @Override
+ *     \@Override
  *     public String get() {
  *         // Return the same instance on each call!
  *         return "Hello Christian!";
@@ -65,6 +65,7 @@ import javax.annotation.concurrent.ThreadSafe;
  *         System.out.println(s); // use product
  *     }
  * }
+ * }</pre>
  * <p>
  * Note that multiple calls to {@code c.get()} would always return the same
  * product again because {@code c} is a container, not a factory.

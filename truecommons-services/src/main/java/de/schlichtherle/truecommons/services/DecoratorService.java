@@ -30,7 +30,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * import com.company.spec.StringDecorator;
  * 
  * public class SmalltalkDecorator extends StringDecorator {
- *     @Override
+ *     \@Override
  *     public String apply(String s) {
  *         // decorate the given string with a new string and return it!
  *         return s + " How do you do?";
@@ -53,7 +53,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * <p>
  * Finally, a client could now simply compose a container with some decorators
  * according to the {@code StringContainer} and
- * {@link StringDecorator} specification by calling:
+ * {@code StringDecorator} specification by calling:
  * <pre>{@code
  * package com.company.client;
  * 
@@ -70,6 +70,7 @@ import javax.annotation.concurrent.ThreadSafe;
  *         System.out.println(s); // use product
  *     }
  * }
+ * }</pre>
  * <p>
  * Note that multiple calls to {@code c.apply()} would always return the same
  * product again because {@code c} is a container, not a factory.

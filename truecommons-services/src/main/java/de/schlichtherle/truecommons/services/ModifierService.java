@@ -30,7 +30,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * import com.company.spec.StringBuilderModifier;
  * 
  * public class SmalltalkModifier extends StringBuilderModifier {
- *     @Override
+ *     \@Override
  *     public StringBuilder get(StringBuilder b) {
  *         // Modify and return the same instance on each call!
  *         return b.append(" How do you do?");
@@ -53,7 +53,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * <p>
  * Finally, a client could now simply compose a factory with some modifiers
  * according to the {@code StringBuilderFactory} and
- * {@link StringBuilderModifier} specification by calling:
+ * {@code StringBuilderModifier} specification by calling:
  * <pre>{@code
  * package com.company.client;
  * 
@@ -70,6 +70,7 @@ import javax.annotation.concurrent.ThreadSafe;
  *         System.out.println(b.toString()); // use product
  *     }
  * }
+ * }</pre>
  * <p>
  * Note that multiple calls to {@code f.get()} would always return a new
  * product because {@code f} is a factory, not a container.

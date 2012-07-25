@@ -9,7 +9,7 @@ import javax.annotation.concurrent.ThreadSafe;
 /**
  * Indicates that an input resource (stream, channel etc.) has been closed.
  *
- * @see    OutputClosedException
+ * @see    ClosedOutputException
  * @author Christian Schlichtherle
  */
 @ThreadSafe

@@ -30,7 +30,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * import com.company.spec.StringBuilderFactory;
  * 
  * public class GreetingFactory extends StringBuilderFactory {
- *     @Override
+ *     \@Override
  *     public StringBuilder get() {
  *         // Return a new instance on each call!
  *         return new StringBuilder("Hello Christian!");
@@ -65,6 +65,7 @@ import javax.annotation.concurrent.ThreadSafe;
  *         System.out.println(b.toString()); // use product
  *     }
  * }
+ * }</pre>
  * <p>
  * Note that multiple calls to {@code f.get()} would always return a new
  * product because {@code f} is a factory, not a container.
