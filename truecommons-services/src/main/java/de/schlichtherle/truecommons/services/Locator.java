@@ -9,7 +9,8 @@ import de.schlichtherle.truecommons.logging.LocalizedLogger;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ServiceConfigurationError;
 import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.ThreadSafe;
@@ -145,8 +146,7 @@ public final class Locator {
     throws ServiceConfigurationError {
         S service = loader.instanceOf(spec, null);
         if (null == service) {
-            for (final Iterator<S> i = loader.allInstancesOf(spec); i.hasNext(); ) {
-                final S newService = i.next();
+            for (final S newService : loader.instancesOf(spec)) {
                 logger.debug(CONFIG, "located", newService);
                 if (null == service) {
                     service = newService;
@@ -176,8 +176,8 @@ public final class Locator {
 
     private <S extends FunctionService<?>> S[] functions(final Class<S> spec)
     throws ServiceConfigurationError {
-        final Collection<S> collection = Loader.collectionWithUniqueClassNames(
-                loader.allInstancesOf(spec));
+        final Collection<S> collection = filterUniqueClassNames(
+                loader.instancesOf(spec));
         @SuppressWarnings("unchecked")
         final S[] array = collection.toArray(
                 (S[]) Array.newInstance(spec, collection.size()));
@@ -185,5 +185,25 @@ public final class Locator {
         for (final S service : array)
             logger.debug(CONFIG, "selecting", service);
         return array;
+    }
+
+    /**
+     * Returns a collection of the iterable elements with unique class names.
+     * If duplicate class names are found, only the first iterated element is
+     * added to the collection.
+     * 
+     * @param  <E> the type of the iterable elements.
+     * @param  services the iterable elements.
+     * @return a collection of the iterable elements with unique class names.
+     */
+    private static <E> Collection<E> filterUniqueClassNames(
+            final Iterable<E> services) {
+        @SuppressWarnings("CollectionWithoutInitialCapacity")
+        final Map<String, E> map = new HashMap<String, E>();
+        for (final E service : services) {
+            final String name = service.getClass().getName();
+            if (!map.containsKey(name)) map.put(name, service);
+        }
+        return map.values();
     }
 }
