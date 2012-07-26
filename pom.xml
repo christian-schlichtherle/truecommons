@@ -9,7 +9,7 @@
     <parent>
         <groupId>de.schlichtherle</groupId>
         <artifactId>oss-parent</artifactId>
-        <version>20</version>
+        <version>21</version>
     </parent>
 
     <groupId>de.schlichtherle.truecommons</groupId>
@@ -69,6 +69,7 @@
         <module>truecommons-io</module>
         <module>truecommons-logging</module>
         <module>truecommons-services</module>
+        <module>truecommons-shed</module>
         <module>truecommons-skin</module>
     </modules>
 
