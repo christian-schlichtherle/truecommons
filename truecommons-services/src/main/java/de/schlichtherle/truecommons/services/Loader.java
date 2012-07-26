@@ -4,7 +4,6 @@
  */
 package de.schlichtherle.truecommons.services;
 
-import de.schlichtherle.truecommons.services.util.JointIterator;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -42,8 +41,6 @@ public final class Loader {
 
     /**
      * Returns a new iterable collection of URLs for the given resource name.
-     * <p>
-     * Note that this method may return a URL multiple times!
      *
      * @param  name The fully qualified name of the resources to locate.
      * @return A concatenated enumeration for the resource on the class path.
@@ -55,16 +52,9 @@ public final class Loader {
         final class IterableResources implements Iterable<URL> {
             @Override
             public Iterator<URL> iterator() {
-                // Perform lazy resolution of the CTCCL so that the resulting
-                // Iterable could get shared among different threads.
-                final ClassLoader secondary
-                        = Thread.currentThread().getContextClassLoader();
                 try {
-                    if (secondary == primary || isChildOf(secondary, primary))
-                        return new EnumerationIterator<URL>(primary.getResources(name));
-                    return new JointIterator<URL>(
-                            new EnumerationIterator<URL>(primary.getResources(name)),
-                            new EnumerationIterator<URL>(secondary.getResources(name)));
+                    return new EnumerationIterator<URL>(
+                            classLoader().getResources(name));
                 } catch (final IOException ex) {
                     throw new ServiceConfigurationError(ex.toString(), ex);
                 }
@@ -106,10 +96,7 @@ public final class Loader {
      * <p>
      * The implementation classes will get instantiated as if by calling
      * <code>{@link ServiceLoader#load(Class, ClassLoader) ServiceLoader.load(spec, cl)}.iterator()</code>,
-     * where {@code cl} is the primary or secondary class loader.
-     * <p>
-     * Note that this method may return multiple services with an equal
-     * name which are loaded by different class loaders!
+     * where {@code cl} is the resolved class loader.
      * 
      * @param  <S> the type of the services.
      * @param  spec the specification class of the services.
@@ -119,28 +106,15 @@ public final class Loader {
         final class IterableServices implements Iterable<S> {
             @Override
             public Iterator<S> iterator() {
-                // Perform lazy resolution of the CTCCL so that the resulting
-                // Iterable could get shared among different threads.
-                final ClassLoader secondary
-                        = Thread.currentThread().getContextClassLoader();
-                if (secondary == primary || isChildOf(secondary, primary))
-                    return ServiceLoader.load(spec, primary).iterator();
-                if (isChildOf(primary, secondary))
-                    return ServiceLoader.load(spec, secondary).iterator();
-                return new JointIterator<S>(
-                        ServiceLoader.load(spec, primary).iterator(),
-                        ServiceLoader.load(spec, secondary).iterator());
+                return ServiceLoader.load(spec, classLoader()).iterator();
             }
         } // IterableServices
         return new IterableServices();
     }
 
-    private static boolean isChildOf(
-            ClassLoader c,
-            final ClassLoader r) {
-        for (ClassLoader p; null != (p = c.getParent()); c = p)
-            if (p == r) return true;
-        return false;
+    private ClassLoader classLoader() {
+        return UnifiedClassLoader.resolve(primary,
+                Thread.currentThread().getContextClassLoader());
     }
 
     /**
