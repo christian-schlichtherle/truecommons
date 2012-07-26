@@ -9,8 +9,7 @@ import de.schlichtherle.truecommons.logging.LocalizedLogger;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
 import java.util.ServiceConfigurationError;
 import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.ThreadSafe;
@@ -176,34 +175,12 @@ public final class Locator {
 
     private <S extends FunctionService<?>> S[] functions(final Class<S> spec)
     throws ServiceConfigurationError {
-        final Collection<S> collection = filterUniqueClassNames(
-                loader.instancesOf(spec));
+        final Collection<S> c = new LinkedList<S>();
+        for (final S service : loader.instancesOf(spec)) c.add(service);
         @SuppressWarnings("unchecked")
-        final S[] array = collection.toArray(
-                (S[]) Array.newInstance(spec, collection.size()));
-        Arrays.sort(array, new ServiceComparator());
-        for (final S service : array)
-            logger.debug(CONFIG, "selecting", service);
-        return array;
-    }
-
-    /**
-     * Returns a collection of the iterable elements with unique class names.
-     * If duplicate class names are found, only the first iterated element is
-     * added to the collection.
-     * 
-     * @param  <E> the type of the iterable elements.
-     * @param  services the iterable elements.
-     * @return a collection of the iterable elements with unique class names.
-     */
-    private static <E> Collection<E> filterUniqueClassNames(
-            final Iterable<E> services) {
-        @SuppressWarnings("CollectionWithoutInitialCapacity")
-        final Map<String, E> map = new HashMap<String, E>();
-        for (final E service : services) {
-            final String name = service.getClass().getName();
-            if (!map.containsKey(name)) map.put(name, service);
-        }
-        return map.values();
+        final S[] a = c.toArray((S[]) Array.newInstance(spec, c.size()));
+        Arrays.sort(a, new ServiceComparator());
+        for (final S service : a) logger.debug(CONFIG, "selecting", service);
+        return a;
     }
 }
