@@ -4,7 +4,6 @@
  */
 package de.schlichtherle.truecommons.services;
 
-import de.schlichtherle.truecommons.services.util.JointEnumeration;
 import de.schlichtherle.truecommons.services.util.JointIterator;
 import java.io.IOException;
 import java.net.URL;
@@ -42,82 +41,106 @@ public final class Loader {
     }
 
     /**
-     * Enumerates resources according to the algorithm described in the class
-     * Javadoc.
+     * Returns a new iterable collection of URLs for the given resource name.
      * <p>
-     * When enumerating resources, the results of both class loaders are
-     * concatenated, so a resource may get enumerated twice!
-     * If this is undesirable, then you should create a set from the enumeration
-     * results.
+     * Note that this method may return a URL multiple times!
      *
      * @param  name The fully qualified name of the resources to locate.
      * @return A concatenated enumeration for the resource on the class path.
      * @throws ServiceConfigurationError if locating the resources fails for
      *         some reason.
      */
-    public Enumeration<URL> resourcesFor(final String name)
+    public Iterable<URL> resourcesFor(final String name)
     throws ServiceConfigurationError {
-        ClassLoader secondary = Thread.currentThread().getContextClassLoader();
-        try {
-            return primary == secondary
-                    ? primary.getResources(name)
-                    : new JointEnumeration<URL>(primary.getResources(name),
-                                                secondary.getResources(name));
-        } catch (final IOException ex) {
-            throw new ServiceConfigurationError(ex.toString(), ex);
-        }
+        final class IterableResources implements Iterable<URL> {
+            @Override
+            public Iterator<URL> iterator() {
+                // Perform lazy resolution of the CTCCL so that the resulting
+                // Iterable could get shared among different threads.
+                final ClassLoader secondary
+                        = Thread.currentThread().getContextClassLoader();
+                try {
+                    if (secondary == primary || isChildOf(secondary, primary))
+                        return new EnumerationIterator<URL>(primary.getResources(name));
+                    return new JointIterator<URL>(
+                            new EnumerationIterator<URL>(primary.getResources(name)),
+                            new EnumerationIterator<URL>(secondary.getResources(name)));
+                } catch (final IOException ex) {
+                    throw new ServiceConfigurationError(ex.toString(), ex);
+                }
+            }
+        } // IterableResources
+        return new IterableResources();
     }
 
+    private static final class EnumerationIterator<E> implements Iterator<E> {
+        private final Enumeration<E> e;
+
+        EnumerationIterator(final Enumeration<E> e) {
+            this.e = e;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return e.hasMoreElements();
+        }
+
+        @Override
+        public E next() {
+            return e.nextElement();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    } // EnumerationIterator
+
     /**
-     * Instantiates all implementation classes of the given specification class
-     * which are advertised as services on the class path.
-     * The implementation classes are instantiated as if by calling
-     * {@link ServiceLoader#load(Class, ClassLoader)}.
-     * <p>
+     * Returns a new iterable collection of instances of all implementation
+     * classes of the given specification class which are advertised as
+     * services on the class path.
      * This method should be preferred over {@link #instanceOf(Class, Class)}
      * if more than one meaningful implementation class of a specification
      * class is expected at run time.
      * <p>
-     * Note that this method may return multiple class instances with an equal
-     * name which are loaded by different class loaders according to the
-     * constructor parameters!
-     * If this is undesirable, then call
-     * {@link #collectionWithUniqueClassNames(Iterator)} on the result.
+     * The implementation classes will get instantiated as if by calling
+     * <code>{@link ServiceLoader#load(Class, ClassLoader) ServiceLoader.load(spec, cl)}.iterator()</code>,
+     * where {@code cl} is the primary or secondary class loader.
+     * <p>
+     * Note that this method may return multiple services with an equal
+     * name which are loaded by different class loaders!
      * 
-     * @param  <S> the type of the service.
-     * @param  spec the specification class of the service.
-     * @return A concatenated iteration with all instances of the service.
-     * @throws ServiceConfigurationError if loading or instantiating
-     *         a service implementation class fails for some reason.
+     * @param  <S> the type of the services.
+     * @param  spec the specification class of the services.
+     * @return A new iterable collection of all services on the class path.
      */
-    public <S> Iterator<S> allInstancesOf(final Class<S> spec)
-    throws ServiceConfigurationError {
-        final ClassLoader secondary = Thread.currentThread().getContextClassLoader();
-        return primary == secondary
-                ? ServiceLoader.load(spec, primary).iterator()
-                : new JointIterator<S>( ServiceLoader.load(spec, primary).iterator(),
-                                        ServiceLoader.load(spec, secondary).iterator());
+    public <S> Iterable<S> instancesOf(final Class<S> spec) {
+        final class IterableServices implements Iterable<S> {
+            @Override
+            public Iterator<S> iterator() {
+                // Perform lazy resolution of the CTCCL so that the resulting
+                // Iterable could get shared among different threads.
+                final ClassLoader secondary
+                        = Thread.currentThread().getContextClassLoader();
+                if (secondary == primary || isChildOf(secondary, primary))
+                    return ServiceLoader.load(spec, primary).iterator();
+                if (isChildOf(primary, secondary))
+                    return ServiceLoader.load(spec, secondary).iterator();
+                return new JointIterator<S>(
+                        ServiceLoader.load(spec, primary).iterator(),
+                        ServiceLoader.load(spec, secondary).iterator());
+            }
+        } // IterableServices
+        return new IterableServices();
     }
 
-    /**
-     * Returns a collection of the iterated elements with unique class names.
-     * If duplicate class names are found, only the first iterated element is
-     * added to the collection.
-     * 
-     * @param  <E> the type of the elements.
-     * @param  i the iterator of the elements.
-     * @return a collection of the iterated elements with unique class names.
-     */
-    public static <E> Collection<E> collectionWithUniqueClassNames(
-            final Iterator<E> i) {
-        @SuppressWarnings("CollectionWithoutInitialCapacity")
-        final Map<String, E> map = new HashMap<String, E>();
-        while (i.hasNext() ) {
-            final E service = i.next();
-            final String name = service.getClass().getName();
-            if (!map.containsKey(name)) map.put(name, service);
-        }
-        return map.values();
+    private static boolean isChildOf(
+            ClassLoader c,
+            final ClassLoader r) {
+        for (ClassLoader p; null != (p = c.getParent()); c = p)
+            if (p == r) return true;
+        return false;
     }
 
     /**
@@ -129,7 +152,7 @@ public final class Loader {
      * The implementation class gets loaded using {@link #classFor} and 
      * instantiated by calling its public no-arg constructor.
      * <p>
-     * This method should be preferred over {@link #allInstancesOf(Class)} if
+     * This method should be preferred over {@link #instancesOf(Class)} if
      * <ol>
      * <li>only one meaningful implementation of a service provider interface
      *     is expected at run time, and
@@ -177,9 +200,10 @@ public final class Loader {
             try {
                 return primary.loadClass(name);
             } catch (final ClassNotFoundException ex) {
-                ClassLoader l2 = Thread.currentThread().getContextClassLoader();
-                if (primary == l2) throw ex; // there's no point in trying this twice.
-                return l2.loadClass(name);
+                final ClassLoader secondary
+                        = Thread.currentThread().getContextClassLoader();
+                if (primary == secondary) throw ex; // there's no point in trying this twice.
+                return secondary.loadClass(name);
             }
         } catch (final ClassNotFoundException ex2) {
             throw new ServiceConfigurationError(ex2.toString(), ex2);
