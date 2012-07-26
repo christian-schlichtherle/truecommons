@@ -17,6 +17,21 @@ import org.scalatest.prop.PropertyChecks
 class UnifiedClassLoaderSpec
 extends WordSpec with ShouldMatchers with PropertyChecks {
 
+  abstract class TestClassLoader extends ClassLoader {
+    final override def getResources(name: String) =
+      Collections.enumeration(Collections.singleton(getResource(name)))
+  }
+  val file = new TestClassLoader {
+    override def getResource(name: String) = new URL("file:/" + name)
+    override def loadClass(name: String, resolve: Boolean) = classOf[Integer]
+    override def toString = "class loader for file scheme"
+  }
+  val http = new TestClassLoader {
+    override def getResource(name: String) = new URL("http:/" + name)
+    override def loadClass(name: String, resolve: Boolean) = classOf[String]
+    override def toString = "class loader for http scheme"
+  }
+
   "A unified class loader" when {
     "resolving two class loaders" should {
       "always return the child class loader" in {
@@ -29,30 +44,22 @@ extends WordSpec with ShouldMatchers with PropertyChecks {
       }
 
       "otherwise return a new unified class loader upon each call" in {
-        val primary = new ClassLoader { }
-        val secondary = new ClassLoader { }
-        val loader1 = UnifiedClassLoader resolve (primary, secondary)
-        loader1.isInstanceOf[UnifiedClassLoader] should be (true)
-        val loader2 = UnifiedClassLoader resolve (primary, secondary)
-        loader2.isInstanceOf[UnifiedClassLoader] should be (true)
-        loader2 should not be theSameInstanceAs (loader1)
+        val table = Table(
+          ("primary", "secondary"),
+          (file, http),
+          (http, file)
+        )
+        forAll (table) { (primary, secondary) =>
+          val loader1 = UnifiedClassLoader resolve (primary, secondary)
+          loader1.isInstanceOf[UnifiedClassLoader] should be (true)
+          val loader2 = UnifiedClassLoader resolve (primary, secondary)
+          loader2.isInstanceOf[UnifiedClassLoader] should be (true)
+          loader2 should not be theSameInstanceAs (loader1)
+        }
       }
     }
 
     "loading resources" should {
-      abstract class TestClassLoader extends ClassLoader {
-        final override def getResources(name: String) =
-          Collections.enumeration(Collections.singleton(getResource(name)))
-      }
-      val file = new TestClassLoader {
-        override def getResource(name: String) = new URL("file:/" + name)
-        override def findClass(name: String) = classOf[Integer]
-      }
-      val http = new TestClassLoader {
-        override def getResource(name: String) = new URL("http:/" + name)
-        override def findClass(name: String) = classOf[String]
-      }
-
       "return the URL provided by the primary class loader" in {
         val table = Table(
           ("primary", "secondary", "resource"),
@@ -88,7 +95,8 @@ extends WordSpec with ShouldMatchers with PropertyChecks {
         )
         forAll (table) { (primary, secondary, clazz) =>
           val loader = UnifiedClassLoader resolve (primary, secondary)
-          loader loadClass "this.is.an.unknown.ClassName" should be theSameInstanceAs(clazz)
+          loader loadClass "this.is.an.unknown.ClassName" should
+          be theSameInstanceAs(clazz)
         }
       }
     }
