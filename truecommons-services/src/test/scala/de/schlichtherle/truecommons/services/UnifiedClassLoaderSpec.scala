@@ -23,12 +23,12 @@ extends WordSpec with ShouldMatchers with PropertyChecks {
   }
   val file = new TestClassLoader {
     override def getResource(name: String) = new URL("file:/" + name)
-    override def loadClass(name: String, resolve: Boolean) = classOf[Integer]
+    override def loadClass(name: String, resolve: Boolean) = classOf[java.lang.Integer]
     override def toString = "class loader for file scheme"
   }
   val http = new TestClassLoader {
     override def getResource(name: String) = new URL("http:/" + name)
-    override def loadClass(name: String, resolve: Boolean) = classOf[String]
+    override def loadClass(name: String, resolve: Boolean) = classOf[java.lang.String]
     override def toString = "class loader for http scheme"
   }
 
@@ -90,8 +90,8 @@ extends WordSpec with ShouldMatchers with PropertyChecks {
       "return any class loaded by the primary class loader" in {
         val table = Table(
           ("primary", "secondary", "clazz"),
-          (file, http, classOf[Integer]),
-          (http, file, classOf[String])
+          (file, http, classOf[java.lang.Integer]),
+          (http, file, classOf[java.lang.String])
         )
         forAll (table) { (primary, secondary, clazz) =>
           val loader = UnifiedClassLoader resolve (primary, secondary)
