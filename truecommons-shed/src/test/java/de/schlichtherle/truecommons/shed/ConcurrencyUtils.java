@@ -17,15 +17,15 @@ public class ConcurrencyUtils {
      * The number of threads for doing CPU intensive tasks considering 0%
      * blocking factor.
      */
-    public static final int
-            NUM_CPU_THREADS = Runtime.getRuntime().availableProcessors();
+    public static final int NUM_CPU_THREADS =
+            Runtime.getRuntime().availableProcessors();
 
     /**
      * The number of threads for doing I/O intensive tasks considering 90%
      * blocking factor.
      */
-    public static final int
-            NUM_IO_THREADS = 10 * NUM_CPU_THREADS;
+    public static final int NUM_IO_THREADS =
+            10 * NUM_CPU_THREADS;
 
     private ConcurrencyUtils() { }
 
