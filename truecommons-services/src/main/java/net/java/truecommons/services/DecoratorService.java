@@ -16,7 +16,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * <pre>{@code
  * package com.company.spec;
  * 
- * import de.schlichtherle.truecommons.services.DecoratorService;
+ * import net.java.truecommons.services.DecoratorService;
  * 
  * public abstract class StringDecorator
  * extends DecoratorService<StringBuilder> {
@@ -57,7 +57,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * <pre>{@code
  * package com.company.client;
  * 
- * import de.schlichtherle.truecommons.services.Locator;
+ * import net.java.truecommons.services.Locator;
  * import com.company.spec.StringContainer;
  * import com.company.spec.StringDecorator;
  * 

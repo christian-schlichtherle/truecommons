@@ -16,7 +16,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * <pre>{@code
  * package com.company.spec;
  * 
- * import de.schlichtherle.truecommons.services.ModifierService;
+ * import net.java.truecommons.services.ModifierService;
  * 
  * public abstract class StringBuilderModifier
  * extends ModifierService<StringBuilder> {
@@ -57,7 +57,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * <pre>{@code
  * package com.company.client;
  * 
- * import de.schlichtherle.truecommons.services.Locator;
+ * import net.java.truecommons.services.Locator;
  * import com.company.spec.StringBuilderFactory;
  * import com.company.spec.StringBuilderModifier;
  * 

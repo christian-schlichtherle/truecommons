@@ -16,7 +16,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * <pre>{@code
  * package com.company.spec;
  * 
- * import de.schlichtherle.truecommons.services.FactoryService;
+ * import net.java.truecommons.services.FactoryService;
  * 
  * public abstract class StringBuilderFactory
  * extends FactoryService<StringBuilder> {
@@ -54,7 +54,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * <pre>{@code
  * package com.company.client;
  * 
- * import de.schlichtherle.truecommons.services.Locator;
+ * import net.java.truecommons.services.Locator;
  * import com.company.spec.StringBuilderFactory;
  * 
  * public class Main {
