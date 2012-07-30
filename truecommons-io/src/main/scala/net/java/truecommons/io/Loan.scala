@@ -12,7 +12,7 @@ import javax.annotation.concurrent._
   * 
   * When used like this
   * {{{
-  * import de.schlichtherle.commons.io.Loan
+  * import net.java.truecommons.io.Loan
   * val out: OutputStream = ...
   * Loan (new PrintWriter(out)) { w: PrintWriter => w.println("Hello world!") }
   * }}}
@@ -70,7 +70,7 @@ final class Loan[A <: AutoCloseable](resource: A) {
   * 
   * When used like this
   * {{{
-  * import de.schlichtherle.commons.io.Loan._
+  * import net.java.truecommons.io.Loan._
   * val out: OutputStream = ...
   * loan (new PrintWriter(out)) to { w: PrintWriter => w.println("Hello world!") }
   * }}}
