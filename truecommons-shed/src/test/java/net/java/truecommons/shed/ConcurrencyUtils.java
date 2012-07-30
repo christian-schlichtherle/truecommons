@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import net.java.truecommons.shed.SuppressedExceptionBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;

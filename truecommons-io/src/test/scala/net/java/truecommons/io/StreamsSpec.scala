@@ -16,6 +16,9 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import scala.util._
 
+/**
+  * @author Christian Schlichtherle
+  */
 @RunWith(classOf[JUnitRunner])
 class StreamsSpec extends WordSpec with ShouldMatchers with MockitoSugar {
   import StreamsSpec._

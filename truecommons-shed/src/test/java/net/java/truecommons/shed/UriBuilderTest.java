@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import net.java.truecommons.shed.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 import static org.junit.Assert.*;

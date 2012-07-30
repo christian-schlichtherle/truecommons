@@ -4,8 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import net.java.truecommons.shed.UriEncoder;
-import net.java.truecommons.shed.BitField;
 import net.java.truecommons.shed.UriEncoder.Encoding;
 import static net.java.truecommons.shed.UriEncoder.Encoding.*;
 import static org.junit.Assert.assertEquals;

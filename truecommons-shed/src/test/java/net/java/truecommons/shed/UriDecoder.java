@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import net.java.truecommons.shed.QuotedUriSyntaxException;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;

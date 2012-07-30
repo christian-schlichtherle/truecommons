@@ -14,6 +14,9 @@ import org.scalatest.matchers._
 import org.scalatest.mock._
 import scala.util._
 
+/**
+  * @author Christian Schlichtherle
+  */
 @RunWith(classOf[JUnitRunner])
 class ByteBufferChannelSpec
 extends WordSpec with ShouldMatchers with BeforeAndAfter with MockitoSugar {

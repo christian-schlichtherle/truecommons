@@ -10,6 +10,9 @@ import org.scalatest._
 import org.scalatest.junit._
 import org.scalatest.matchers._
 
+/**
+  * @author Christian Schlichtherle
+  */
 @RunWith(classOf[JUnitRunner])
 class LocatorSpec extends WordSpec with ShouldMatchers {
 

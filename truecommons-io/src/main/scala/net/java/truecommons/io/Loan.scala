@@ -29,6 +29,7 @@ import javax.annotation.concurrent._
   *
   * @param resource the nullable resource to close upon a call to `apply`.
   * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-14.html#jls-14.20.3.1">The Java Language Specification: Java SE 7 Edition: 14.20.3.1 Basic try-with-resources</a>
+  * @author Christian Schlichtherle
   */
 @Immutable
 final class Loan[A <: AutoCloseable](resource: A) {
@@ -86,6 +87,7 @@ final class Loan[A <: AutoCloseable](resource: A) {
   * this object.
   * 
   * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-14.html#jls-14.20.3.1">The Java Language Specification: Java SE 7 Edition: 14.20.3.1 Basic try-with-resources</a>
+  * @author Christian Schlichtherle
   */
 object Loan {
   /** Constructs a new loan.

@@ -4,9 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import net.java.truecommons.shed.PriorityExceptionBuilder;
-import net.java.truecommons.shed.SuppressedExceptionBuilder;
-
 /**
  * @author Christian Schlichtherle
  */
