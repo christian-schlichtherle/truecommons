@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Copyright (C) 2012 Schlichtherle IT Services.
+  - All rights reserved. Use is subject to license terms.
+  -->
+<project    xmlns="http://maven.apache.org/DECORATION/1.1.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd">
+    <publishDate position="bottom"/>
+    <skin>
+        <groupId>de.schlichtherle.truecommons</groupId>
+        <artifactId>truecommons-skin</artifactId>
+        <version>1.0</version>
+    </skin>
+    <body>
+        <breadcrumbs>
+            <item name="Commons" href="index.html"/>
+        </breadcrumbs>
+        <menu name="Reports" ref="reports" inherit="bottom"/>
+        <menu name="Sub-Modules" ref="modules" inherit="bottom"/>
+        <menu name="Parent Module" ref="parent" inherit="bottom"/>
+    </body>
+</project>
