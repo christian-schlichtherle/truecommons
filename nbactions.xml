@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Copyright (C) 2012 Schlichtherle IT Services.
+  - All rights reserved. Use is subject to license terms.
+  --><actions>
+    <action>
+        <actionName>CUSTOM-site site:stage</actionName>
+        <displayName>site site:stage</displayName>
+        <goals>
+            <goal>site</goal>
+            <goal>site:stage</goal>
+        </goals>
+    </action>
+    <action>
+        <actionName>CUSTOM-release:prepare</actionName>
+        <displayName>release:prepare</displayName>
+        <goals>
+            <goal>release:prepare</goal>
+        </goals>
+        <properties>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+        </properties>
+    </action>
+    <action>
+        <actionName>CUSTOM-release:perform</actionName>
+        <displayName>release:perform</displayName>
+        <goals>
+            <goal>release:perform</goal>
+        </goals>
+    </action>
+    <action>
+        <actionName>CUSTOM-release:rollback</actionName>
+        <displayName>release:rollback</displayName>
+        <goals>
+            <goal>release:rollback</goal>
+        </goals>
+    </action>
+    <action>
+        <actionName>CUSTOM-release:clean</actionName>
+        <displayName>release:clean</displayName>
+        <goals>
+            <goal>release:clean</goal>
+        </goals>
+    </action>
+    <action>
+            <actionName>CUSTOM-help:effective-pom</actionName>
+            <displayName>help:effective-pom</displayName>
+            <recursive>false</recursive>
+            <goals>
+                <goal>help:effective-pom</goal>
+            </goals>
+        </action>
+</actions>

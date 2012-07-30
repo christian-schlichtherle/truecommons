@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Copyright (C) 2012 Schlichtherle IT Services.
+  - All rights reserved. Use is subject to license terms.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>de.schlichtherle</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>21</version>
+    </parent>
+
+    <groupId>de.schlichtherle.truecommons</groupId>
+    <artifactId>truecommons</artifactId>
+    <version>2.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>TrueCommons</name>
+    <description>Common components for True* open source projects.</description>
+    <url>http://truecommons.java.net</url>
+    <inceptionYear>2012</inceptionYear>
+    <licenses>
+        <license>
+            <name>Eclipse Public License, Version 1.0</name>
+            <url>http://www.eclipse.org/legal/epl-v10.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <!--mailingLists>
+        <mailingList>
+            <name>Announce Mailing List</name>
+            <subscribe>mailto:sympa@truecommons.java.net?subject=subscribe%20announce</subscribe>
+            <unsubscribe>mailto:sympa@truecommons.java.net?subject=unsubscribe%20announce</unsubscribe>
+            <archive>http://java.net/projects/truecommons/lists/announce/archive</archive>
+        </mailingList>
+        <mailingList>
+            <name>Users Mailing List</name>
+            <subscribe>mailto:sympa@truecommons.java.net?subject=subscribe%20users</subscribe>
+            <unsubscribe>mailto:sympa@truecommons.java.net?subject=unsubscribe%20users</unsubscribe>
+            <post>users@truecommon.java.net</post>
+            <archive>http://java.net/projects/truecommons/lists/users/archive</archive>
+        </mailingList>
+        <mailingList>
+            <name>Developers Mailing List</name>
+            <subscribe>mailto:sympa@truecommons.java.net?subject=subscribe%20dev</subscribe>
+            <unsubscribe>mailto:sympa@truecommons.java.net?subject=unsubscribe%20dev</unsubscribe>
+            <post>dev@truecommons.java.net</post>
+            <archive>http://java.net/projects/truecommons/lists/dev/archive</archive>
+        </mailingList>
+    </mailingLists-->
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://java.net/jira/browse/TRUECOMMONS</url>
+    </issueManagement>
+    <scm>
+        <connection>scm:hg:https://hg.java.net/hg/truecommons~v1</connection>
+        <developerConnection>scm:hg:ssh://hg.java.net/truecommons~v1</developerConnection>
+        <url>http://java.net/projects/truecommons/sources/skin/show</url>
+      <tag>HEAD</tag>
+  </scm>
+
+    <properties>
+        <netbeans.hint.jdkPlatform>JDK_1.7</netbeans.hint.jdkPlatform>
+    </properties>
+
+    <modules>
+        <module>truecommons-io</module>
+        <module>truecommons-logging</module>
+        <module>truecommons-services</module>
+        <module>truecommons-shed</module>
+        <module>truecommons-skin</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-io</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-io</artifactId>
+                <type>test-jar</type>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-logging</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-services</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>net.alchim31.maven</groupId>
+                    <artifactId>scala-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>compile</goal>
+                                <goal>testCompile</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <args>
+                            <arg>-deprecation</arg>
+                        </args>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <distributionManagement>
+        <site>
+            <id>truecommons-website</id>
+            <name>Commons Website</name>
+            <url>file:/C:/Users/christian/Documents/Schlichtherle_IT_Services/Projekte/truecommons~web</url>
+        </site>
+    </distributionManagement>
+</project>
