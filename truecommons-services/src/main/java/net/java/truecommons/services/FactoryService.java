@@ -13,6 +13,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * specifies the type parameter {@code P}.
  * In the following example the type parameter is specified as
  * {@link StringBuilder}:
+ * <p>
  * <pre>{@code
  * package com.company.spec;
  * 
