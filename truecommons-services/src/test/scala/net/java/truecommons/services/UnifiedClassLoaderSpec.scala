@@ -13,6 +13,9 @@ import org.scalatest.junit._
 import org.scalatest.matchers._
 import org.scalatest.prop.PropertyChecks
 
+/**
+  * @author Christian Schlichtherle
+  */
 @RunWith(classOf[JUnitRunner])
 class UnifiedClassLoaderSpec
 extends WordSpec with ShouldMatchers with PropertyChecks {

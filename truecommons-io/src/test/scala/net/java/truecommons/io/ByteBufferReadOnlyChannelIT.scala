@@ -4,12 +4,12 @@
  */
 package net.java.truecommons.io
 
-/**
-  * @author Christian Schlichtherle
-  */
 import java.nio._
 import java.nio.file._
 
+/**
+  * @author Christian Schlichtherle
+  */
 class ByteBufferReadOnlyChannelIT extends ReadOnlyChannelITSuite {
   override def newChannel(path: Path) =
     new ReadOnlyChannel(new ByteBufferChannel(ByteBuffer.wrap(Files.readAllBytes(path))))

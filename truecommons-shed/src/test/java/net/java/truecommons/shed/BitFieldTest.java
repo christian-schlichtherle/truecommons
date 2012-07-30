@@ -4,8 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import net.java.truecommons.shed.BitField;
-import static net.java.truecommons.shed.BitFieldTest.Dummy.*;
 import java.beans.ExceptionListener;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
@@ -13,6 +11,7 @@ import java.io.*;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Arrays;
 import java.util.Iterator;
+import static net.java.truecommons.shed.BitFieldTest.Dummy.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import org.junit.Test;

@@ -4,11 +4,9 @@
  */
 package net.java.truecommons.shed;
 
-import net.java.truecommons.shed.PathSplitter;
-import net.java.truecommons.shed.Paths;
-import static net.java.truecommons.shed.Paths.cutTrailingSeparators;
 import java.io.File;
 import java.net.URI;
+import static net.java.truecommons.shed.Paths.cutTrailingSeparators;
 import static org.junit.Assert.*;
 import org.junit.Test;
 

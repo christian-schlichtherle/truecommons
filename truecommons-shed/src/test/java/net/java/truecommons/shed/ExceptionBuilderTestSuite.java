@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import net.java.truecommons.shed.ExceptionBuilder;
 import java.util.Objects;
 import static org.junit.Assert.*;
 import org.junit.Before;

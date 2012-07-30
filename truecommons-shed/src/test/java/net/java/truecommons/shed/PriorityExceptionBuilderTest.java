@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import net.java.truecommons.shed.PriorityExceptionBuilder;
 import java.util.Comparator;
 import static org.junit.Assert.*;
 import org.junit.Test;
