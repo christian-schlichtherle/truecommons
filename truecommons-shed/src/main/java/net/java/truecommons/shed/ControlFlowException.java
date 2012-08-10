@@ -24,17 +24,17 @@ public class ControlFlowException extends Error {
     private static final boolean TRACEABLE =
             Boolean.getBoolean(TRACEABLE_PROPERTY_KEY);
 
-    public ControlFlowException() { this(null, false); }
+    public ControlFlowException() { this(null, true); }
 
     public ControlFlowException(@CheckForNull Throwable cause) {
-        this(cause, false);
+        this(cause, true);
     }
 
     public ControlFlowException(boolean enableSuppression) {
         this(null, enableSuppression);
     }
 
-    public ControlFlowException(final @CheckForNull Throwable cause, boolean enableSuppression) {
+    public ControlFlowException(@CheckForNull Throwable cause, boolean enableSuppression) {
         super(null == cause ? null : cause.toString(), cause, enableSuppression, TRACEABLE);
     }
 
