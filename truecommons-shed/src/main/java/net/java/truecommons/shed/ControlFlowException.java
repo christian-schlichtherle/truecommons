@@ -24,10 +24,10 @@ public class ControlFlowException extends Error {
     private static final boolean TRACEABLE =
             Boolean.getBoolean(TRACEABLE_PROPERTY_KEY);
 
-    public ControlFlowException() { this(null); }
+    public ControlFlowException() { this(null, false); }
 
     public ControlFlowException(final @CheckForNull Throwable cause) {
-        this(null, false);
+        this(cause, false);
     }
 
     public ControlFlowException(boolean enableSuppression) {
