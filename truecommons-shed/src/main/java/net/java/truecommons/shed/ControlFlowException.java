@@ -26,7 +26,7 @@ public class ControlFlowException extends Error {
 
     public ControlFlowException() { this(null, false); }
 
-    public ControlFlowException(final @CheckForNull Throwable cause) {
+    public ControlFlowException(@CheckForNull Throwable cause) {
         this(cause, false);
     }
 
