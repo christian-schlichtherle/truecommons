@@ -82,19 +82,15 @@ public final class InheritableThreadLocalStack<T> {
         return element;
     }
 
-    /** @deprecated Since TrueCommons 1.0.2, use {@link #popIff} instead.*/
-    @Deprecated
-    public void popIf(final @CheckForNull T expected) { popIff(expected); }
-
     /**
      * Removes and returns the nullable top element on this stack
-     * if and only if its identical to the given element.
+     * if its identical to the given element.
      * 
      * @param  expected The expected top element on this stack.
      * @throws IllegalStateException If the given element is not the top
      *         element on this stack.
      */
-    public void popIff(final @CheckForNull T expected) {
+    public void popIf(final @CheckForNull T expected) {
         try {
             final @CheckForNull T got = pop();
             if (got != expected) {
