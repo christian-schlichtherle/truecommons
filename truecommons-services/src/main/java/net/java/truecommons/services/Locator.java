@@ -4,8 +4,6 @@
  */
 package net.java.truecommons.services;
 
-import net.java.truecommons.logging.BundledMessage;
-import net.java.truecommons.logging.LocalizedLogger;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,6 +11,8 @@ import java.util.LinkedList;
 import java.util.ServiceConfigurationError;
 import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.ThreadSafe;
+import net.java.truecommons.logging.BundledMessage;
+import net.java.truecommons.logging.LocalizedLogger;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
