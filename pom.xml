@@ -14,7 +14,7 @@
 
     <groupId>net.java.truecommons</groupId>
     <artifactId>truecommons</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>pom</packaging>
 
     <name>TrueCommons</name>
@@ -58,7 +58,7 @@
         <connection>scm:hg:https://hg.java.net/hg/truecommons~v1</connection>
         <developerConnection>scm:hg:ssh://hg.java.net/truecommons~v1</developerConnection>
         <url>http://java.net/projects/truecommons/sources/v1/show</url>
-        <tag>HEAD</tag>
+        <tag>truecommons-1.0.2</tag>
     </scm>
 
     <properties>
