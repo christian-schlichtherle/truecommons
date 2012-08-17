@@ -4,6 +4,8 @@
  */
 /**
  * Hosts small but useful tools and utilities that didn't fit anywhere else.
+ * 
+ * @author Christian Schlichtherle
  */
-@edu.umd.cs.findbugs.annotations.DefaultAnnotation(edu.umd.cs.findbugs.annotations.NonNull.class)
+@javax.annotation.Nonnull @javax.annotation.ParametersAreNonnullByDefault
 package net.java.truecommons.shed;
