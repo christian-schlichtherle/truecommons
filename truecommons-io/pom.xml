@@ -15,7 +15,7 @@
     <artifactId>truecommons-io</artifactId>
 
     <name>TrueCommons I/O</name>
-    <description>Common I/O components for True* open source projects.</description>
+    <description>Provides common I/O components.</description>
 
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
