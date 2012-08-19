@@ -1,6 +1,11 @@
+\.chg\..*$
+\.conflict\~$
+^\.idea/
+\.iml$
 \.orig$
 \.orig\..*$
-\.chg\..*$
 \.rej$
-\.conflict\~$
 glob:target/
+glob:*.lck
+glob:*.log
+glob:*.log.xml
