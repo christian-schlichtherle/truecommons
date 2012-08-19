@@ -9,8 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests {@link ExtensionSet}.
- *
  * @author Christian Schlichtherle
  */
 public final class ExtensionSetTest {
