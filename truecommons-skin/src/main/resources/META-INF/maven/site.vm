@@ -1,3 +1,5 @@
+## Doesn't work with Google Custom Search Element V2
+## <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 #macro(link $href $name $target $img $position $alt $border $width $height)
   #set($linkTitle = ' title="' + $name + '"')
@@ -415,20 +417,17 @@
 #macro(googleCustomSearch $searchId $headOrBody)
   #if($searchId && $searchId != "")
     #if($headOrBody.equalsIgnoreCase("head"))
-      <script src="http://www.google.com/jsapi" type="text/javascript"></script>
-      <script type="text/javascript"> 
-        google.load('search', '1');
-        google.setOnLoadCallback(function() {
-          var customSearchControl = new google.search.CustomSearchControl('$searchId.value');
-          customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
-          var options = new google.search.DrawOptions();
-          options.enableSearchboxOnly("http://www.google.com/cse?cx=003580521944097984334:0t01zxsxy6y");
-          customSearchControl.draw('cse-search-form', options);
-        }, true);
+      <script>
+        (function() {
+          var cx = '$searchId.value';
+          var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
+          gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+              '//www.google.com/cse/cse.js?cx=' + cx;
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gcse, s);
+        })();
       </script>
-      <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css"/>
     #elseif($headOrBody.equalsIgnoreCase("body"))
-      <div id="cse-search-form">[loading custom search engine...]</div>
+      <div id="gcse-search-form" class="gcse-searchbox-only"></div>
     #end
   #end
 #end
@@ -483,11 +482,11 @@
     <div id="banner">
       #banner($decoration.bannerLeft "bannerLeft")
       #banner($decoration.bannerRight "bannerRight")
+      #googleCustomSearch($googleCustomSearchId "body")
       <div class="clear"><hr/></div>
     </div>
     <div id="breadcrumbs">
       #publishDate("left" $decoration.publishDate $decoration.version)
-      #googleCustomSearch($googleCustomSearchId "body")
       <div class="xright">#links($decoration.body.links)#publishDate("right" $decoration.publishDate $decoration.version)</div>
       <div class="clear"><hr/></div>
     </div>

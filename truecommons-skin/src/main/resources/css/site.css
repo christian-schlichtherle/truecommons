@@ -7,7 +7,7 @@
     background-repeat: repeat-x;
     background-color: #d785a7;
     color: #fff;
-    padding: .66em;
+    padding: .7em;
     font-size: xx-large;
 }
 #banner img {
@@ -22,9 +22,14 @@
 }
 #bannerRight {
     font-size: .5em;
-    font-weight: normal;
     padding: 1em 0 0 1em;
     text-transform: uppercase;
+}
+#gcse-search-form {
+    position: absolute;
+    width: 300px;
+    padding: 0.2em 0.66em 0 0.66em;
+    right: 0;
 }
 #bodyColumn {
     margin-right: 0;
@@ -71,15 +76,6 @@
 }
 #contentBox dt {
     margin-top: 1em;
-}
-#cse-search-form {
-    margin-left: 10px;
-    float: right;
-    width: 300px;
-    text-align: right;
-}
-#cse-search-form * {
-    margin: 0;
 }
 #footer {
     padding: 3px 10px 3px 10px;
@@ -663,7 +659,7 @@ code, pre {
     font-family: Courier, Monospace;
 }
 div.clear{
-    clear:both;
+    clear: both;
     visibility: hidden;
 }
 div.clear hr{
