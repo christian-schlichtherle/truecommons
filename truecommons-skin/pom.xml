@@ -16,7 +16,7 @@
 
     <name>TrueCommons Skin</name>
     <description>
-        Custom Maven skin for True* open source projects.
+        Provides a custom Maven skin for True* open source projects.
         This skin is based on org.apache.maven.skins:maven-classic-skin:1.0 .
     </description>
 </project>
