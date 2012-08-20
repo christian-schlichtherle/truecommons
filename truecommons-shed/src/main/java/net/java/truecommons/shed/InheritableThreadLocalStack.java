@@ -87,7 +87,7 @@ public final class InheritableThreadLocalStack<T> {
             throw new NoSuchElementException();
         if (!Thread.currentThread().equals(node.get()))
             throw new NoSuchElementException();
-        nodes.set(node.previous);
+        nodes.set(node.previous); // may be null!
         return node.element;
     }
 
