@@ -3,7 +3,9 @@
   - Copyright (C) 2012 Schlichtherle IT Services.
   - All rights reserved. Use is subject to license terms.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project    xmlns="http://maven.apache.org/POM/4.0.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -12,7 +14,6 @@
         <version>7</version>
     </parent>
 
-    <groupId>net.java.truecommons</groupId>
     <artifactId>truecommons</artifactId>
     <version>1.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -73,7 +74,6 @@
         <module>truecommons-logging</module>
         <module>truecommons-services</module>
         <module>truecommons-shed</module>
-        <module>truecommons-skin</module>
     </modules>
 
     <dependencyManagement>
