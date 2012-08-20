@@ -6,6 +6,8 @@ package net.java.truecommons.services;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Enumeration;
 
 /**
@@ -22,7 +24,13 @@ final class UnifiedClassLoader extends ClassLoader {
             return primary;
         if (isChildOf(secondary, primary))
             return secondary;
-        return new UnifiedClassLoader(primary, secondary);
+        class NewUnifiedClassLoader implements PrivilegedAction<ClassLoader> {
+            @Override
+            public ClassLoader run() {
+                return new UnifiedClassLoader(primary, secondary);
+            }
+        }
+        return AccessController.doPrivileged(new NewUnifiedClassLoader());
     }
 
     private static boolean isChildOf(ClassLoader c, final ClassLoader r) {
