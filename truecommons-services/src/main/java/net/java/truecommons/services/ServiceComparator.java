@@ -4,6 +4,7 @@
  */
 package net.java.truecommons.services;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -11,7 +12,9 @@ import java.util.Comparator;
  * 
  * @author Christian Schlichtherle
  */
-final class ServiceComparator implements Comparator<Service> {
+final class ServiceComparator implements Comparator<Service>, Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Override
     public int compare(Service o1, Service o2) {
         return o1.getPriority() - o2.getPriority();
