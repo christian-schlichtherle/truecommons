@@ -93,7 +93,7 @@ public final class InheritableThreadLocalStack<T> {
 
     /**
      * Removes and returns the nullable top element on this stack
-     * if its identical to the given element.
+     * if it's identical to the given element.
      * 
      * @param  expected The expected top element on this stack.
      * @throws IllegalStateException If the given element is not the top
