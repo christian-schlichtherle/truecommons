@@ -12,7 +12,7 @@ import javax.inject.Provider;
  * Provider services are subject to service location by {@link Locator}s.
  * <p>
  * If multiple provider services are locatable on the class path at run
- * time, a vendor will select the provider service with the greatest
+ * time, a locator will select the provider service with the greatest
  * {@linkplain #getPriority() priority}.
  * <p>
  * Implementations should be thread-safe.
