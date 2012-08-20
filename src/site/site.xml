@@ -6,16 +6,29 @@
 <project    xmlns="http://maven.apache.org/DECORATION/1.1.0"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd">
-    <publishDate position="bottom"/>
+    <custom>
+        <googleCustomSearchId>003580521944097984334:wa7naljtaqa</googleCustomSearchId>
+        <sourceLineNumbersEnabled>false</sourceLineNumbersEnabled>
+    </custom>
+    <publishDate position="right"/>
+    <version position="right"/>
     <skin>
         <groupId>net.java.truecommons</groupId>
         <artifactId>truecommons-skin</artifactId>
-        <version>1.0</version>
+        <version>RELEASE</version>
     </skin>
     <body>
         <breadcrumbs>
-            <item name="Commons" href="index.html"/>
+            <item name="TrueCommons" href="index.html"/>
         </breadcrumbs>
+        <menu name="Documentation">
+            <item name="About" href="index.html"/>
+        </menu>
+        <menu name="External Resources">
+            <item name="Road Map" href="http://java.net/jira/browse/TRUECOMMONS#selectedTab=com.atlassian.jira.plugin.system.project:roadmap-panel"/>
+            <item name="Change Log" href="http://java.net/jira/browse/TRUECOMMONS#selectedTab=com.atlassian.jira.plugin.system.project:changelog-panel"/>
+            <item name="Developer Site" href="http://java.net/projects/truecommons"/>
+        </menu>
         <menu name="Reports" ref="reports" inherit="bottom"/>
         <menu name="Sub-Modules" ref="modules" inherit="bottom"/>
         <menu name="Parent Module" ref="parent" inherit="bottom"/>
