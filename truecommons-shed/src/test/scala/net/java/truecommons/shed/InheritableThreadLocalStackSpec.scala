@@ -5,6 +5,7 @@
 package net.java.truecommons.shed
 
 import java.util._
+import java.util.concurrent._
 import org.junit.runner._
 import org.scalatest._
 import org.scalatest.junit._
