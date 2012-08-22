@@ -32,7 +32,7 @@ extends WordSpec with ShouldMatchers with PropertyChecks {
     val t = new Thread(r)
     t start ()
     t join ()
-    if (null != ex) throw new AssertionError(ex)
+    if (null != ex) throw new ExecutionException(ex)
   }
 
   "An inheritable thread local stack" when {
