@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2005-2012 Schlichtherle IT Services.
+ * All rights reserved. Use is subject to license terms.
  */
 package net.java.truecommons.io;
 
@@ -26,7 +26,7 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
     //
 
     private PowerBuffer(final ByteBuffer bb) {
-        this.bb = bb;
+        this.bb = Objects.requireNonNull(bb);
     }
 
     public static PowerBuffer allocateDirect(int capacity) {
@@ -58,9 +58,7 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
      * 
      * @return The adapted byte buffer.
      */
-    public ByteBuffer buffer() {
-        return bb;
-    }
+    public ByteBuffer buffer() { return bb; }
 
     /**
      * Sets the byte order to little endian.
@@ -148,9 +146,7 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
      * 
      * @return The unsigned byte, cast to an integer.
      */
-    public int getUByte() {
-        return bb.get() & 0xff;
-    }
+    public int getUByte() { return bb.get() & 0xff; }
 
     /**
      * Reads an unsigned byte from the given position.
@@ -158,18 +154,14 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
      * @param  index the index position.
      * @return The unsigned byte, cast to an integer.
      */
-    public int getUByte(int index) {
-        return bb.get(index) & 0xff;
-    }
+    public int getUByte(int index) { return bb.get(index) & 0xff; }
 
     /**
      * Reads an unsigned short from the current position.
      * 
      * @return The unsigned short, cast to an integer.
      */
-    public int getUShort() {
-        return bb.getShort() & 0xffff;
-    }
+    public int getUShort() { return bb.getShort() & 0xffff; }
 
     /**
      * Reads an unsigned short from the given position.
@@ -177,18 +169,14 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
      * @param  index the index position.
      * @return The unsigned short, cast to an integer.
      */
-    public int getUShort(int index) {
-        return bb.getShort(index) & 0xffff;
-    }
+    public int getUShort(int index) { return bb.getShort(index) & 0xffff; }
 
     /**
      * Reads an unsigned int from the current position.
      * 
      * @return The unsigned int, cast to a long.
      */
-    public long getUInt() {
-        return bb.getInt() & 0xffff_ffffL;
-    }
+    public long getUInt() { return bb.getInt() & 0xffff_ffffL; }
 
     /**
      * Reads an unsigned int from the given position.
@@ -196,66 +184,58 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
      * @param  index the index position.
      * @return The unsigned int, cast to a long.
      */
-    public long getUInt(int index) {
-        return bb.getInt(index) & 0xffff_ffffL;
-    }
+    public long getUInt(int index) { return bb.getInt(index) & 0xffff_ffffL; }
 
     //
     // Plain ByteBuffer API.
     //
 
-    public final int capacity() {
-        return bb.capacity();
-    }
+    public int position() { return bb.position(); }
 
-    public final int position() {
-        return bb.position();
-    }
+    public int limit() { return bb.limit(); }
 
-    public final PowerBuffer position(int newPosition) {
+    public int capacity() { return bb.capacity(); }
+
+    public PowerBuffer position(int newPosition) {
         bb.position(newPosition);
         return this;
     }
 
-    public final int limit() {
-        return bb.limit();
-    }
-
-    public final PowerBuffer limit(int newLimit) {
+    public PowerBuffer limit(int newLimit) {
         bb.limit(newLimit);
         return this;
     }
 
-    public final PowerBuffer mark() {
+    public PowerBuffer mark() {
         bb.mark();
         return this;
     }
 
-    public final PowerBuffer reset() {
+    public PowerBuffer reset() {
         bb.reset();
         return this;
     }
 
-    public final PowerBuffer clear() {
+    public PowerBuffer clear() {
         bb.clear();
         return this;
     }
 
-    public final PowerBuffer flip() {
+    public PowerBuffer flip() {
         bb.flip();
         return this;
     }
 
-    public final PowerBuffer rewind() {
+    public PowerBuffer rewind() {
         bb.rewind();
         return this;
     }
 
-    public final int remaining() {
+    public int remaining() {
         return bb.remaining();
     }
 
-    public final boolean hasRemaining() {
+    public boolean hasRemaining() {
         return bb.hasRemaining();
     }
 
@@ -263,15 +243,15 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
         return bb.isReadOnly();
     }
 
-    public final boolean hasArray() {
+    public boolean hasArray() {
         return bb.hasArray();
     }
 
-    public final byte[] array() {
+    public byte[] array() {
         return bb.array();
     }
 
-    public final int arrayOffset() {
+    public int arrayOffset() {
         return bb.arrayOffset();
     }
 
@@ -314,7 +294,7 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
         return this;
     }
 
-    public final PowerBuffer get(byte[] dst) {
+    public PowerBuffer get(byte[] dst) {
         return get(dst, 0, dst.length);
     }
 
@@ -328,7 +308,7 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
         return this;
     }
 
-    public final PowerBuffer put(byte[] src) {
+    public PowerBuffer put(byte[] src) {
         return put(src, 0, src.length);
     }
 
@@ -339,16 +319,11 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
 
     @Override
     public String toString() {
-        return new StringBuilder()
-                .append(getClass().getName())
-                .append("[position=")
-                .append(position())
-                .append(", limit=")
-                .append(limit())
-                .append(", capacity=")
-                .append(capacity())
-                .append("]")
-                .toString();
+        return String.format("%s[position=%d, limit=%d, capacity=%d]",
+                getClass().getName(),
+                position(),
+                limit(),
+                capacity());
     }
 
     @Override
@@ -368,11 +343,11 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
                     && this.bb.equals(((PowerBuffer) that).bb);
     }
 
-    public final ByteOrder order() {
+    public ByteOrder order() {
         return bb.order();
     }
 
-    public final PowerBuffer order(ByteOrder order) {
+    public PowerBuffer order(ByteOrder order) {
         bb.order(order);
         return this;
     }
