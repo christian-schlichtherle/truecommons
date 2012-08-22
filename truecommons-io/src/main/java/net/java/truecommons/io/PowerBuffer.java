@@ -25,9 +25,7 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
     // Construction.
     //
 
-    private PowerBuffer(final ByteBuffer bb) {
-        this.bb = Objects.requireNonNull(bb);
-    }
+    private PowerBuffer(final ByteBuffer bb) { this.bb = bb; }
 
     public static PowerBuffer allocateDirect(int capacity) {
         return new PowerBuffer(ByteBuffer.allocateDirect(capacity));
