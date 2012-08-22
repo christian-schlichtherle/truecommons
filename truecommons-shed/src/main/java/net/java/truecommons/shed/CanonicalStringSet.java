@@ -39,35 +39,6 @@ import javax.annotation.concurrent.NotThreadSafe;
 @NotThreadSafe
 public class CanonicalStringSet extends AbstractSet<String> {
 
-    /**
-     * An idempotent function which maps an arbitrary object to its canonical
-     * string representation.
-     *
-     * @see <a href="http://en.wikipedia.org/wiki/Idempotence>Idempotence</a>
-     */
-    @SuppressWarnings("PublicInnerClass")
-    public interface Canonicalizer {
-
-        /**
-         * Returns the canonical string representation of {@code o} or
-         * {@code null} if the canonical string representation is undefined.
-         * This method is expected to be an idempotent function, i.e. it shall
-         * have no side effects and the result of calling the function for its
-         * result again at least compares {@link Object#equals} to its initial
-         * result.
-         * E.g. the method {@link Object#toString} is a simple implementation
-         * of this method because you could call it several times on its result:
-         * The first call results in a string and each subsequent call would
-         * return the same string again.
-         *
-         * @param  o The Object to map to its canonical string representation.
-         * @return The canonical string representation of {@code o} or
-         *         {@code null} if the canonical string representation is
-         *         undefined.
-         */
-        @CheckForNull String map(@Nullable Object o);
-    } // interface Canonicalizer
-
     /** The canonicalizer for strings. */
     private final Canonicalizer canonicalizer;
 
@@ -84,37 +55,27 @@ public class CanonicalStringSet extends AbstractSet<String> {
      *        strings.
      * @param separator The separator character to use for string lists.
      */
-    public CanonicalStringSet(  final Canonicalizer canonicalizer,
-                                final char separator) {
-        if (null == (this.canonicalizer = canonicalizer))
-            throw new NullPointerException();
+    public CanonicalStringSet(
+            final Canonicalizer canonicalizer,
+            final char separator) {
+        this.canonicalizer = Objects.requireNonNull(canonicalizer);
         this.separator = separator;
     }
 
     @Override
-    public boolean isEmpty() {
-        return set.isEmpty();
-    }
+    public boolean isEmpty() { return set.isEmpty(); }
 
     @Override
-    public int size() {
-        return set.size();
-    }
+    public int size() { return set.size(); }
 
     @Override
-    public Iterator<String> iterator() {
-        return set.iterator();
-    }
+    public Iterator<String> iterator() { return set.iterator(); }
 
     @Override
-    public Object[] toArray() {
-        return set.toArray();
-    }
+    public Object[] toArray() { return set.toArray(); }
 
     @Override
-    public <T> T[] toArray(T[] array) {
-        return set.toArray(array);
-    }
+    public <T> T[] toArray(T[] a) { return set.toArray(a); }
 
     /**
      * Returns the string list in canonical form for this canonical string set.
@@ -152,8 +113,8 @@ public class CanonicalStringSet extends AbstractSet<String> {
      * canonicalizes the given parameter before the operation is continued.
      */
     @Override
-    public boolean add(@Nullable String s) {
-        return set.add(canonicalizer.map(s));
+    public boolean add(@Nullable String e) {
+        return set.add(canonicalizer.map(e));
     }
 
     /**
@@ -285,6 +246,35 @@ public class CanonicalStringSet extends AbstractSet<String> {
         return changed;
     }
 
+    /**
+     * An idempotent function which maps an arbitrary object to its canonical
+     * string representation.
+     *
+     * @see <a href="http://en.wikipedia.org/wiki/Idempotence>Idempotence</a>
+     */
+    @SuppressWarnings("PublicInnerClass")
+    public interface Canonicalizer {
+
+        /**
+         * Returns the canonical string representation of {@code o} or
+         * {@code null} if the canonical string representation is undefined.
+         * This method is expected to be an idempotent function, i.e. it shall
+         * have no side effects and the result of calling the function for its
+         * result again at least compares {@link Object#equals} to its initial
+         * result.
+         * E.g. the method {@link Object#toString} is a simple implementation
+         * of this method because you could call it several times on its result:
+         * The first call results in a string and each subsequent call would
+         * return the same string again.
+         *
+         * @param  o The Object to map to its canonical string representation.
+         * @return The canonical string representation of {@code o} or
+         *         {@code null} if the canonical string representation is
+         *         undefined.
+         */
+        @CheckForNull String map(@Nullable Object o);
+    } // Canonicalizer
+
     private class CanonicalStringIterator implements Iterator<String> {
         private final StringTokenizer tokenizer;
         private @CheckForNull String canonical;
@@ -319,5 +309,5 @@ public class CanonicalStringSet extends AbstractSet<String> {
         public void remove() {
             throw new UnsupportedOperationException();
         }
-    } // class CanonicalStringIterator
+    } // CanonicalStringIterator
 }
