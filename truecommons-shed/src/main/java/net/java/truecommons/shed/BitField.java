@@ -237,6 +237,23 @@ implements Iterable<E>, Serializable {
     }
 
     /**
+     * Returns {@code true} if and only if the given object is another
+     * {@code BitField} and contains the same bits.
+     */
+    @Override
+    public boolean equals(@CheckForNull Object that) {
+        return this == that
+                || that instanceof BitField<?>
+                    && this.bits.equals(((BitField<?>) that).bits);
+    }
+
+    /** Returns a hash code which is consistent with {@link #equals}. */
+    @Override
+    public int hashCode() {
+        return bits.hashCode();
+    }
+
+    /**
      * Returns a concatenation of the names of the bits in this field,
      * separated by {@code "|"}.
      */
@@ -252,22 +269,5 @@ implements Iterable<E>, Serializable {
             s.append(bit);
         }
         return s.toString();
-    }
-
-    /**
-     * Returns {@code true} if and only if the given object is another
-     * {@code BitField} and contains the same bits.
-     */
-    @Override
-    public boolean equals(@CheckForNull Object that) {
-        return this == that
-                || that instanceof BitField<?>
-                    && bits.equals(((BitField<?>) that).bits);
-    }
-
-    /** Returns a hash code which is consistent with {@link #equals}. */
-    @Override
-    public int hashCode() {
-        return bits.hashCode();
     }
 }
