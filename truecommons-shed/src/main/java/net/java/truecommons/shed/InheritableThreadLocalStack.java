@@ -24,7 +24,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * <p>
  * <b>Disclaimer</b>: Although this classes internally uses an
  * {@link InheritableThreadLocal}, it does not leak memory in multi class
- * loader environments.
+ * loader environments when used appropriately.
  * 
  * @param  <T> The type of the elements in the inheritable thread local stack.
  * @author Christian Schlichtherle
