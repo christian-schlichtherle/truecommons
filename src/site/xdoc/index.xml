@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Copyright (C) 2005-2012 Schlichtherle IT Services.
+  - All rights reserved. Use is subject to license terms.
+  -->
+<document   xmlns="http://maven.apache.org/XDOC/2.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+    <properties>
+        <title>Home Page</title>
+        <author>Christian Schlichtherle</author>
+    </properties>
+    <body>
+        <section name="TODO">
+            <div style="width: 700px; height: 800px; overflow: hidden">
+                <a href="http://geekandpoke.typepad.com/geekandpoke/2010/01/documentation-is-key.html">
+                    <img src="http://geekandpoke.typepad.com/.a/6a00d8341d3df553ef0120a8377ca5970b-800wi" alt="Documentation Is Key" style="margin-top: -140px; margin-left: -100px"/>
+                </a>
+            </div>
+            <p> Well, there's some <a href="apidocs/inex.html">Javadoc</a> for your
+                rescue.
+            </p>
+        </section>
+    </body>
+</document>
