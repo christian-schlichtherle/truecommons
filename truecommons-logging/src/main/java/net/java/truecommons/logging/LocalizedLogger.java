@@ -29,8 +29,15 @@ public final class LocalizedLogger implements Logger {
     private final ResourceBundle bundle;
 
     public LocalizedLogger(final Class<?> clazz) {
-        logger = LoggerFactory.getLogger(clazz);
-        bundle = ResourceBundle.getBundle(clazz.getName());
+        this(   LoggerFactory.getLogger(clazz),
+                ResourceBundle.getBundle(clazz.getName()));
+    }
+
+    LocalizedLogger(final Logger logger, final ResourceBundle bundle) {
+        assert null != logger;
+        assert null != bundle;
+        this.logger = logger;
+        this.bundle = bundle;
     }
 
     @Override
@@ -46,31 +53,31 @@ public final class LocalizedLogger implements Logger {
     @Override
     public void trace(String msg) {
         if (logger.isTraceEnabled())
-            logger.trace(new BundledMessage(bundle, msg).toString());
+            logger.trace(bundle.getString(msg));
     }
 
     @Override
     public void trace(String format, Object arg) {
         if (logger.isTraceEnabled())
-            logger.trace(new BundledMessage(bundle, format, arg).toString());
+            logger.trace(new Formatter().format(bundle.getString(format), arg).toString());
     }
 
     @Override
     public void trace(String format, Object arg1, Object arg2) {
         if (logger.isTraceEnabled())
-            logger.trace(new BundledMessage(bundle, format, arg1, arg2).toString());
+            logger.trace(new Formatter().format(bundle.getString(format), arg1, arg2).toString());
     }
 
     @Override
     public void trace(String format, Object[] argArray) {
         if (logger.isTraceEnabled())
-            logger.trace(new BundledMessage(bundle, format, argArray).toString());
+            logger.trace(new Formatter().format(bundle.getString(format), argArray).toString());
     }
 
     @Override
     public void trace(String msg, Throwable t) {
         if (logger.isTraceEnabled())
-            logger.trace(new BundledMessage(bundle, msg).toString(), t);
+            logger.trace(bundle.getString(msg), t);
     }
 
     @Override
@@ -81,31 +88,31 @@ public final class LocalizedLogger implements Logger {
     @Override
     public void trace(Marker marker, String msg) {
         if (logger.isTraceEnabled(marker))
-            logger.trace(marker, new BundledMessage(bundle, msg).toString());
+            logger.trace(marker, bundle.getString(msg));
     }
 
     @Override
     public void trace(Marker marker, String format, Object arg) {
         if (logger.isTraceEnabled(marker))
-            logger.trace(marker, new BundledMessage(bundle, format, arg).toString());
+            logger.trace(marker, new Formatter().format(bundle.getString(format), arg).toString());
     }
 
     @Override
     public void trace(Marker marker, String format, Object arg1, Object arg2) {
         if (logger.isTraceEnabled(marker))
-            logger.trace(marker, new BundledMessage(bundle, format, arg1, arg2).toString());
+            logger.trace(marker, new Formatter().format(bundle.getString(format), arg1, arg2).toString());
     }
 
     @Override
     public void trace(Marker marker, String format, Object[] argArray) {
         if (logger.isTraceEnabled(marker))
-            logger.trace(marker, new BundledMessage(bundle, format, argArray).toString());
+            logger.trace(marker, new Formatter().format(bundle.getString(format), argArray).toString());
     }
 
     @Override
     public void trace(Marker marker, String msg, Throwable t) {
         if (logger.isTraceEnabled(marker))
-            logger.trace(marker, new BundledMessage(bundle, msg).toString(), t);
+            logger.trace(marker, bundle.getString(msg), t);
     }
 
     @Override
@@ -116,31 +123,31 @@ public final class LocalizedLogger implements Logger {
     @Override
     public void debug(String msg) {
         if (logger.isDebugEnabled())
-            logger.debug(new BundledMessage(bundle, msg).toString());
+            logger.debug(bundle.getString(msg));
     }
 
     @Override
     public void debug(String format, Object arg) {
         if (logger.isDebugEnabled())
-            logger.debug(new BundledMessage(bundle, format, arg).toString());
+            logger.debug(new Formatter().format(bundle.getString(format), arg).toString());
     }
 
     @Override
     public void debug(String format, Object arg1, Object arg2) {
         if (logger.isDebugEnabled())
-            logger.debug(new BundledMessage(bundle, format, arg1, arg2).toString());
+            logger.debug(new Formatter().format(bundle.getString(format), arg1, arg2).toString());
     }
 
     @Override
     public void debug(String format, Object[] argArray) {
         if (logger.isDebugEnabled())
-            logger.debug(new BundledMessage(bundle, format, argArray).toString());
+            logger.debug(new Formatter().format(bundle.getString(format), argArray).toString());
     }
 
     @Override
     public void debug(String msg, Throwable t) {
         if (logger.isDebugEnabled())
-            logger.debug(new BundledMessage(bundle, msg).toString(), t);
+            logger.debug(bundle.getString(msg), t);
     }
 
     @Override
@@ -151,31 +158,31 @@ public final class LocalizedLogger implements Logger {
     @Override
     public void debug(Marker marker, String msg) {
         if (logger.isDebugEnabled(marker))
-            logger.debug(marker, new BundledMessage(bundle, msg).toString());
+            logger.debug(marker, bundle.getString(msg));
     }
 
     @Override
     public void debug(Marker marker, String format, Object arg) {
         if (logger.isDebugEnabled(marker))
-            logger.debug(marker, new BundledMessage(bundle, format, arg).toString());
+            logger.debug(marker, new Formatter().format(bundle.getString(format), arg).toString());
     }
 
     @Override
     public void debug(Marker marker, String format, Object arg1, Object arg2) {
         if (logger.isDebugEnabled(marker))
-            logger.debug(marker, new BundledMessage(bundle, format, arg1, arg2).toString());
+            logger.debug(marker, new Formatter().format(bundle.getString(format), arg1, arg2).toString());
     }
 
     @Override
     public void debug(Marker marker, String format, Object[] argArray) {
         if (logger.isDebugEnabled(marker))
-            logger.debug(marker, new BundledMessage(bundle, format, argArray).toString());
+            logger.debug(marker, new Formatter().format(bundle.getString(format), argArray).toString());
     }
 
     @Override
     public void debug(Marker marker, String msg, Throwable t) {
         if (logger.isDebugEnabled(marker))
-            logger.debug(marker, new BundledMessage(bundle, msg).toString(), t);
+            logger.debug(marker, bundle.getString(msg), t);
     }
 
     @Override
@@ -186,31 +193,31 @@ public final class LocalizedLogger implements Logger {
     @Override
     public void info(String msg) {
         if (logger.isInfoEnabled())
-            logger.info(new BundledMessage(bundle, msg).toString());
+            logger.info(bundle.getString(msg));
     }
 
     @Override
     public void info(String format, Object arg) {
         if (logger.isInfoEnabled())
-            logger.info(new BundledMessage(bundle, format, arg).toString());
+            logger.info(new Formatter().format(bundle.getString(format), arg).toString());
     }
 
     @Override
     public void info(String format, Object arg1, Object arg2) {
         if (logger.isInfoEnabled())
-            logger.info(new BundledMessage(bundle, format, arg1, arg2).toString());
+            logger.info(new Formatter().format(bundle.getString(format), arg1, arg2).toString());
     }
 
     @Override
     public void info(String format, Object[] argArray) {
         if (logger.isInfoEnabled())
-            logger.info(new BundledMessage(bundle, format, argArray).toString());
+            logger.info(new Formatter().format(bundle.getString(format), argArray).toString());
     }
 
     @Override
     public void info(String msg, Throwable t) {
         if (logger.isInfoEnabled())
-            logger.info(new BundledMessage(bundle, msg).toString(), t);
+            logger.info(bundle.getString(msg), t);
     }
 
     @Override
@@ -221,31 +228,31 @@ public final class LocalizedLogger implements Logger {
     @Override
     public void info(Marker marker, String msg) {
         if (logger.isInfoEnabled(marker))
-            logger.info(marker, new BundledMessage(bundle, msg).toString());
+            logger.info(marker, bundle.getString(msg));
     }
 
     @Override
     public void info(Marker marker, String format, Object arg) {
         if (logger.isInfoEnabled(marker))
-            logger.info(marker, new BundledMessage(bundle, format, arg).toString());
+            logger.info(marker, new Formatter().format(bundle.getString(format), arg).toString());
     }
 
     @Override
     public void info(Marker marker, String format, Object arg1, Object arg2) {
         if (logger.isInfoEnabled(marker))
-            logger.info(marker, new BundledMessage(bundle, format, arg1, arg2).toString());
+            logger.info(marker, new Formatter().format(bundle.getString(format), arg1, arg2).toString());
     }
 
     @Override
     public void info(Marker marker, String format, Object[] argArray) {
         if (logger.isInfoEnabled(marker))
-            logger.info(marker, new BundledMessage(bundle, format, argArray).toString());
+            logger.info(marker, new Formatter().format(bundle.getString(format), argArray).toString());
     }
 
     @Override
     public void info(Marker marker, String msg, Throwable t) {
         if (logger.isInfoEnabled(marker))
-            logger.info(marker, new BundledMessage(bundle, msg).toString(), t);
+            logger.info(marker, bundle.getString(msg), t);
     }
 
     @Override
@@ -256,31 +263,31 @@ public final class LocalizedLogger implements Logger {
     @Override
     public void warn(String msg) {
         if (logger.isWarnEnabled())
-            logger.warn(new BundledMessage(bundle, msg).toString());
+            logger.warn(bundle.getString(msg));
     }
 
     @Override
     public void warn(String format, Object arg) {
         if (logger.isWarnEnabled())
-            logger.warn(new BundledMessage(bundle, format, arg).toString());
+            logger.warn(new Formatter().format(bundle.getString(format), arg).toString());
     }
 
     @Override
     public void warn(String format, Object[] argArray) {
         if (logger.isWarnEnabled())
-            logger.warn(new BundledMessage(bundle, format, argArray).toString());
+            logger.warn(new Formatter().format(bundle.getString(format), argArray).toString());
     }
 
     @Override
     public void warn(String format, Object arg1, Object arg2) {
         if (logger.isWarnEnabled())
-            logger.warn(new BundledMessage(bundle, format, arg1, arg2).toString());
+            logger.warn(new Formatter().format(bundle.getString(format), arg1, arg2).toString());
     }
 
     @Override
     public void warn(String msg, Throwable t) {
         if (logger.isWarnEnabled())
-            logger.warn(new BundledMessage(bundle, msg).toString(), t);
+            logger.warn(bundle.getString(msg), t);
     }
 
     @Override
@@ -291,31 +298,31 @@ public final class LocalizedLogger implements Logger {
     @Override
     public void warn(Marker marker, String msg) {
         if (logger.isWarnEnabled(marker))
-            logger.warn(marker, new BundledMessage(bundle, msg).toString());
+            logger.warn(marker, bundle.getString(msg));
     }
 
     @Override
     public void warn(Marker marker, String format, Object arg) {
         if (logger.isWarnEnabled(marker))
-            logger.warn(marker, new BundledMessage(bundle, format, arg).toString());
+            logger.warn(marker, new Formatter().format(bundle.getString(format), arg).toString());
     }
 
     @Override
     public void warn(Marker marker, String format, Object arg1, Object arg2) {
         if (logger.isWarnEnabled(marker))
-            logger.warn(marker, new BundledMessage(bundle, format, arg1, arg2).toString());
+            logger.warn(marker, new Formatter().format(bundle.getString(format), arg1, arg2).toString());
     }
 
     @Override
     public void warn(Marker marker, String format, Object[] argArray) {
         if (logger.isWarnEnabled(marker))
-            logger.warn(marker, new BundledMessage(bundle, format, argArray).toString());
+            logger.warn(marker, new Formatter().format(bundle.getString(format), argArray).toString());
     }
 
     @Override
     public void warn(Marker marker, String msg, Throwable t) {
         if (logger.isWarnEnabled(marker))
-            logger.warn(marker, new BundledMessage(bundle, msg).toString(), t);
+            logger.warn(marker, bundle.getString(msg), t);
     }
 
     @Override
@@ -326,31 +333,31 @@ public final class LocalizedLogger implements Logger {
     @Override
     public void error(String msg) {
         if (logger.isErrorEnabled())
-            logger.error(new BundledMessage(bundle, msg).toString());
+            logger.error(bundle.getString(msg));
     }
 
     @Override
     public void error(String format, Object arg) {
         if (logger.isErrorEnabled())
-            logger.error(new BundledMessage(bundle, format, arg).toString());
+            logger.error(new Formatter().format(bundle.getString(format), arg).toString());
     }
 
     @Override
     public void error(String format, Object arg1, Object arg2) {
         if (logger.isErrorEnabled())
-            logger.error(new BundledMessage(bundle, format, arg1, arg2).toString());
+            logger.error(new Formatter().format(bundle.getString(format), arg1, arg2).toString());
     }
 
     @Override
     public void error(String format, Object[] argArray) {
         if (logger.isErrorEnabled())
-            logger.error(new BundledMessage(bundle, format, argArray).toString());
+            logger.error(new Formatter().format(bundle.getString(format), argArray).toString());
     }
 
     @Override
     public void error(String msg, Throwable t) {
         if (logger.isErrorEnabled())
-            logger.error(new BundledMessage(bundle, msg).toString(), t);
+            logger.error(bundle.getString(msg), t);
     }
 
     @Override
@@ -361,30 +368,30 @@ public final class LocalizedLogger implements Logger {
     @Override
     public void error(Marker marker, String msg) {
         if (logger.isErrorEnabled(marker))
-            logger.error(marker, new BundledMessage(bundle, msg).toString());
+            logger.error(marker, bundle.getString(msg));
     }
 
     @Override
     public void error(Marker marker, String format, Object arg) {
         if (logger.isErrorEnabled(marker))
-            logger.error(marker, new BundledMessage(bundle, format, arg).toString());
+            logger.error(marker, new Formatter().format(bundle.getString(format), arg).toString());
     }
 
     @Override
     public void error(Marker marker, String format, Object arg1, Object arg2) {
         if (logger.isErrorEnabled(marker))
-            logger.error(marker, new BundledMessage(bundle, format, arg1, arg2).toString());
+            logger.error(marker, new Formatter().format(bundle.getString(format), arg1, arg2).toString());
     }
 
     @Override
     public void error(Marker marker, String format, Object[] argArray) {
         if (logger.isErrorEnabled(marker))
-            logger.error(marker, new BundledMessage(bundle, format, argArray).toString());
+            logger.error(marker, new Formatter().format(bundle.getString(format), argArray).toString());
     }
 
     @Override
     public void error(Marker marker, String msg, Throwable t) {
         if (logger.isErrorEnabled(marker))
-            logger.error(marker, new BundledMessage(bundle, msg).toString(), t);
+            logger.error(marker, bundle.getString(msg), t);
     }
 }
