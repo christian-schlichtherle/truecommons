@@ -7,6 +7,7 @@ package net.java.truecommons.shed;
 /**
  * A generic filter interface.
  * 
+ * @param  <T> The type of the elements to filter.
  * @since  TrueCommons 1.0.11
  * @author Christian Schlichtherle
  */
