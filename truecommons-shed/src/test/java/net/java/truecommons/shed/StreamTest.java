@@ -25,7 +25,7 @@ public class StreamTest {
 
     private class TestContainer {
         TestStream stream() { return new TestStream(); }
-    } // Container
+    } // TestContainer
 
     private class TestStream implements Stream<Object> {
         @Override
