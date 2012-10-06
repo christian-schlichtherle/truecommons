@@ -163,7 +163,7 @@
         <site>
             <id>truecommons-website</id>
             <name>Commons Website</name>
-            <url>file:/C:/Users/christian/Documents/Schlichtherle_IT_Services/Projekte/truecommons~web</url>
+            <url>file:/Users/christian/Projects/truecommons~web</url>
         </site>
     </distributionManagement>
 </project>
