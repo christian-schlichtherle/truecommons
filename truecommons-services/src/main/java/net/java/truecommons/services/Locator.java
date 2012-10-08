@@ -21,7 +21,7 @@ import org.slf4j.MarkerFactory;
  * Creates containers or factories of products with some applied decorators.
  * Resolving service instances is done in several steps:
  * <p>
- * First, the name of a given <em>provider</em> service class is used as the
+ * First, the name of a given <i>provider</i> service class is used as the
  * key string to lookup a {@link System#getProperty system property}.
  * If this yields a value then it's supposed to name a class which gets loaded
  * and instantiated by calling its public no-argument constructor.
@@ -38,7 +38,7 @@ import org.slf4j.MarkerFactory;
  * Only the service instance with the highest priority is kept for future use.
  * <p>
  * Next, the class is searched again for any resource files with the name
- * {@code "META-INF/services/"} plus the name of a given <em>decorator</em>
+ * {@code "META-INF/services/"} plus the name of the given <i>function</i>
  * service class.
  * If this yields some results, the classes with the names contained in these
  * files get loaded and instantiated by calling their public no-argument
@@ -48,7 +48,7 @@ import org.slf4j.MarkerFactory;
  * <p>
  * Finally, depending on the requesting method either a container or a factory
  * gets created which will use the located provider service instance and the
- * decorator service instances to obtain a product and decorate it in order.
+ * function service instances to obtain a product and decorate it in order.
  *
  * @author Christian Schlichtherle
  */
