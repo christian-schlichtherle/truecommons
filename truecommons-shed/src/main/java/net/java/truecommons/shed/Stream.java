@@ -29,4 +29,14 @@ package net.java.truecommons.shed;
  * @author Christian Schlichtherle
  */
 public interface Stream<T> extends Iterable<T>, AutoCloseable {
+
+    /**
+     * Closes this stream.
+     * It is an error to call any other method on this stream once this method
+     * has terminated without an exception and the result of any violation is
+     * undefined.
+     * However, implementations are encouraged to throw an exception from any
+     * other method to indicate this error condition.
+     */
+    @Override void close() throws Exception;
 }
