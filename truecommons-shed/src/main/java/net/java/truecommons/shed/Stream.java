@@ -4,6 +4,8 @@
  */
 package net.java.truecommons.shed;
 
+import edu.umd.cs.findbugs.annotations.*;
+
 /**
  * A generic stream collection interface.
  * Mind you that you need to call {@link #close()} on this stream after use,
@@ -28,6 +30,7 @@ package net.java.truecommons.shed;
  * @since  TrueCommons 1.0.12
  * @author Christian Schlichtherle
  */
+@CleanupObligation
 public interface Stream<T> extends Iterable<T>, AutoCloseable {
 
     /**
@@ -38,5 +41,7 @@ public interface Stream<T> extends Iterable<T>, AutoCloseable {
      * However, implementations are encouraged to throw an exception from any
      * other method to indicate this error condition.
      */
-    @Override void close() throws Exception;
+    @Override
+    @DischargesObligation
+    void close() throws Exception;
 }
