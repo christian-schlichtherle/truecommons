@@ -68,7 +68,21 @@ public final class Locator {
      * @param client the class which identifies the calling client.
      */
     public Locator(final Class<?> client) {
-        this.loader = new Loader(client.getClassLoader());
+        this(client.getClassLoader());
+    }
+
+    /**
+     * Constructs a new locator which uses the given class loader before using
+     * the current thread context's class loader unless the latter is identical
+     * to the former.
+     * 
+     * @param loader the class loader to use before the current thread
+     *        context's class loader unless the the latter is identical to the
+     *        former.
+     * @since TrueCommons 1.0.13
+     */
+    public Locator(final ClassLoader loader) {
+        this.loader = new Loader(loader);
     }
 
     /**
