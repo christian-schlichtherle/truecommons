@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import edu.umd.cs.findbugs.annotations.DefaultAnnotation;
 import java.beans.*;
 import javax.annotation.Nullable;
 
@@ -15,7 +14,7 @@ import javax.annotation.Nullable;
  * @author Christian Schlichtherle
  */
 @SuppressWarnings("StaticNonFinalUsedInInitialization")
-@DefaultAnnotation(Nullable.class)
+@Nullable
 public class BitFieldBeanInfo extends SimpleBeanInfo {
 
     // Bean descriptor//GEN-FIRST:BeanDescriptor
