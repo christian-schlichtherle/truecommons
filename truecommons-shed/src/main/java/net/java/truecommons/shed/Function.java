@@ -10,6 +10,7 @@ package net.java.truecommons.shed;
  * @param  <I> The parameter type of {@link #apply(Object)}
  * @param  <O> The return type of {@link #apply(Object)}.
  * @param  <X> The exception type of {@link #apply(Object)}.
+ * @since  TrueCommons 1.0.15
  * @author Christian Schlichtherle
  */
 public interface Function<I, O, X extends Throwable> {
