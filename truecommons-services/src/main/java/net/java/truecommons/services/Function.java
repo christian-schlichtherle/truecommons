@@ -15,8 +15,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * @author Christian Schlichtherle
  */
 @ThreadSafe
-public interface Function<P>
-extends net.java.truecommons.shed.Function<P, P, RuntimeException> {
+public interface Function<P> {
 
     /**
      * Maps the given product.
@@ -24,5 +23,5 @@ extends net.java.truecommons.shed.Function<P, P, RuntimeException> {
      * @param  product the product to map.
      * @return A new product or the same, possibly modified, product.
      */
-    @Override P apply(P product);
+    P apply(P product);
 }
