@@ -19,6 +19,7 @@ import java.io.IOException;
  */
 @CleanupObligation
 public abstract class Resource<X extends Exception> implements AutoCloseable {
+
     private boolean closed;
 
     /**
