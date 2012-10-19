@@ -10,9 +10,7 @@ import org.scalatest._
 import org.scalatest.junit._
 import org.scalatest.matchers._
 
-/**
-  * @author Christian Schlichtherle
-  */
+/** @author Christian Schlichtherle */
 @RunWith(classOf[JUnitRunner])
 class LocatorSpec extends WordSpec with ShouldMatchers {
 
@@ -26,18 +24,18 @@ class LocatorSpec extends WordSpec with ShouldMatchers {
     "asked to create a container" should {
       "report a service configuration error if it can't locate a factory" in {
         intercept[ServiceConfigurationError] {
-          l.container[String, UnknownFactory]
+          l.container[String, UnlocatableFactory]
         }
       }
 
       "not report a service configuration error if it can't locate a decorator" in {
-        val c = l.container[String, FactoryService[String], UnknownDecorator]
+        val c = l.container[String, LocatableFactory[String], UnlocatableDecorator]
         c.get should not be (null)
       }
     }
 
     "asked to create a container" should {
-      val c = l.container[String, FactoryService[String], DecoratorService[String]]
+      val c = l.container[String, LocatableFactory[String], LocatableDecorator[String]]
 
       "always reproduce the expected product" in {
         c.get should equal (expected)
@@ -52,7 +50,7 @@ class LocatorSpec extends WordSpec with ShouldMatchers {
     }
 
     "asked to create a factory" should {
-      val f = l.factory[String, FactoryService[String], DecoratorService[String]]
+      val f = l.factory[String, LocatableFactory[String], LocatableDecorator[String]]
 
       "always reproduce the expected product" in {
         f.get should equal (expected)
@@ -76,39 +74,39 @@ object LocatorSpec {
   final class LocatorSugar {
     private[this] val l = new Locator(classOf[LocatorSpec])
 
-    def container[P, F <: FactoryService[P] : Manifest] =
+    def container[P, F <: LocatableFactory[P] : Manifest] =
       l container (implicitly[Manifest[F]].erasure.asInstanceOf[Class[F]])
 
-    def container[P, F <: FactoryService[P] : Manifest, D <: DecoratorService[P] : Manifest] =
+    def container[P, F <: LocatableFactory[P] : Manifest, D <: LocatableDecorator[P] : Manifest] =
       l container (implicitly[Manifest[F]].erasure.asInstanceOf[Class[F]],
                    implicitly[Manifest[D]].erasure.asInstanceOf[Class[D]])
 
-    def factory[P, F <: FactoryService[P] : Manifest] =
+    def factory[P, F <: LocatableFactory[P] : Manifest] =
       l factory (implicitly[Manifest[F]].erasure.asInstanceOf[Class[F]])
 
-    def factory[P, F <: FactoryService[P] : Manifest, D <: DecoratorService[P] : Manifest] =
+    def factory[P, F <: LocatableFactory[P] : Manifest, D <: LocatableDecorator[P] : Manifest] =
       l factory (implicitly[Manifest[F]].erasure.asInstanceOf[Class[F]],
                  implicitly[Manifest[D]].erasure.asInstanceOf[Class[D]])
   }
 }
 
-abstract class UnknownFactory extends FactoryService[String]
-abstract class UnknownDecorator extends DecoratorService[String]
+abstract class UnlocatableFactory extends LocatableFactory[String]
+abstract class UnlocatableDecorator extends LocatableDecorator[String]
 
-final class World extends FactoryService[String] {
+final class World extends LocatableFactory[String] {
   def get = new String("World") // return a new string upon each call
   override def getPriority = -1
 }
 
-final class Christian extends FactoryService[String] {
+final class Christian extends LocatableFactory[String] {
   def get = new String("Christian") // return a new string upon each call
 }
 
-final class Salutation extends DecoratorService[String] {
+final class Salutation extends LocatableDecorator[String] {
   def apply(text: String) = "Hello %s!" format text
   override def getPriority = -1
 }
 
-final class Smalltalk extends DecoratorService[String] {
+final class Smalltalk extends LocatableDecorator[String] {
   def apply(text: String) = text + " How do you do?"
 }

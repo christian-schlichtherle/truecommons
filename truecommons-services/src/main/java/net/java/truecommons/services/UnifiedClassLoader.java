@@ -10,9 +10,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Enumeration;
 
-/**
- * @author Christian Schlichtherle
- */
+/** @author Christian Schlichtherle */
 final class UnifiedClassLoader extends ClassLoader {
 
     static ClassLoader resolve(

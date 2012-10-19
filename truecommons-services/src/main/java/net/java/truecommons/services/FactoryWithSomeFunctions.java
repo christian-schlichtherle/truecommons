@@ -4,9 +4,7 @@
  */
 package net.java.truecommons.services;
 
-/**
- * @author Christian Schlichtherle
- */
+/** @author Christian Schlichtherle */
 final class FactoryWithSomeFunctions<P>
 extends ProviderWithSomeFunctions<P> implements Factory<P> {
     FactoryWithSomeFunctions(Factory<P> factory, Function<P>[] functions) {

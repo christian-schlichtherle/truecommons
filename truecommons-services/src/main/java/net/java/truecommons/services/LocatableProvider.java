@@ -8,19 +8,19 @@ import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Provider;
 
 /**
- * An abstract service which provides products.
- * Provider services are subject to service location by {@link Locator}s.
+ * A locatable provider.
  * <p>
- * If multiple provider services are locatable on the class path at run time,
- * the service with the greatest {@linkplain #getPriority() priority} gets
+ * If multiple provider classes get located on the class path at run time,
+ * the instance with the greatest {@linkplain #getPriority() priority} gets
  * selected.
  * <p>
  * Implementations should be thread-safe.
  *
+ * @see    Locator
  * @param  <P> the type of the products to provide.
  * @author Christian Schlichtherle
  */
 @ThreadSafe
-public abstract class ProviderService<P>
-extends Service implements Provider<P> {
+public abstract class LocatableProvider<P>
+extends Locatable implements Provider<P> {
 }

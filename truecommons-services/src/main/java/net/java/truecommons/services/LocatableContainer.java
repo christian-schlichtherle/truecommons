@@ -7,8 +7,7 @@ package net.java.truecommons.services;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
- * An abstract service which contains a single product.
- * Container services are subject to service location by {@link Locator}s.
+ * A locatable provider which contains a single product.
  * For best results, clients should create another abstract subclass which just
  * specifies the type parameter {@code P}.
  * In the following example the type parameter is specified as
@@ -16,20 +15,20 @@ import javax.annotation.concurrent.ThreadSafe;
  * <p>
  * <pre>{@code
  * package com.company.spec;
- * 
- * import net.java.truecommons.services.ContainerService;
- * 
+ *
+ * import net.java.truecommons.services.LocatableContainer;
+ *
  * public abstract class StringContainer
- * extends ContainerService<String> {
+ * extends LocatableContainer<String> {
  * }
  * }</pre>
  * <p>
  * An implementation could now implement this service as follows:
  * <pre>{@code
  * package com.company.impl;
- * 
+ *
  * import com.company.spec.StringContainer;
- * 
+ *
  * public class GreetingContainer extends StringContainer {
  *     \@Override
  *     public String get() {
@@ -54,10 +53,10 @@ import javax.annotation.concurrent.ThreadSafe;
  * {@code StringContainer} specification by calling:
  * <pre>{@code
  * package com.company.client;
- * 
+ *
  * import net.java.truecommons.services.Locator;
  * import com.company.spec.StringContainer;
- * 
+ *
  * public class Main {
  *     public static void main(String[] args) {
  *         Locator l = new Locator(Main.class); // specify calling class
@@ -73,10 +72,11 @@ import javax.annotation.concurrent.ThreadSafe;
  * <p>
  * Implementations should be thread-safe.
  *
+ * @see    Locator
  * @param  <P> the type of the product to contain.
  * @author Christian Schlichtherle
  */
 @ThreadSafe
-public abstract class ContainerService<P>
-extends ProviderService<P> implements Container<P> {
+public abstract class LocatableContainer<P>
+extends LocatableProvider<P> implements Container<P> {
 }
