@@ -18,7 +18,7 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 /**
- * Creates containers or factories of products with some applied decorators.
+ * Creates containers or factories of products.
  * Resolving service instances is done in several steps:
  * <p>
  * First, the name of a given <i>provider</i> service class is used as the
@@ -26,29 +26,29 @@ import org.slf4j.MarkerFactory;
  * If this yields a value then it's supposed to name a class which gets loaded
  * and instantiated by calling its public no-argument constructor.
  * <p>
- * Otherwise, the class path is searched for any resource files with the name
- * {@code "META-INF/services/"} plus the name of the given provider service
- * class.
+ * Otherwise, the class path is searched for any resources with the name
+ * {@code "META-INF/services/"} plus the name of the given locatable
+ * <i>provider<i> class.
  * If this yields no results, a {@link ServiceConfigurationError} is thrown.
  * <p>
- * Otherwise the classes with the names contained in these files get loaded and
- * instantiated by calling their public no-argument constructor.
- * Next, the service instances are filtered according to their
- * {@linkplain Service#getPriority() priority}.
- * Only the service instance with the highest priority is kept for future use.
+ * Otherwise the classes with the names contained in these resources get loaded
+ * and instantiated by calling their public no-argument constructor.
+ * Next, the instances are filtered according to their
+ * {@linkplain Locatable#getPriority() priority}.
+ * Only the instance with the highest priority is kept for subsequent use.
  * <p>
- * Next, the class is searched again for any resource files with the name
- * {@code "META-INF/services/"} plus the name of the given <i>function</i>
- * service class.
+ * Next, the class is searched again for any resources with the name
+ * {@code "META-INF/services/"} plus the name of the given locatable
+ * <i>function</i> class.
  * If this yields some results, the classes with the names contained in these
- * files get loaded and instantiated by calling their public no-argument
+ * resources get loaded and instantiated by calling their public no-argument
  * constructor.
- * Next, the service instances get sorted in ascending order of their
- * {@linkplain DecoratorService#getPriority() priority} and kept for future use.
+ * Next, the instances get sorted in ascending order of their
+ * {@linkplain Locatable#getPriority() priority} and kept for subsequent use.
  * <p>
  * Finally, depending on the requesting method either a container or a factory
- * gets created which will use the located provider service instance and the
- * function service instances to obtain a product and decorate it in order.
+ * gets created which will use the instantiated provider and functions
+ * to obtain a product and map it in order of their priorities.
  *
  * @author Christian Schlichtherle
  */
@@ -75,7 +75,7 @@ public final class Locator {
      * Constructs a new locator which uses the given class loader before using
      * the current thread context's class loader unless the latter is identical
      * to the former.
-     * 
+     *
      * @param loader the class loader to use before the current thread
      *        context's class loader unless the the latter is identical to the
      *        former.
@@ -87,34 +87,34 @@ public final class Locator {
 
     /**
      * Creates a new factory of products.
-     * 
+     *
      * @param  <P> the type of the products to create.
-     * @param  factory the class of the factory service for the products.
+     * @param  factory the class of the locatable factory for the products.
      * @return A new factory of products.
      * @throws ServiceConfigurationError if loading or instantiating
-     *         a service implementation class fails for some reason.
+     *         a located class fails for some reason.
      */
-    public <P> Factory<P> factory(Class<? extends FactoryService<P>> factory)
+    public <P> Factory<P> factory(Class<? extends LocatableFactory<P>> factory)
     throws ServiceConfigurationError {
         return factory(factory, null);
     }
 
     /**
      * Creates a new factory of products.
-     * 
+     *
      * @param  <P> the type of the products to create.
-     * @param  factory the class of the factory service for the products.
-     * @param  functions the class of the function services for the products.
+     * @param  factory the class of the locatable factory for the products.
+     * @param  functions the class of the locatable functions for the products.
      * @return A new factory of products.
      * @throws ServiceConfigurationError if loading or instantiating
-     *         a service implementation class fails for some reason.
+     *         a located class fails for some reason.
      */
     public <P> Factory<P> factory(
-            final Class<? extends FactoryService<P>> factory,
-            final @CheckForNull Class<? extends FunctionService<P>> functions)
+            final Class<? extends LocatableFactory<P>> factory,
+            final @CheckForNull Class<? extends LocatableFunction<P>> functions)
     throws ServiceConfigurationError {
-        final FactoryService<P> p = provider(factory);
-        final FunctionService<P>[] f = null == functions ? null
+        final LocatableFactory<P> p = provider(factory);
+        final LocatableFunction<P>[] f = null == functions ? null
                 : functions(functions);
         return null == f || 0 == f.length ? p
                 : new FactoryWithSomeFunctions<P>(p, f);
@@ -122,40 +122,40 @@ public final class Locator {
 
     /**
      * Creates a new container of a single product.
-     * 
+     *
      * @param  <P> the type of the product to contain.
-     * @param  provider the class of the provider service for the product.
+     * @param  provider the class of the locatable provider for the product.
      * @return A new container of a single product.
      * @throws ServiceConfigurationError if loading or instantiating
-     *         a service implementation class fails for some reason.
+     *         a located class fails for some reason.
      */
-    public <P> Container<P> container(Class<? extends ProviderService<P>> provider)
+    public <P> Container<P> container(Class<? extends LocatableProvider<P>> provider)
     throws ServiceConfigurationError {
         return container(provider, null);
     }
 
     /**
      * Creates a new container of a single product.
-     * 
+     *
      * @param  <P> the type of the product to contain.
-     * @param  provider the class of the provider service for the product.
-     * @param  decorator the class of the decoractor services for the product.
+     * @param  provider the class of the locatable provider for the product.
+     * @param  decorator the class of the locatable decoractors for the product.
      * @return A new container of a single product.
      * @throws ServiceConfigurationError if loading or instantiating
-     *         a service implementation class fails for some reason.
+     *         a located class fails for some reason.
      */
     public <P> Container<P> container(
-            final Class<? extends ProviderService<P>> provider,
-            final @CheckForNull Class<? extends DecoratorService<P>> decorator)
+            final Class<? extends LocatableProvider<P>> provider,
+            final @CheckForNull Class<? extends LocatableDecorator<P>> decorator)
     throws ServiceConfigurationError {
-        final ProviderService<P> p = provider(provider);
-        final DecoratorService<P>[] d = null == decorator ? null
+        final LocatableProvider<P> p = provider(provider);
+        final LocatableDecorator<P>[] d = null == decorator ? null
                 : functions(decorator);
         return new Store<P>(null == d || 0 == d.length ? p
                 : new ProviderWithSomeFunctions<P>(p, d));
     }
 
-    private <S extends ProviderService<?>> S provider(final Class<S> spec)
+    private <S extends LocatableProvider<?>> S provider(final Class<S> spec)
     throws ServiceConfigurationError {
         S service = loader.instanceOf(spec, null);
         if (null == service) {
@@ -187,7 +187,7 @@ public final class Locator {
         return service;
     }
 
-    private <S extends FunctionService<?>> S[] functions(final Class<S> spec)
+    private <S extends LocatableFunction<?>> S[] functions(final Class<S> spec)
     throws ServiceConfigurationError {
         final Collection<S> c = new LinkedList<S>();
         for (final S service : loader.instancesOf(spec)) c.add(service);

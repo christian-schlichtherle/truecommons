@@ -7,8 +7,7 @@ package net.java.truecommons.services;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
- * An abstract service for creating products.
- * Factory services are subject to service location by {@link Locator}s.
+ * A locatable provider for creating products.
  * For best results, clients should create another abstract subclass which just
  * specifies the type parameter {@code P}.
  * In the following example the type parameter is specified as
@@ -16,20 +15,20 @@ import javax.annotation.concurrent.ThreadSafe;
  * <p>
  * <pre>{@code
  * package com.company.spec;
- * 
- * import net.java.truecommons.services.FactoryService;
- * 
+ *
+ * import net.java.truecommons.services.LocatableFactory;
+ *
  * public abstract class StringBuilderFactory
- * extends FactoryService<StringBuilder> {
+ * extends LocatableFactory<StringBuilder> {
  * }
  * }</pre>
  * <p>
  * An implementation could now implement this service as follows:
  * <pre>{@code
  * package com.company.impl;
- * 
+ *
  * import com.company.spec.StringBuilderFactory;
- * 
+ *
  * public class GreetingFactory extends StringBuilderFactory {
  *     \@Override
  *     public StringBuilder get() {
@@ -54,10 +53,10 @@ import javax.annotation.concurrent.ThreadSafe;
  * {@code StringBuilderFactory} specification by calling:
  * <pre>{@code
  * package com.company.client;
- * 
+ *
  * import net.java.truecommons.services.Locator;
  * import com.company.spec.StringBuilderFactory;
- * 
+ *
  * public class Main {
  *     public static void main(String[] args) {
  *         Locator l = new Locator(Main.class); // specify calling class
@@ -72,11 +71,12 @@ import javax.annotation.concurrent.ThreadSafe;
  * product because {@code f} is a factory, not a container.
  * <p>
  * Implementations should be thread-safe.
- * 
+ *
+ * @see    Locator
  * @param  <P> the type of the products to create.
  * @author Christian Schlichtherle
  */
 @ThreadSafe
-public abstract class FactoryService<P>
-extends ProviderService<P> implements Factory<P> {
+public abstract class LocatableFactory<P>
+extends LocatableProvider<P> implements Factory<P> {
 }

@@ -7,29 +7,28 @@ package net.java.truecommons.services;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
- * An abstract service for modifying products.
- * Modifier services are subject to service location by {@link Locator}s.
+ * A locatable function for modifying products.
  * For best results, clients should create another abstract subclass which just
  * specifies the type parameter {@code P}.
- * The following example accompanies the example for {@link FactoryService},
+ * The following example accompanies the example for {@link LocatableFactory},
  * so the type parameter is specified as {@link StringBuilder} again:
  * <p>
  * <pre>{@code
  * package com.company.spec;
- * 
- * import net.java.truecommons.services.ModifierService;
- * 
+ *
+ * import net.java.truecommons.services.LocatableModifier;
+ *
  * public abstract class StringBuilderModifier
- * extends ModifierService<StringBuilder> {
+ * extends LocatableModifier<StringBuilder> {
  * }
  * }</pre>
  * <p>
  * An implementation could now implement this service as follows:
  * <pre>{@code
  * package com.company.impl;
- * 
+ *
  * import com.company.spec.StringBuilderModifier;
- * 
+ *
  * public class SmalltalkModifier extends StringBuilderModifier {
  *     \@Override
  *     public StringBuilder get(StringBuilder b) {
@@ -57,11 +56,11 @@ import javax.annotation.concurrent.ThreadSafe;
  * {@code StringBuilderModifier} specification by calling:
  * <pre>{@code
  * package com.company.client;
- * 
+ *
  * import net.java.truecommons.services.Locator;
  * import com.company.spec.StringBuilderFactory;
  * import com.company.spec.StringBuilderModifier;
- * 
+ *
  * public class Main {
  *     public static void main(String[] args) {
  *         Locator l = new Locator(Main.class); // specify calling class
@@ -77,11 +76,12 @@ import javax.annotation.concurrent.ThreadSafe;
  * product because {@code f} is a factory, not a container.
  * <p>
  * Implementations should be thread-safe.
- * 
+ *
+ * @see    Locator
  * @param  <P> the type of the products to modify.
  * @author Christian Schlichtherle
  */
 @ThreadSafe
-public abstract class ModifierService<P>
-extends FunctionService<P> implements Modifier<P>{
+public abstract class LocatableModifier<P>
+extends LocatableFunction<P> implements Modifier<P> {
 }

@@ -8,15 +8,15 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * Compares {@link Service}s.
- * 
+ * Compares {@link Locatable}s.
+ *
  * @author Christian Schlichtherle
  */
-final class ServiceComparator implements Comparator<Service>, Serializable {
+final class ServiceComparator implements Comparator<Locatable>, Serializable {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public int compare(Service o1, Service o2) {
+    public int compare(Locatable o1, Locatable o2) {
         return o1.getPriority() - o2.getPriority();
     }
 }

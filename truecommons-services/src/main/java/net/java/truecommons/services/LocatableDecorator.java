@@ -7,29 +7,28 @@ package net.java.truecommons.services;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
- * An abstract service for decorating products.
- * Decorator services are subject to service location by {@link Locator}s.
+ * A locatable function for decorating products.
  * For best results, clients should create another abstract subclass which just
  * specifies the type parameter {@code P}.
- * The following example accompanies the example for {@link ContainerService},
+ * The following example accompanies the example for {@link LocatableContainer},
  * so the type parameter is specified as {@link String} again:
  * <p>
  * <pre>{@code
  * package com.company.spec;
- * 
- * import net.java.truecommons.services.DecoratorService;
- * 
+ *
+ * import net.java.truecommons.services.LocatableDecorator;
+ *
  * public abstract class StringDecorator
- * extends DecoratorService<StringBuilder> {
+ * extends LocatableDecorator<StringBuilder> {
  * }
  * }</pre>
  * <p>
  * An implementation could now implement this service as follows:
  * <pre>{@code
  * package com.company.impl;
- * 
+ *
  * import com.company.spec.StringDecorator;
- * 
+ *
  * public class SmalltalkDecorator extends StringDecorator {
  *     \@Override
  *     public String apply(String s) {
@@ -57,11 +56,11 @@ import javax.annotation.concurrent.ThreadSafe;
  * {@code StringDecorator} specification by calling:
  * <pre>{@code
  * package com.company.client;
- * 
+ *
  * import net.java.truecommons.services.Locator;
  * import com.company.spec.StringContainer;
  * import com.company.spec.StringDecorator;
- * 
+ *
  * public class Main {
  *     public static void main(String[] args) {
  *         Locator l = new Locator(Main.class); // specify calling class
@@ -77,11 +76,12 @@ import javax.annotation.concurrent.ThreadSafe;
  * product again because {@code c} is a container, not a factory.
  * <p>
  * Implementations should be thread-safe.
- * 
+ *
+ * @see    Locator
  * @param  <P> the type of the products to decorate.
  * @author Christian Schlichtherle
  */
 @ThreadSafe
-public abstract class DecoratorService<P>
-extends FunctionService<P> implements Decorator<P>{
+public abstract class LocatableDecorator<P>
+extends LocatableFunction<P> implements Decorator<P> {
 }

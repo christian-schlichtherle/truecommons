@@ -6,9 +6,7 @@ package net.java.truecommons.services;
 
 import javax.inject.Provider;
 
-/**
- * @author Christian Schlichtherle
- */
+/** @author Christian Schlichtherle */
 final class Store<P> implements Container<P> {
     final P product;
 
@@ -17,7 +15,5 @@ final class Store<P> implements Container<P> {
     }
 
     @Override
-    public P get() {
-        return product;
-    }
+    public P get() { return product; }
 }
