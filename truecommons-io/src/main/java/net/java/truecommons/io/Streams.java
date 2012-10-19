@@ -102,11 +102,11 @@ public final class Streams {
             throw ex2;
         } finally {
             try {
-                in.close();
-            } catch (final IOException ex2) {
-                final IOException ex3 = new InputException(ex2);
-                if (null == ex) throw ex3;
-                ex.addSuppressed(ex3);
+                try {
+                    in.close();
+                } catch (final IOException ex2) {
+                    throw new InputException(ex2);
+                }
             } catch (final Throwable ex2) {
                 if (null == ex) throw ex2;
                 ex.addSuppressed(ex2);
