@@ -65,8 +65,7 @@ public class BufferedReadOnlyChannel extends ReadOnlyChannel {
     public int read(final ByteBuffer dst) throws IOException {
         // Check no-op first for compatibility with FileChannel.
         final int remaining = dst.remaining();
-        if (remaining <= 0)
-            return 0;
+        if (remaining <= 0) return 0;
 
         // Check is open and not at EOF.
         final long size = size();
@@ -98,8 +97,7 @@ public class BufferedReadOnlyChannel extends ReadOnlyChannel {
 
     @Override
     public SeekableByteChannel position(final long pos) throws IOException {
-        if (0 > pos)
-            throw new IllegalArgumentException();
+        if (0 > pos) throw new IllegalArgumentException();
         checkOpen();
         this.pos = pos;
         return this;
@@ -109,7 +107,7 @@ public class BufferedReadOnlyChannel extends ReadOnlyChannel {
      * Notifies this channel of concurrent changes in its decorated channel.
      * Calling this method triggers a reload of the buffer on the next read
      * access.
-     * 
+     *
      * @return {@code this}
      */
     public BufferedReadOnlyChannel sync() {
@@ -131,8 +129,7 @@ public class BufferedReadOnlyChannel extends ReadOnlyChannel {
         final long pos = this.pos;
         long bufferStart = this.bufferStart;
         final long nextBufferStart = bufferStart + bufferSize;
-        if (bufferStart <= pos && pos < nextBufferStart)
-            return;
+        if (bufferStart <= pos && pos < nextBufferStart) return;
 
         try {
             final SeekableByteChannel channel = this.channel;
@@ -140,8 +137,7 @@ public class BufferedReadOnlyChannel extends ReadOnlyChannel {
             // Move position.
             // Round down to multiple of buffer size.
             this.bufferStart = bufferStart = pos / bufferSize * bufferSize;
-            if (bufferStart != nextBufferStart)
-                channel.position(bufferStart);
+            if (bufferStart != nextBufferStart) channel.position(bufferStart);
 
             // Fill buffer until end of file or buffer.
             // This should normally complete in one loop cycle, but we do not
@@ -151,8 +147,7 @@ public class BufferedReadOnlyChannel extends ReadOnlyChannel {
             final ByteBuffer buffer = ByteBuffer.wrap(this.buffer);
             do {
                 int read = channel.read(buffer);
-                if (read < 0)
-                    break;
+                if (read < 0) break;
                 total += read;
             } while (total < bufferSize);
         } catch (final Throwable ex) {
