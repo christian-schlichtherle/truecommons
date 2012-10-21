@@ -19,7 +19,7 @@ import org.slf4j.Marker;
  * Any arguments provided to the logging messages are applied to the looked up
  * resource bundle value by using a {@link Formatter} - not a
  * {@link MessageFormat}!
- * 
+ *
  * @author Christian Schlichtherle
  */
 @ThreadSafe
@@ -69,9 +69,9 @@ public final class LocalizedLogger implements Logger {
     }
 
     @Override
-    public void trace(String format, Object[] argArray) {
+    public void trace(String format, Object... arguments) {
         if (logger.isTraceEnabled())
-            logger.trace(new Formatter().format(bundle.getString(format), argArray).toString());
+            logger.trace(new Formatter().format(bundle.getString(format), arguments).toString());
     }
 
     @Override
@@ -104,7 +104,7 @@ public final class LocalizedLogger implements Logger {
     }
 
     @Override
-    public void trace(Marker marker, String format, Object[] argArray) {
+    public void trace(Marker marker, String format, Object... argArray) {
         if (logger.isTraceEnabled(marker))
             logger.trace(marker, new Formatter().format(bundle.getString(format), argArray).toString());
     }
@@ -139,9 +139,9 @@ public final class LocalizedLogger implements Logger {
     }
 
     @Override
-    public void debug(String format, Object[] argArray) {
+    public void debug(String format, Object... arguments) {
         if (logger.isDebugEnabled())
-            logger.debug(new Formatter().format(bundle.getString(format), argArray).toString());
+            logger.debug(new Formatter().format(bundle.getString(format), arguments).toString());
     }
 
     @Override
@@ -174,9 +174,9 @@ public final class LocalizedLogger implements Logger {
     }
 
     @Override
-    public void debug(Marker marker, String format, Object[] argArray) {
+    public void debug(Marker marker, String format, Object... arguments) {
         if (logger.isDebugEnabled(marker))
-            logger.debug(marker, new Formatter().format(bundle.getString(format), argArray).toString());
+            logger.debug(marker, new Formatter().format(bundle.getString(format), arguments).toString());
     }
 
     @Override
@@ -209,9 +209,9 @@ public final class LocalizedLogger implements Logger {
     }
 
     @Override
-    public void info(String format, Object[] argArray) {
+    public void info(String format, Object... arguments) {
         if (logger.isInfoEnabled())
-            logger.info(new Formatter().format(bundle.getString(format), argArray).toString());
+            logger.info(new Formatter().format(bundle.getString(format), arguments).toString());
     }
 
     @Override
@@ -244,9 +244,9 @@ public final class LocalizedLogger implements Logger {
     }
 
     @Override
-    public void info(Marker marker, String format, Object[] argArray) {
+    public void info(Marker marker, String format, Object... arguments) {
         if (logger.isInfoEnabled(marker))
-            logger.info(marker, new Formatter().format(bundle.getString(format), argArray).toString());
+            logger.info(marker, new Formatter().format(bundle.getString(format), arguments).toString());
     }
 
     @Override
@@ -273,9 +273,9 @@ public final class LocalizedLogger implements Logger {
     }
 
     @Override
-    public void warn(String format, Object[] argArray) {
+    public void warn(String format, Object... arguments) {
         if (logger.isWarnEnabled())
-            logger.warn(new Formatter().format(bundle.getString(format), argArray).toString());
+            logger.warn(new Formatter().format(bundle.getString(format), arguments).toString());
     }
 
     @Override
@@ -314,9 +314,9 @@ public final class LocalizedLogger implements Logger {
     }
 
     @Override
-    public void warn(Marker marker, String format, Object[] argArray) {
+    public void warn(Marker marker, String format, Object... arguments) {
         if (logger.isWarnEnabled(marker))
-            logger.warn(marker, new Formatter().format(bundle.getString(format), argArray).toString());
+            logger.warn(marker, new Formatter().format(bundle.getString(format), arguments).toString());
     }
 
     @Override
@@ -349,9 +349,9 @@ public final class LocalizedLogger implements Logger {
     }
 
     @Override
-    public void error(String format, Object[] argArray) {
+    public void error(String format, Object... arguments) {
         if (logger.isErrorEnabled())
-            logger.error(new Formatter().format(bundle.getString(format), argArray).toString());
+            logger.error(new Formatter().format(bundle.getString(format), arguments).toString());
     }
 
     @Override
@@ -384,9 +384,9 @@ public final class LocalizedLogger implements Logger {
     }
 
     @Override
-    public void error(Marker marker, String format, Object[] argArray) {
+    public void error(Marker marker, String format, Object... arguments) {
         if (logger.isErrorEnabled(marker))
-            logger.error(marker, new Formatter().format(bundle.getString(format), argArray).toString());
+            logger.error(marker, new Formatter().format(bundle.getString(format), arguments).toString());
     }
 
     @Override
