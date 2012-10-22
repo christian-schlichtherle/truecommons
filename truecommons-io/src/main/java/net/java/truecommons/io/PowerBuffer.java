@@ -9,73 +9,95 @@ import java.io.IOException;
 import java.nio.*;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
-import java.util.Objects;
 
 /**
  * Adapts a {@link ByteBuffer} to provide an enhanced API, e.g. for reading
  * unsigned integers.
- * 
+ * This class is mostly a drop-in replacement for {@code ByteBuffer}, so you
+ * can use a {@code PowerBuffer} wherever you would otherwise use a
+ * {@code ByteBuffer}.
+ * However, unlike the {@code ByteBuffer} class, a clone of a
+ * {@code PowerBuffer} always inherits the original buffer's byte order,
+ * e.g. when calling {@link #slice()}, {@link #duplicate()} or
+ * {@link #asReadOnlyBuffer()}.
+ *
+ * @param  <This> The type of this power buffer.
  * @author Christian Schlichtherle
  */
-public final class PowerBuffer implements Comparable<PowerBuffer> {
+public abstract class PowerBuffer<This extends PowerBuffer<This>>
+implements Comparable<This> {
 
-    private final ByteBuffer bb;
-
-    //
-    // Construction.
-    //
-
-    private PowerBuffer(final ByteBuffer bb) { this.bb = bb; }
-
-    public static PowerBuffer allocateDirect(int capacity) {
-        return new PowerBuffer(ByteBuffer.allocateDirect(capacity));
-    }
-
-    public static PowerBuffer allocate(int capacity) {
-        return new PowerBuffer(ByteBuffer.allocate(capacity));
-    }
-
-    public static PowerBuffer wrap(byte[] array, int offset, int length) {
-        return new PowerBuffer(ByteBuffer.wrap(array, offset, length));
-    }
-
-    public static PowerBuffer wrap(byte[] array) {
-        return wrap(array, 0, array.length);
-    }
-
-    public static PowerBuffer wrap(ByteBuffer buffer) {
-        return new PowerBuffer(Objects.requireNonNull(buffer));
-    }
+    final ByteBuffer bb;
 
     //
-    // PowerBuffer specials.
+    // Construction:
     //
+
+    PowerBuffer(final ByteBuffer bb) { this.bb = bb; }
+
+    /** @see MutableBuffer#allocateDirect(int) */
+    public static PowerBuffer<?> allocateDirect(int capacity) {
+        return MutableBuffer.allocateDirect(capacity);
+    }
+
+    /** @see MutableBuffer#allocate(int) */
+    public static PowerBuffer<?> allocate(int capacity) {
+        return MutableBuffer.allocate(capacity);
+    }
+
+    /** @see MutableBuffer#wrap(byte[], int, int) */
+    public static PowerBuffer<?> wrap(byte[] array, int offset, int length) {
+        return MutableBuffer.wrap(array, offset, length);
+    }
+
+    /** @see MutableBuffer#wrap(byte[]) */
+    public static PowerBuffer<?> wrap(byte[] array) {
+        return MutableBuffer.wrap(array);
+    }
+
+    /** @see MutableBuffer#wrap(ByteBuffer) */
+    public static PowerBuffer<?> wrap(ByteBuffer buffer) {
+        return MutableBuffer.wrap(buffer);
+    }
+
+    //
+    // PowerBuffer API:
+    //
+
+    /** Returns {@code true} if and only if this power buffer is mutable. */
+    public abstract boolean isMutable();
+
+    /** Returns an mutable buffer view of the adapted byte buffer. */
+    public abstract MutableBuffer asMutableBuffer();
+
+    /** Returns an immutable buffer view of the adapted byte buffer. */
+    public abstract ImmutableBuffer asImmutableBuffer();
 
     /**
      * Returns the adapted byte buffer.
-     * 
+     *
      * @return The adapted byte buffer.
      */
     public ByteBuffer buffer() { return bb; }
 
     /**
      * Sets the byte order to little endian.
-     * 
+     *
      * @return {@code this}.
      */
-    public PowerBuffer littleEndian() {
+    public This littleEndian() {
         bb.order(ByteOrder.LITTLE_ENDIAN);
-        return this;
+        return (This) this;
     }
 
     /**
      * Sets the byte order to big endian.
-     * 
+     *
      * @return {@code this}.
      */
-    public PowerBuffer bigEndian() {
+    public This bigEndian() {
         bb.order(ByteOrder.BIG_ENDIAN);
-        return this;
+        return (This) this;
     }
 
     /**
@@ -84,13 +106,13 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
      * If an {@link IOException} occurs or the end-of-file is reached before
      * this buffer has been entirely filled, then it does not get reset and the
      * {@code IOException} or an {@link EOFException} gets thrown respectively.
-     * 
+     *
      * @param  channel the channel.
      * @return {@code this}.
      * @throws EOFException on unexpected end-of-file.
      * @throws IOException on any I/O error.
      */
-    public PowerBuffer load(ReadableByteChannel channel)
+    public This load(ReadableByteChannel channel)
     throws EOFException, IOException {
         int remaining = bb.remaining();
         bb.mark();
@@ -101,7 +123,7 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
             remaining -= read;
         } while (0 < remaining);
         bb.reset();
-        return this;
+        return (This) this;
     }
 
     /**
@@ -109,214 +131,240 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
      * resets this buffer.
      * If an {@link IOException} occurs, then this buffer does not get reset
      * and the {@code IOException} gets thrown.
-     * 
+     *
      * @param  channel the channel.
      * @return {@code this}.
      * @throws IOException on any I/O error.
      */
-    public PowerBuffer save(WritableByteChannel channel) throws IOException {
+    public This save(WritableByteChannel channel) throws IOException {
         int remaining = bb.remaining();
         bb.mark();
         do {
             remaining -= channel.write(bb);
         } while (0 < remaining);
         bb.reset();
-        return this;
+        return (This) this;
     }
 
     /**
      * Skips the given number of bytes.
      * This is a relative move operation to the buffer's position.
-     * 
+     *
      * @param  skip the number of bytes to move forwards.
      *         May be negative to move backwards, too.
      * @return {@code this}.
      * @throws IllegalArgumentException if attempting to move outside the
      *         buffer bounds.
      */
-    public PowerBuffer skip(int skip) {
+    public This skip(int skip) {
         bb.position(bb.position() + skip);
-        return this;
+        return (This) this;
     }
 
     /**
      * Reads an unsigned byte from the current position.
-     * 
+     *
      * @return The unsigned byte, cast to an integer.
      */
     public int getUByte() { return bb.get() & 0xff; }
 
     /**
      * Reads an unsigned byte from the given position.
-     * 
+     *
      * @param  index the index position.
      * @return The unsigned byte, cast to an integer.
      */
-    public int getUByte(int index) { return bb.get(index) & 0xff; }
+    public final int getUByte(int index) { return bb.get(index) & 0xff; }
 
     /**
      * Reads an unsigned short from the current position.
-     * 
+     *
      * @return The unsigned short, cast to an integer.
      */
     public int getUShort() { return bb.getShort() & 0xffff; }
 
     /**
      * Reads an unsigned short from the given position.
-     * 
+     *
      * @param  index the index position.
      * @return The unsigned short, cast to an integer.
      */
-    public int getUShort(int index) { return bb.getShort(index) & 0xffff; }
+    public final int getUShort(int index) {
+        return bb.getShort(index) & 0xffff;
+    }
 
     /**
      * Reads an unsigned int from the current position.
-     * 
+     *
      * @return The unsigned int, cast to a long.
      */
     public long getUInt() { return bb.getInt() & 0xffff_ffffL; }
 
     /**
      * Reads an unsigned int from the given position.
-     * 
+     *
      * @param  index the index position.
      * @return The unsigned int, cast to a long.
      */
-    public long getUInt(int index) { return bb.getInt(index) & 0xffff_ffffL; }
+    public final long getUInt(int index) {
+        return bb.getInt(index) & 0xffff_ffffL;
+    }
 
     //
-    // Plain ByteBuffer API.
+    // ByteBuffer API:
     //
 
-    public int position() { return bb.position(); }
+    /** @see ByteBuffer#position() */
+    public final int position() { return bb.position(); }
 
-    public int limit() { return bb.limit(); }
+    /** @see ByteBuffer#limit() */
+    public final int limit() { return bb.limit(); }
 
-    public int capacity() { return bb.capacity(); }
+    /** @see ByteBuffer#capacity() */
+    public final int capacity() { return bb.capacity(); }
 
-    public PowerBuffer position(int newPosition) {
+    /** @see ByteBuffer#position(int) */
+    public This position(int newPosition) {
         bb.position(newPosition);
-        return this;
+        return (This) this;
     }
 
-    public PowerBuffer limit(int newLimit) {
+    /** @see ByteBuffer#limit(int) */
+    public This limit(int newLimit) {
         bb.limit(newLimit);
-        return this;
+        return (This) this;
     }
 
-    public PowerBuffer mark() {
+    /** @see ByteBuffer#mark() */
+    public This mark() {
         bb.mark();
-        return this;
+        return (This) this;
     }
 
-    public PowerBuffer reset() {
+    /** @see ByteBuffer#reset() */
+    public This reset() {
         bb.reset();
-        return this;
+        return (This) this;
     }
 
-    public PowerBuffer clear() {
+    /** @see ByteBuffer#clear() */
+    public This clear() {
         bb.clear();
-        return this;
+        return (This) this;
     }
 
-    public PowerBuffer flip() {
+    /** @see ByteBuffer#flip() */
+    public This flip() {
         bb.flip();
-        return this;
+        return (This) this;
     }
 
-    public PowerBuffer rewind() {
+    /** @see ByteBuffer#rewind() */
+    public This rewind() {
         bb.rewind();
-        return this;
+        return (This) this;
     }
 
-    public int remaining() {
-        return bb.remaining();
-    }
+    /** @see ByteBuffer#remaining() */
+    public final int remaining() { return bb.remaining(); }
 
-    public boolean hasRemaining() {
-        return bb.hasRemaining();
-    }
+    /** @see ByteBuffer#hasRemaining() */
+    public final boolean hasRemaining() { return bb.hasRemaining(); }
 
-    public boolean isReadOnly() {
-        return bb.isReadOnly();
-    }
+    /** @see ByteBuffer#isReadOnly() */
+    public final boolean isReadOnly() { return bb.isReadOnly(); }
 
-    public boolean hasArray() {
-        return bb.hasArray();
-    }
+    /** @see ByteBuffer#hasArray() */
+    public final boolean hasArray() { return bb.hasArray(); }
 
-    public byte[] array() {
-        return bb.array();
-    }
+    /** @see ByteBuffer#array() */
+    public byte[] array() { return bb.array(); }
 
-    public int arrayOffset() {
-        return bb.arrayOffset();
-    }
+    /** @see ByteBuffer#arrayOffset() */
+    public final int arrayOffset() { return bb.arrayOffset(); }
 
-    public boolean isDirect() {
-        return bb.isDirect();
-    }
+    /** @see ByteBuffer#isDirect() */
+    public final boolean isDirect() { return bb.isDirect(); }
 
-    public PowerBuffer slice() {
-        return new PowerBuffer(bb.slice());
-    }
+    /** @see ByteBuffer#slice() */
+    public abstract This slice();
 
-    public PowerBuffer duplicate() {
-        return new PowerBuffer(bb.duplicate());
-    }
+    /** @see ByteBuffer#duplicate() */
+    public abstract This duplicate();
 
-    public PowerBuffer asReadOnlyBuffer() {
-        return new PowerBuffer(bb.asReadOnlyBuffer());
-    }
+    /** @see ByteBuffer#asReadOnlyBuffer() */
+    public abstract This asReadOnlyBuffer();
 
-    public byte get() {
-        return bb.get();
-    }
+    /** @see ByteBuffer#get() */
+    public byte get() { return bb.get(); }
 
-    public PowerBuffer put(byte b) {
+    /** @see ByteBuffer#put(byte) */
+    public This put(byte b) {
         bb.put(b);
-        return this;
+        return (This) this;
     }
 
-    public byte get(int index) {
-        return bb.get(index);
-    }
+    /** @see ByteBuffer#get(int) */
+    public final byte get(int index) { return bb.get(index); }
 
-    public PowerBuffer put(int index, byte b) {
+    /** @see ByteBuffer#put(int, byte) */
+    public final This put(int index, byte b) {
         bb.put(index, b);
-        return this;
+        return (This) this;
     }
 
-    public PowerBuffer get(byte[] dst, int offset, int length) {
+    /** @see ByteBuffer#get(byte[], int, int) */
+    public This get(byte[] dst, int offset, int length) {
         bb.get(dst, offset, length);
-        return this;
+        return (This) this;
     }
 
-    public PowerBuffer get(byte[] dst) {
-        return get(dst, 0, dst.length);
+    /** @see ByteBuffer#get(byte[]) */
+    public This get(byte[] dst) {
+        bb.get(dst);
+        return (This) this;
     }
 
-    public PowerBuffer put(PowerBuffer src) {
-        bb.put(src.bb);
-        return this;
+    /**
+     * Obtains the adapted byte {@link #buffer()} from the given power buffer
+     * and forwards the call to {@link #put(ByteBuffer)}.
+     *
+     * @param  src the power buffer with the contents to put into this power
+     *         buffer.
+     * @return {@code this}
+     */
+    public final This put(PowerBuffer<?> src) { return put(src.buffer()); }
+
+    /** @see ByteBuffer#put(ByteBuffer) */
+    public This put(ByteBuffer src) {
+        bb.put(src);
+        return (This) this;
     }
 
-    public PowerBuffer put(byte[] src, int offset, int length) {
+    /** @see ByteBuffer#put(byte[], int, int) */
+    public This put(byte[] src, int offset, int length) {
         bb.put(src, offset, length);
-        return this;
+        return (This) this;
     }
 
-    public PowerBuffer put(byte[] src) {
-        return put(src, 0, src.length);
+    /** @see ByteBuffer#put(byte[]) */
+    public This put(byte[] src) {
+        bb.put(src);
+        return (This) this;
     }
 
-    public PowerBuffer compact() {
+    /** @see ByteBuffer#compact() */
+    public This compact() {
         bb.compact();
-        return this;
+        return (This) this;
     }
 
+    /**
+     * Returns a string representation of this object for logging and debugging
+     * purposes.
+     */
     @Override
-    public String toString() {
+    public final String toString() {
         return String.format("%s[position=%d, limit=%d, capacity=%d]",
                 getClass().getName(),
                 position(),
@@ -324,161 +372,182 @@ public final class PowerBuffer implements Comparable<PowerBuffer> {
                 capacity());
     }
 
+    /**
+     * Obtains the adapted byte {@link #buffer()} from the given power buffer
+     * and forwards the call to {@link ByteBuffer#compareTo(ByteBuffer)}.
+     *
+     * @param  that the power buffer to compare with this power buffer.
+     * @return whether the adapted byte buffer compares less than, equal to or
+     *         greater than the adapted byte buffer of the given power buffer.
+     */
     @Override
-    public int compareTo(PowerBuffer that) {
-        return this.bb.compareTo(that.bb);
+    public final int compareTo(This that) {
+        return this.bb.compareTo(that.buffer());
     }
 
+    /** @see ByteBuffer#hashCode() */
     @Override
-    public int hashCode() {
-        return bb.hashCode();
-    }
+    public final int hashCode() { return bb.hashCode(); }
 
+    /**
+     * Returns {@code true} if and only if the given object is an instance of
+     * this class and this power buffer's adapted byte buffer compares
+     * {@linkplain ByteBuffer#equals(Object) equal} with that power buffer's
+     * adapted byte buffer.
+     *
+     * @param that the object to test for equality.
+     */
     @Override
-    public boolean equals(Object that) {
-        return this == that
+    public final boolean equals(Object that) {
+        return (This) this == that
                 || that instanceof PowerBuffer
-                    && this.bb.equals(((PowerBuffer) that).bb);
+                    && this.bb.equals(((PowerBuffer<?>) that).buffer());
     }
 
-    public ByteOrder order() {
-        return bb.order();
-    }
+    /** @see ByteBuffer#order() */
+    public final ByteOrder order() { return bb.order(); }
 
-    public PowerBuffer order(ByteOrder order) {
+    /** @see ByteBuffer#order(ByteOrder) */
+    public This order(ByteOrder order) {
         bb.order(order);
-        return this;
+        return (This) this;
     }
 
-    public char getChar() {
-        return bb.getChar();
-    }
+    /** @see ByteBuffer#getChar() */
+    public char getChar() { return bb.getChar(); }
 
-    public PowerBuffer putChar(char value) {
+    /** @see ByteBuffer#putChar(char) */
+    public This putChar(char value) {
         bb.putChar(value);
-        return this;
+        return (This) this;
     }
 
-    public char getChar(int index) {
-        return bb.getChar(index);
-    }
+    /** @see ByteBuffer#getChar(int) */
+    public final char getChar(int index) { return bb.getChar(index); }
 
-    public PowerBuffer putChar(int index, char value) {
+    /** @see ByteBuffer#putChar(int, char) */
+    public final This putChar(int index, char value) {
         bb.putChar(index, value);
-        return this;
+        return (This) this;
     }
 
-    public CharBuffer asCharBuffer() {
-        return bb.asCharBuffer();
-    }
+    /** @see ByteBuffer#asCharBuffer() */
+    public final CharBuffer asCharBuffer() { return bb.asCharBuffer(); }
 
-    public short getShort() {
-        return bb.getShort();
-    }
+    /** @see ByteBuffer#getShort() */
+    public short getShort() { return bb.getShort(); }
 
-    public PowerBuffer putShort(short value) {
+    /** @see ByteBuffer#putShort(short) */
+    public This putShort(short value) {
         bb.putShort(value);
-        return this;
+        return (This) this;
     }
 
-    public short getShort(int index) {
-        return bb.getShort(index);
-    }
+    /** @see ByteBuffer#getShort(int) */
+    public final short getShort(int index) { return bb.getShort(index); }
 
-    public PowerBuffer putShort(int index, short value) {
+    /** @see ByteBuffer#putShort(int, short) */
+    public final This putShort(int index, short value) {
         bb.putShort(index, value);
-        return this;
+        return (This) this;
     }
 
-    public ShortBuffer asShortBuffer() {
-        return bb.asShortBuffer();
-    }
+    /** @see ByteBuffer#asShortBuffer() */
+    public final ShortBuffer asShortBuffer() { return bb.asShortBuffer(); }
 
-    public int getInt() {
-        return bb.getInt();
-    }
+    /** @see ByteBuffer#getInt() */
+    public int getInt() { return bb.getInt(); }
 
-    public PowerBuffer putInt(int value) {
+    /** @see ByteBuffer#putInt(int) */
+    public This putInt(int value) {
         bb.putInt(value);
-        return this;
+        return (This) this;
     }
 
-    public int getInt(int index) {
-        return bb.getInt(index);
-    }
+    /** @see ByteBuffer#getInt(int) */
+    public final int getInt(int index) { return bb.getInt(index); }
 
-    public PowerBuffer putInt(int index, int value) {
+    /** @see ByteBuffer#putInt(int, int) */
+    public final This putInt(int index, int value) {
         bb.putInt(index, value);
-        return this;
+        return (This) this;
     }
 
-    public IntBuffer asIntBuffer() {
-        return bb.asIntBuffer();
-    }
+    /** @see ByteBuffer#asIntBuffer() */
+    public final IntBuffer asIntBuffer() { return bb.asIntBuffer(); }
 
-    public long getLong() {
-        return bb.getLong();
-    }
+    /** @see ByteBuffer#getLong() */
+    public long getLong() { return bb.getLong(); }
 
-    public PowerBuffer putLong(long value) {
+    /** @see ByteBuffer#putLong(long) */
+    public This putLong(long value) {
         bb.putLong(value);
-        return this;
+        return (This) this;
     }
 
-    public long getLong(int index) {
-        return bb.getLong(index);
-    }
+    /** @see ByteBuffer#getLong(int) */
+    public final long getLong(int index) { return bb.getLong(index); }
 
-    public PowerBuffer putLong(int index, long value) {
+    /** @see ByteBuffer#putLong(int, long) */
+    public final This putLong(int index, long value) {
         bb.putLong(index, value);
-        return this;
+        return (This) this;
     }
 
-    public LongBuffer asLongBuffer() {
-        return bb.asLongBuffer();
-    }
+    /** @see ByteBuffer#asLongBuffer() */
+    public final LongBuffer asLongBuffer() { return bb.asLongBuffer(); }
 
-    public float getFloat() {
-        return bb.getFloat();
-    }
+    /** @see ByteBuffer#getFloat() */
+    public float getFloat() { return bb.getFloat(); }
 
-    public PowerBuffer putFloat(float value) {
+    /** @see ByteBuffer#putFloat(float) */
+    public This putFloat(float value) {
         bb.putFloat(value);
-        return this;
+        return (This) this;
     }
 
-    public float getFloat(int index) {
-        return bb.getFloat(index);
-    }
+    /** @see ByteBuffer#getFloat(int) */
+    public final float getFloat(int index) { return bb.getFloat(index); }
 
-    public PowerBuffer putFloat(int index, float value) {
+    /** @see ByteBuffer#putFloat(int, float) */
+    public final This putFloat(int index, float value) {
         bb.putFloat(index, value);
-        return this;
+        return (This) this;
     }
 
-    public FloatBuffer asFloatBuffer() {
-        return bb.asFloatBuffer();
-    }
+    /** @see ByteBuffer#asFloatBuffer() */
+    public final FloatBuffer asFloatBuffer() { return bb.asFloatBuffer(); }
 
-    public double getDouble() {
-        return bb.getDouble();
-    }
+    /** @see ByteBuffer#getDouble() */
+    public double getDouble() { return bb.getDouble(); }
 
-    public PowerBuffer putDouble(double value) {
+    /** @see ByteBuffer#putDouble(double) */
+    public This putDouble(double value) {
         bb.putDouble(value);
-        return this;
+        return (This) this;
     }
 
-    public double getDouble(int index) {
-        return bb.getDouble(index);
-    }
+    /** @see ByteBuffer#getDouble(int) */
+    public final double getDouble(int index) { return bb.getDouble(index); }
 
-    public PowerBuffer putDouble(int index, double value) {
+    /** @see ByteBuffer#putDouble(int, double) */
+    public final This putDouble(int index, double value) {
         bb.putDouble(index, value);
-        return this;
+        return (This) this;
     }
 
-    public DoubleBuffer asDoubleBuffer() {
-        return bb.asDoubleBuffer();
+    /** @see ByteBuffer#asDoubleBuffer() */
+    public final DoubleBuffer asDoubleBuffer() { return bb.asDoubleBuffer(); }
+
+    static ByteBuffer slice(ByteBuffer bb) {
+        return bb.slice().order(bb.order());
+    }
+
+    static ByteBuffer duplicate(ByteBuffer bb) {
+        return bb.duplicate().order(bb.order());
+    }
+
+    static ByteBuffer readOnly(ByteBuffer bb) {
+        return bb.asReadOnlyBuffer().order(bb.order());
     }
 }
