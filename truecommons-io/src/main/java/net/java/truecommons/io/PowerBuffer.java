@@ -13,21 +13,17 @@ import java.nio.channels.WritableByteChannel;
 /**
  * Adapts a {@link ByteBuffer} to provide an enhanced API, e.g. for reading
  * unsigned integers.
- * This class is mostly a drop-in replacement for {@code ByteBuffer}, so you
- * can use a {@code PowerBuffer} wherever you would otherwise use a
+ * This class is a drop-in replacement for {@code ByteBuffer}, so you can use
+ * a {@code PowerBuffer} wherever you would otherwise use a
  * {@code ByteBuffer}.
- * However, unlike the {@code ByteBuffer} class, a clone of a
- * {@code PowerBuffer} always inherits the original buffer's byte order,
- * e.g. when calling {@link #slice()}, {@link #duplicate()} or
- * {@link #asReadOnlyBuffer()}.
  *
  * @param  <This> The type of this power buffer.
  * @author Christian Schlichtherle
  */
 public abstract class PowerBuffer<This extends PowerBuffer<This>>
-implements Comparable<This> {
+implements Comparable<This>, Cloneable {
 
-    final ByteBuffer bb;
+    ByteBuffer bb;
 
     //
     // Construction:
@@ -45,14 +41,14 @@ implements Comparable<This> {
         return MutableBuffer.allocate(capacity);
     }
 
-    /** @see MutableBuffer#wrap(byte[], int, int) */
-    public static PowerBuffer<?> wrap(byte[] array, int offset, int length) {
-        return MutableBuffer.wrap(array, offset, length);
-    }
-
     /** @see MutableBuffer#wrap(byte[]) */
     public static PowerBuffer<?> wrap(byte[] array) {
         return MutableBuffer.wrap(array);
+    }
+
+    /** @see MutableBuffer#wrap(byte[], int, int) */
+    public static PowerBuffer<?> wrap(byte[] array, int offset, int length) {
+        return MutableBuffer.wrap(array, offset, length);
     }
 
     /** @see MutableBuffer#wrap(ByteBuffer) */
@@ -67,11 +63,36 @@ implements Comparable<This> {
     /** Returns {@code true} if and only if this power buffer is mutable. */
     public abstract boolean isMutable();
 
-    /** Returns an mutable buffer view of the adapted byte buffer. */
+    /**
+     * Returns a mutable buffer view of the adapted byte buffer.
+     * The properties of the returned buffer are equal to the properties of
+     * this buffer, including its byte {@link #order()}.
+     */
     public abstract MutableBuffer asMutableBuffer();
 
-    /** Returns an immutable buffer view of the adapted byte buffer. */
+    /**
+     * Returns an immutable buffer view of the adapted byte buffer.
+     * The properties of the returned buffer are equal to the properties of
+     * this buffer, including its byte {@link #order()}.
+     */
     public abstract ImmutableBuffer asImmutableBuffer();
+
+    /**
+     * Like {@link #duplicate()} but retains the byte oder, too.
+     *
+     * @return A {@link #duplicate()} with the same byte order.
+     */
+    @Override
+    public This clone() {
+        final This clone;
+        try {
+            clone = (This) super.clone();
+        } catch (final CloneNotSupportedException cannotHappen) {
+            throw new AssertionError(cannotHappen);
+        }
+        clone.bb = clone(bb);
+        return clone;
+    }
 
     /**
      * Returns the adapted byte buffer.
@@ -539,15 +560,7 @@ implements Comparable<This> {
     /** @see ByteBuffer#asDoubleBuffer() */
     public final DoubleBuffer asDoubleBuffer() { return bb.asDoubleBuffer(); }
 
-    static ByteBuffer slice(ByteBuffer bb) {
-        return bb.slice().order(bb.order());
-    }
-
-    static ByteBuffer duplicate(ByteBuffer bb) {
+    static ByteBuffer clone(ByteBuffer bb) {
         return bb.duplicate().order(bb.order());
-    }
-
-    static ByteBuffer readOnly(ByteBuffer bb) {
-        return bb.asReadOnlyBuffer().order(bb.order());
     }
 }

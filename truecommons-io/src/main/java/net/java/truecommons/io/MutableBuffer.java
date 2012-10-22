@@ -10,8 +10,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * A power buffer with mutable properties.
- * This class is mostly a drop-in replacement for {@code ByteBuffer}, so you
- * can use a {@code MutableBuffer} wherever you would otherwise use a
+ * This class is a drop-in replacement for {@code ByteBuffer}, so you can use
+ * a {@code MutableBuffer} wherever you would otherwise use a
  * {@code ByteBuffer}.
  * However, unlike the {@code ByteBuffer} class, a clone of a
  * {@code MutableBuffer} always inherits the original buffer's byte order,
@@ -41,24 +41,25 @@ public final class MutableBuffer extends PowerBuffer<MutableBuffer> {
         return new MutableBuffer(ByteBuffer.allocate(capacity));
     }
 
-    /** @see ByteBuffer#wrap(byte[], int, int) */
-    public static MutableBuffer wrap(byte[] array, int offset, int length) {
-        return new MutableBuffer(ByteBuffer.wrap(array, offset, length));
-    }
-
     /** @see ByteBuffer#wrap(byte[]) */
     public static MutableBuffer wrap(byte[] array) {
         return new MutableBuffer(ByteBuffer.wrap(array));
     }
 
+    /** @see ByteBuffer#wrap(byte[], int, int) */
+    public static MutableBuffer wrap(byte[] array, int offset, int length) {
+        return new MutableBuffer(ByteBuffer.wrap(array, offset, length));
+    }
+
     /**
-     * Constructs a new mutable buffer which adapts the given byte {@code buffer}.
+     * Constructs a new mutable buffer which adapts the given byte
+     * {@code buffer}.
      *
-     * @param  buffer the byte buffer to adapt.
+     * @param  buf the byte buffer to adapt.
      * @return a new mutable buffer.
      */
-    public static MutableBuffer wrap(ByteBuffer buffer) {
-        return new MutableBuffer(Objects.requireNonNull(buffer));
+    public static MutableBuffer wrap(ByteBuffer buf) {
+        return new MutableBuffer(Objects.requireNonNull(buf));
     }
 
     //
@@ -82,16 +83,16 @@ public final class MutableBuffer extends PowerBuffer<MutableBuffer> {
 
     @Override
     public MutableBuffer slice() {
-        return new MutableBuffer(slice(bb));
+        return new MutableBuffer(bb.slice());
     }
 
     @Override
     public MutableBuffer duplicate() {
-        return new MutableBuffer(duplicate(bb));
+        return new MutableBuffer(bb.duplicate());
     }
 
     @Override
     public MutableBuffer asReadOnlyBuffer() {
-        return new MutableBuffer(readOnly(bb));
+        return new MutableBuffer(bb.asReadOnlyBuffer());
     }
 }

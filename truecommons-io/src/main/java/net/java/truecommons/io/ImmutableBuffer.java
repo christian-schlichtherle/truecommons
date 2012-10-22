@@ -13,13 +13,9 @@ import javax.annotation.concurrent.Immutable;
 
 /**
  * A power buffer with immutable properties.
- * This class is mostly a drop-in replacement for {@code ByteBuffer}, so you
- * can use an {@code ImmutableBuffer} wherever you would otherwise use a
+ * This class is a drop-in replacement for {@code ByteBuffer}, so you can use
+ * an {@code ImmutableBuffer} wherever you would otherwise use a
  * {@code ByteBuffer}.
- * However, unlike the {@code ByteBuffer} class, a clone of an
- * {@code ImmutableBuffer} always inherits the original buffer's byte order,
- * e.g. when calling {@link #slice()}, {@link #duplicate()} or
- * {@link #asReadOnlyBuffer()}.
  * <p>
  * This class protects the identity and state of its adapted byte buffer,
  * but it does not protect its contents.
@@ -62,14 +58,9 @@ public final class ImmutableBuffer extends PowerBuffer<ImmutableBuffer> {
 
     private ImmutableBuffer(ByteBuffer buf) { super(buf); }
 
-    /**
-     * Constructs a new immutable buffer which adapts the given byte {@code buffer}.
-     *
-     * @param  buffer the byte buffer to adapt.
-     * @return a new immutable buffer.
-     */
-    public static ImmutableBuffer wrap(ByteBuffer buffer) {
-        return new ImmutableBuffer(duplicate(buffer));
+    /** @see ByteBuffer#wrap(byte[]) */
+    public static ImmutableBuffer wrap(byte[] array) {
+        return new ImmutableBuffer(ByteBuffer.wrap(array));
     }
 
     /** @see ByteBuffer#wrap(byte[], int, int) */
@@ -77,9 +68,15 @@ public final class ImmutableBuffer extends PowerBuffer<ImmutableBuffer> {
         return new ImmutableBuffer(ByteBuffer.wrap(array, offset, length));
     }
 
-    /** @see ByteBuffer#wrap(byte[]) */
-    public static ImmutableBuffer wrap(byte[] array) {
-        return new ImmutableBuffer(ByteBuffer.wrap(array));
+    /**
+     * Constructs a new immutable buffer which adapts the given byte
+     * {@code buffer}.
+     *
+     * @param  buf the byte buffer to adapt.
+     * @return a new immutable buffer.
+     */
+    public static ImmutableBuffer wrap(ByteBuffer buf) {
+        return new ImmutableBuffer(clone(buf));
     }
 
     //
@@ -91,7 +88,7 @@ public final class ImmutableBuffer extends PowerBuffer<ImmutableBuffer> {
 
     @Override
     public MutableBuffer asMutableBuffer() {
-        return MutableBuffer.wrap(duplicate(bb));
+        return MutableBuffer.wrap(clone(bb));
     }
 
     @Override
@@ -171,17 +168,17 @@ public final class ImmutableBuffer extends PowerBuffer<ImmutableBuffer> {
 
     @Override
     public ImmutableBuffer slice() {
-        return new ImmutableBuffer(slice(bb));
+        return new ImmutableBuffer(bb.slice());
     }
 
     @Override
     public ImmutableBuffer duplicate() {
-        return new ImmutableBuffer(bb); // no need to duplicate bb!
+        return new ImmutableBuffer(bb.duplicate()); // no need to duplicate bb!
     }
 
     @Override
     public ImmutableBuffer asReadOnlyBuffer() {
-        return bb.isReadOnly() ? this : new ImmutableBuffer(readOnly(bb));
+        return new ImmutableBuffer(bb.asReadOnlyBuffer());
     }
 
     @Override @Deprecated

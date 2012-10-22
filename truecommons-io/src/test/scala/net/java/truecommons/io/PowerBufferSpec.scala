@@ -90,7 +90,7 @@ extends WordSpec with ShouldMatchers with ParallelTestExecution {
       }
     }
 
-    "partially wrapping an array" should {
+    "wrapping a part of an array" should {
       val array = new Array[Byte](3)
       val pb = PowerBuffer wrap (array, 1, 1)
 
@@ -161,25 +161,25 @@ extends WordSpec with ShouldMatchers with ParallelTestExecution {
         intercept[UnsupportedOperationException] { rob put (0, 0) }
       }
 
-      "return itself when asked to be set read-only again" in {
-        rob.asReadOnlyBuffer should be theSameInstanceAs (rob)
+      "not return itself when asked to be set read-only again" in {
+        rob.asReadOnlyBuffer should not be theSameInstanceAs (rob)
       }
     }
 
     "set to little-endian" should {
-      val bb = (MutableBuffer allocate 1).littleEndian.asImmutableBuffer.asReadOnlyBuffer
+      val bb = (MutableBuffer allocate 1).asReadOnlyBuffer.littleEndian.asImmutableBuffer
 
       "retain this byte order" when {
-        "sliced" in {
-          bb.slice.order() should be (LITTLE_ENDIAN)
+        "cloned" in {
+          bb.clone.order() should be (LITTLE_ENDIAN)
         }
 
-        "duplicated" in {
-          bb.duplicate.order() should be (LITTLE_ENDIAN)
+        "viewed as a mutable buffer" in {
+          bb.asMutableBuffer.order() should be (LITTLE_ENDIAN)
         }
 
-        "viewed as read-only" in {
-          bb.asReadOnlyBuffer.order() should be (LITTLE_ENDIAN)
+        "viewed as an immutable buffer" in {
+          bb.asMutableBuffer.asImmutableBuffer.order() should be (LITTLE_ENDIAN)
         }
 
         "viewed as a char buffer" in {
@@ -204,6 +204,24 @@ extends WordSpec with ShouldMatchers with ParallelTestExecution {
 
         "viewed as a double buffer" in {
           bb.asDoubleBuffer.order() should be (LITTLE_ENDIAN)
+        }
+      }
+    }
+
+    "set to little-endian" should {
+      val bb = (MutableBuffer allocate 1).asReadOnlyBuffer.littleEndian.asImmutableBuffer
+
+      "set the byte order to big-endian" when {
+        "sliced" in {
+          bb.slice.order() should be (BIG_ENDIAN)
+        }
+
+        "duplicated" in {
+          bb.duplicate.order() should be (BIG_ENDIAN)
+        }
+
+        "viewed as read-only" in {
+          bb.asReadOnlyBuffer.order() should be (BIG_ENDIAN)
         }
       }
     }
