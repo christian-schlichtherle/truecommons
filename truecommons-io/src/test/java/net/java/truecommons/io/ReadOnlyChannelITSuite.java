@@ -192,7 +192,7 @@ public abstract class ReadOnlyChannelITSuite {
 
     /**
      * Reads a single byte from the given seekable byte channel.
-     * 
+     *
      * @param channel the readable byte channel.
      * @return the read byte or -1 on end-of-file.
      * @throws IOException on any I/O error.
@@ -249,7 +249,7 @@ public abstract class ReadOnlyChannelITSuite {
             assertEquals(pos, channel.position());
         }
     }
-    
+
     @Test
     public void testBackwardReadBytes() throws IOException {
         assertBackwardReadBytes(rchannel);
