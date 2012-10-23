@@ -44,18 +44,11 @@ extends WordSpec with ShouldMatchers with BeforeAndAfter with MockitoSugar {
   }
 
   "A ByteBufferChannel" when {
-    "constructing" should {
+    "constructed" should {
       "accept no null ByteBuffer" in {
         intercept[NullPointerException] {
           new ByteBufferChannel(null)
         }
-      }
-
-      "accept a direct ByteBuffer only if its read-only" in {
-        intercept[IllegalArgumentException] {
-          new ByteBufferChannel(ByteBuffer allocateDirect 1)
-        }
-        new ByteBufferChannel(ByteBuffer allocateDirect 1 asReadOnlyBuffer)
       }
     }
 

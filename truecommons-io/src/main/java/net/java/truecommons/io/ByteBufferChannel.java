@@ -29,14 +29,13 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
      * as its initial {@linkplain #bufferDuplicate() byte buffer}.
      * Note that the buffer contents are shared between the client application
      * and this class.
+     * <p>
+     * Since TrueCommons 2.1, this constructor accepts writable direct byte
+     * buffers, too.
      *
      * @param  buffer the initial byte buffer to read or write.
-     * @throws IllegalArgumentException if {@code buffer} is a writable direct
-     *         buffer.
      */
-    public ByteBufferChannel(final ByteBuffer buffer) {
-        if (!buffer.isReadOnly() && !buffer.hasArray())
-            throw new IllegalArgumentException();
+    public ByteBufferChannel(ByteBuffer buffer) {
         this.buffer = buffer.duplicate();
     }
 
@@ -45,6 +44,11 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
      * byte buffer.
      * Note that the buffer contents are shared between the client application
      * and this class.
+     * <p>
+     * The returned byte buffer will be direct if and only if the byte buffer
+     * which was provided to the constructor is direct.
+     * Likewise, the returned byte buffer will be read-only if and only if the
+     * byte buffer which was provided to the constructor is read-only.
      *
      * @return A {@linkplain ByteBuffer#duplicate() duplicate} of the backing
      *         byte buffer.
@@ -95,9 +99,10 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
                 while ((newCapacity <<= 1) < minLimit) {
                 }
                 if (newCapacity > Integer.MAX_VALUE) newCapacity = minLimit;
-                final byte[] array = new byte[(int) newCapacity];
-                System.arraycopy(buffer.array(), buffer.arrayOffset(), array, 0, limit);
-                buffer = ByteBuffer.wrap(array);
+                buffer = (buffer.isDirect()
+                        ? ByteBuffer.allocateDirect((int) newCapacity)
+                        : ByteBuffer.allocate((int) newCapacity))
+                        .put((ByteBuffer) buffer.position(0));
             }
             final long position = this.position;
             assert position <= Integer.MAX_VALUE;
