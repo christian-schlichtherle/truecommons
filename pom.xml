@@ -71,6 +71,7 @@
     </properties>
 
     <modules>
+        <module>truecommons-cio</module>
         <module>truecommons-io</module>
         <module>truecommons-logging</module>
         <module>truecommons-services</module>
@@ -79,6 +80,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-cio</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>truecommons-io</artifactId>
