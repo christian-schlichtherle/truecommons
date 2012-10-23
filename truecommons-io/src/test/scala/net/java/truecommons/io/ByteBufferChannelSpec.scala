@@ -30,7 +30,10 @@ extends WordSpec with ShouldMatchers with BeforeAndAfter with MockitoSugar {
   }
 
   def newReadOnlyByteBufferChannel =
-    new ByteBufferChannel((ByteBuffer wrap array).asReadOnlyBuffer)
+    new ByteBufferChannel((ByteBuffer wrap array)
+                          .asReadOnlyBuffer
+                          .position(64) // spoiling attempt
+                          .asInstanceOf[ByteBuffer])
 
   def newEmptyByteBufferChannel =
     new ByteBufferChannel(ByteBuffer allocate 0)
@@ -81,12 +84,16 @@ extends WordSpec with ShouldMatchers with BeforeAndAfter with MockitoSugar {
     }
 
     "given a read-only ByteBuffer" should {
+      "have buffer duplicate position zero" in {
+        newReadOnlyByteBufferChannel.bufferDuplicate.position should be (0)
+      }
+
       "have the size() of the given buffer" in {
         newReadOnlyByteBufferChannel should have size array.length
       }
 
       "have position() zero" in {
-        newReadOnlyByteBufferChannel.position() should be (0)
+        newReadOnlyByteBufferChannel.position should be (0)
       }
 
       "support reading the ByteBuffer and repositioning repeatedly" in {
