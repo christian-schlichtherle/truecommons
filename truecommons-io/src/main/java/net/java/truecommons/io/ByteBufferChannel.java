@@ -13,7 +13,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * Adapts a {@linkplain ByteBuffer byte buffer} to a seekable byte channel.
- * 
+ *
  * @author Christian Schlichtherle
  */
 @NotThreadSafe
@@ -29,7 +29,7 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
      * as its initial {@linkplain #bufferDuplicate() byte buffer}.
      * Note that the buffer contents are shared between the client application
      * and this class.
-     * 
+     *
      * @param  buffer the initial byte buffer to read or write.
      * @throws IllegalArgumentException if {@code buffer} is a writable direct
      *         buffer.
@@ -45,13 +45,11 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
      * byte buffer.
      * Note that the buffer contents are shared between the client application
      * and this class.
-     * 
+     *
      * @return A {@linkplain ByteBuffer#duplicate() duplicate} of the backing
      *         byte buffer.
      */
-    public ByteBuffer bufferDuplicate() {
-        return buffer.duplicate();
-    }
+    public ByteBuffer bufferDuplicate() { return buffer.duplicate(); }
 
     @Override
     public int read(final ByteBuffer dst) throws IOException {
@@ -144,13 +142,9 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
     }
 
     @Override
-    public boolean isOpen() {
-        return !closed;
-    }
+    public boolean isOpen() { return !closed; }
 
     @Override
     @DischargesObligation
-    public void close() {
-        closed = true;
-    }
+    public void close() { closed = true; }
 }
