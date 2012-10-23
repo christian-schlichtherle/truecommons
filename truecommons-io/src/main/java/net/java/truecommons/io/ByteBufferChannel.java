@@ -56,10 +56,12 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
     private boolean closed;
 
     /**
-     * Constructs a new byte buffer channel with a
-     * {@linkplain ByteBuffer#rewind() rewinded}
-     * {@linkplain ByteBuffer#duplicate() duplicate} of the given byte buffer
-     * as its initial backing buffer.
+     * Constructs a new byte buffer channel which shares its contents with the
+     * given byte {@code buffer}.
+     * A {@linkplain ByteBuffer#duplicate() duplicate} of {@code buffer} is
+     * made and {@linkplain ByteBuffer#rewind() rewind} in order to protect
+     * this channel from concurrent modifications of the given buffer's
+     * properties.
      * <p>
      * Since TrueCommons 2.1, this constructor accepts writable direct byte
      * buffers, too.
