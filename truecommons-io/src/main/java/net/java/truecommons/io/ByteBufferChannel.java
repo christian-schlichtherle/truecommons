@@ -42,7 +42,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 @NotThreadSafe
 public final class ByteBufferChannel extends AbstractSeekableChannel {
 
-    /** The backing byte buffer with the contents to share. */
+    /** The backing buffer with the contents to share. */
     private ByteBuffer buffer;
 
     /**
