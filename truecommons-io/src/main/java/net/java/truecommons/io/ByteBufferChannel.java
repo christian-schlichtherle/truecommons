@@ -9,49 +9,82 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ReadOnlyBufferException;
 import java.nio.channels.NonWritableChannelException;
+import java.nio.channels.SeekableByteChannel;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * Adapts a {@linkplain ByteBuffer byte buffer} to a seekable byte channel.
+ * The contents of the backing buffer are shared with this channel and any
+ * changes will be visible to both parties.
+ * However, the properties of the backing buffer are not shared with this
+ * channel, e.g. changing the position of the backing buffer will not affect
+ * the position of this channel and vice versa.
+ * <p>
+ * The initial position of the channel is always zero, independent of the
+ * backing buffer's position.
+ * When reading, the channel's position gets advanced until it hits the
+ * backing buffer's limit.
+ * When writing, the channel's position gets advanced and the backing
+ * buffer's limit gets extended as required until it hits the backing
+ * buffer's capacity.
+ * When writing past the backing buffer's capacity, a new backing buffer is
+ * allocated with a larger capacity and filled with the contents of the
+ * old backing buffer.
+ * Therefore, in order to avoid excessive buffer copy operations, the client
+ * should provide this channel with a byte buffer with a capacity which is
+ * large enough to host any data to write.
+ * Furthermore, when closing this channel, the client should call
+ * {@link #bufferDuplicate()} to obtain a duplicate of the current backing
+ * buffer.
  *
  * @author Christian Schlichtherle
  */
 @NotThreadSafe
 public final class ByteBufferChannel extends AbstractSeekableChannel {
 
+    /** The backing byte buffer with the contents to share. */
     private ByteBuffer buffer;
+
+    /**
+     * The position of this channel.
+     * Note that {@code buffer.position() can't get used.
+     *
+     * @see SeekableByteChannel#position(long)
+     */
     private long position;
+
     private boolean closed;
 
     /**
-     * Constructs a new seekable byte buffer channel with a
+     * Constructs a new byte buffer channel with a
+     * {@linkplain ByteBuffer#rewind() rewinded}
      * {@linkplain ByteBuffer#duplicate() duplicate} of the given byte buffer
-     * as its initial {@linkplain #bufferDuplicate() byte buffer}.
-     * Note that the buffer contents are shared between the client application
-     * and this class.
+     * as its initial backing buffer.
      * <p>
      * Since TrueCommons 2.1, this constructor accepts writable direct byte
      * buffers, too.
      *
-     * @param  buffer the initial byte buffer to read or write.
+     * @param buffer the byte buffer with the contents to share with this
+     *        channel.
      */
-    public ByteBufferChannel(ByteBuffer buffer) {
-        this.buffer = buffer.duplicate();
+    public ByteBufferChannel(final ByteBuffer buffer) {
+        this.buffer = (ByteBuffer) buffer.duplicate().rewind();
     }
 
     /**
      * Returns a {@linkplain ByteBuffer#duplicate() duplicate} of the backing
-     * byte buffer.
-     * Note that the buffer contents are shared between the client application
-     * and this class.
+     * buffer.
+     * The returned buffer's position reflects only the last successful
+     * {@code read} or {@code write} operation.
+     * However, mere changes to the position of this channel are not reflected.
      * <p>
-     * The returned byte buffer will be direct if and only if the byte buffer
-     * which was provided to the constructor is direct.
-     * Likewise, the returned byte buffer will be read-only if and only if the
-     * byte buffer which was provided to the constructor is read-only.
+     * The returned buffer will be direct if and only if the initial backing
+     * buffer is direct.
+     * Likewise, the returned buffer will be read-only if and only if the
+     * initial backing buffer is read-only.
      *
      * @return A {@linkplain ByteBuffer#duplicate() duplicate} of the backing
-     *         byte buffer.
+     *         buffer.
      */
     public ByteBuffer bufferDuplicate() { return buffer.duplicate(); }
 
@@ -60,9 +93,10 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
         checkOpen();
         int remaining = dst.remaining();
         if (remaining <= 0) return 0;
-        final long position = this.position;
-        if (position >= buffer.limit()) return -1;
-        buffer.position((int) position);
+        final long oldPosition = this.position;
+        final ByteBuffer buffer = this.buffer;
+        if (oldPosition >= buffer.limit()) return -1;
+        buffer.position((int) oldPosition);
         final int available = buffer.remaining();
         final int srcLimit;
         if (available > remaining) {
@@ -75,7 +109,7 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
         try {
             dst.put(buffer);
         } finally {
-            if (srcLimit >= 0) buffer.limit(srcLimit);
+            if (0 <= srcLimit) buffer.limit(srcLimit);
         }
         this.position += remaining;
         return remaining;
@@ -84,36 +118,37 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
     @Override
     public int write(final ByteBuffer src) throws IOException {
         checkOpen();
+        if (this.position > Integer.MAX_VALUE) throw new OutOfMemoryError();
+        final int oldPosition = (int) this.position;
         final int remaining = src.remaining();
-        final long minLimit = position + remaining;
-        final int limit = buffer.limit();
-        if (minLimit > limit) {
-            final long oldCapacity = buffer.capacity();
-            if (minLimit <= oldCapacity) {
-                buffer.limit((int) minLimit);
-            } else if (minLimit > Integer.MAX_VALUE) {
+        final int newPosition = oldPosition + remaining; // may overflow!
+        ByteBuffer buffer = this.buffer;
+        final int oldLimit = buffer.limit();
+        if (0 > oldLimit - newPosition) { // mind overflow!
+            final int oldCapacity = buffer.capacity();
+            if (0 <= oldCapacity - newPosition) { // mind overflow!
+                buffer.limit(newPosition);
+            } else if (0 > newPosition) {
                 throw new OutOfMemoryError();
             } else {
-                if (buffer.isReadOnly()) throw new NonWritableChannelException();
-                long newCapacity = 0 < oldCapacity ? oldCapacity : 1;
-                while ((newCapacity <<= 1) < minLimit) {
-                }
-                if (newCapacity > Integer.MAX_VALUE) newCapacity = minLimit;
-                buffer = (buffer.isDirect()
+                if (buffer.isReadOnly())
+                    throw new NonWritableChannelException();
+                int newCapacity = oldCapacity << 1;
+                if (0 > newCapacity - newPosition) newCapacity = newPosition;
+                if (0 > newCapacity) newCapacity = Integer.MAX_VALUE;
+                this.buffer = buffer = (buffer.isDirect()
                         ? ByteBuffer.allocateDirect((int) newCapacity)
                         : ByteBuffer.allocate((int) newCapacity))
                         .put((ByteBuffer) buffer.position(0));
             }
-            final long position = this.position;
-            assert position <= Integer.MAX_VALUE;
-            buffer.position((int) position);
         }
+        buffer.position(oldPosition);
         try {
             buffer.put(src);
         } catch (final ReadOnlyBufferException ex) {
             throw new NonWritableChannelException();
         }
-        position += remaining;
+        this.position = newPosition;
         return remaining;
     }
 
