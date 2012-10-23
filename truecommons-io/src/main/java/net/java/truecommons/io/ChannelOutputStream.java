@@ -9,15 +9,15 @@ import edu.umd.cs.findbugs.annotations.DischargesObligation;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.nio.channels.SeekableByteChannel;
 import java.nio.channels.WritableByteChannel;
+import java.util.Objects;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.WillCloseWhenClosed;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
- * Adapts a {@link WritableByteChannel} to the {@code OutputStream} interface.
+ * Adapts a {@link WritableByteChannel} to an output stream.
  *
  * @see    ChannelInputStream
  * @author Christian Schlichtherle
@@ -28,16 +28,14 @@ public class ChannelOutputStream extends OutputStream {
 
     private final ByteBuffer single = ByteBuffer.allocate(1);
 
-    /**
-     * The underlying {@link SeekableByteChannel}.
-     * All methods in this class throw a {@link NullPointerException} if this
-     * hasn't been initialized.
-     */
+    /** The adapted nullable writable byte channel. */
     protected @Nullable WritableByteChannel channel;
 
+    protected ChannelOutputStream() { }
+
     public ChannelOutputStream(
-            final @CheckForNull @WillCloseWhenClosed WritableByteChannel sbc) {
-        this.channel = sbc;
+            final @CheckForNull @WillCloseWhenClosed WritableByteChannel channel) {
+        this.channel = Objects.requireNonNull(channel);
     }
 
     @Override
@@ -58,12 +56,9 @@ public class ChannelOutputStream extends OutputStream {
     }
 
     @Override
-    public void flush() throws IOException {
-    }
+    public void flush() throws IOException { }
 
     @Override
     @DischargesObligation
-    public void close() throws IOException {
-        channel.close();
-    }
+    public void close() throws IOException { channel.close(); }
 }
