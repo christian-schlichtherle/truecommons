@@ -30,7 +30,7 @@ extends WordSpec with ShouldMatchers with BeforeAndAfter with MockitoSugar {
   }
 
   def newReadOnlyByteBufferChannel =
-    new ByteBufferChannel(ByteBuffer wrap array asReadOnlyBuffer)
+    new ByteBufferChannel((ByteBuffer wrap array).asReadOnlyBuffer)
 
   def newEmptyByteBufferChannel =
     new ByteBufferChannel(ByteBuffer allocate 0)
