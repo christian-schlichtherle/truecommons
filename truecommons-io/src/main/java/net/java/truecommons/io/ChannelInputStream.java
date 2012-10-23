@@ -10,17 +10,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.WillCloseWhenClosed;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
- * Adapts a {@link SeekableByteChannel} to the {@code InputStream} interface.
+ * Adapts a {@link SeekableByteChannel} to an input stream.
  * This stream supports marking.
- * 
+ *
  * @see    ChannelOutputStream
  * @author Christian Schlichtherle
  */
@@ -30,11 +30,7 @@ public class ChannelInputStream extends InputStream {
 
     private final ByteBuffer single = ByteBuffer.allocate(1);
 
-    /**
-     * The underlying {@link SeekableByteChannel}.
-     * All methods in this class throw a {@link NullPointerException} if this
-     * hasn't been initialized.
-     */
+    /** The adapted nullable seekable byte channel. */
     protected @Nullable SeekableByteChannel channel;
 
     /**
@@ -43,9 +39,11 @@ public class ChannelInputStream extends InputStream {
      */
     private long mark = -1;
 
+    protected ChannelInputStream() { }
+
     public ChannelInputStream(
-            final @CheckForNull @WillCloseWhenClosed SeekableByteChannel channel) {
-        this.channel = channel;
+            final @WillCloseWhenClosed SeekableByteChannel channel) {
+        this.channel = Objects.requireNonNull(channel);
     }
 
     @Override
@@ -115,5 +113,5 @@ public class ChannelInputStream extends InputStream {
         } catch (IOException ex) {
             return false;
         }
-    }    
+    }
 }
