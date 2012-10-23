@@ -86,7 +86,11 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
      * @return A {@linkplain ByteBuffer#duplicate() duplicate} of the backing
      *         buffer.
      */
-    public ByteBuffer bufferDuplicate() { return buffer.duplicate(); }
+    public ByteBuffer getBuffer() { return buffer.duplicate(); }
+
+    /** @deprecated Use {@link #getBuffer} instead. */
+    @Deprecated
+    public ByteBuffer bufferDuplicate() { return getBuffer(); }
 
     @Override
     public int read(final ByteBuffer dst) throws IOException {
