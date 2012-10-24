@@ -50,9 +50,10 @@ public class ChannelOutputStream extends OutputStream {
     }
 
     @Override
-    public void write(byte[] b, int off, int len) throws IOException {
-        if (len != channel.write(ByteBuffer.wrap(b, off, len)))
-            throw new IOException("write error");
+    public void write(final byte[] b, final int off, final int len)
+    throws IOException {
+        final ByteBuffer bb = ByteBuffer.wrap(b, off, len);
+        while (bb.hasRemaining()) channel.write(bb);
     }
 
     @Override
