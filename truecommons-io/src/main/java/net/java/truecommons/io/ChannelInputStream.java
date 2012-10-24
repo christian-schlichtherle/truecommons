@@ -11,15 +11,14 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import javax.annotation.WillCloseWhenClosed;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * Adapts a {@link SeekableByteChannel} to an input stream.
- * This stream supports marking.
+ * This stream supports marking unless the adapted channel fails to set its
+ * position in {@link #markSupported}.
  *
  * @see    ChannelOutputStream
  * @author Christian Schlichtherle
@@ -49,17 +48,31 @@ public class ChannelInputStream extends InputStream {
     @Override
     public int read() throws IOException {
         single.rewind();
-        return 1 == channel.read(single) ? single.get(0) & 0xff : -1;
+        return 1 == read(single) ? single.get(0) & 0xff : -1;
     }
 
     @Override
     public final int read(byte[] b) throws IOException {
-        return read(b, 0, b.length);
+        return read(ByteBuffer.wrap(b));
     }
 
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
-        return channel.read(ByteBuffer.wrap(b, off, len));
+        return read(ByteBuffer.wrap(b, off, len));
+    }
+
+    @SuppressWarnings("SleepWhileInLoop")
+    private int read(ByteBuffer bb) throws IOException {
+        if (0 == bb.remaining()) return 0;
+        final int oldPosition = bb.position();
+        while (0 == channel.read(bb)) {
+            try {
+                Thread.sleep(50);
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        return bb.position() - oldPosition;
     }
 
     @Override
@@ -81,17 +94,13 @@ public class ChannelInputStream extends InputStream {
 
     @Override
     @DischargesObligation
-    public void close() throws IOException {
-        channel.close();
-    }
+    public void close() throws IOException { channel.close(); }
 
     @Override
     public void mark(final int readlimit) {
         try {
             mark = channel.position();
-        } catch (IOException ex) {
-            Logger  .getLogger(ChannelInputStream.class.getName())
-                    .log(Level.WARNING, ex.getLocalizedMessage(), ex);
+        } catch (final IOException ex) {
             mark = -2;
         }
     }
@@ -100,9 +109,10 @@ public class ChannelInputStream extends InputStream {
     public void reset() throws IOException {
         if (0 > mark)
             throw new IOException(-1 == mark
-                    ? "no mark set"
-                    : "mark()/reset() not supported by underlying channel");
+                    ? "No mark set!"
+                    : "mark()/reset() not supported!");
         channel.position(mark);
+        mark = -1;
     }
 
     @Override
@@ -110,7 +120,8 @@ public class ChannelInputStream extends InputStream {
         try {
             channel.position(channel.position());
             return true;
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
+            mark = -2;
             return false;
         }
     }
