@@ -134,6 +134,7 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
         if (0 > oldLimit - newPosition) { // mind overflow!
             final int oldCapacity = buffer.capacity();
             if (0 <= oldCapacity - newPosition) { // mind overflow!
+                assert 0 <= newPosition;
                 buffer.limit(newPosition).position(oldPosition);
             } else if (0 > newPosition) {
                 throw new OutOfMemoryError();
