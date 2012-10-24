@@ -11,7 +11,6 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.util.Objects;
-import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.WillCloseWhenClosed;
 import javax.annotation.concurrent.NotThreadSafe;
@@ -34,26 +33,37 @@ public class ChannelOutputStream extends OutputStream {
     protected ChannelOutputStream() { }
 
     public ChannelOutputStream(
-            final @CheckForNull @WillCloseWhenClosed WritableByteChannel channel) {
+            final @WillCloseWhenClosed WritableByteChannel channel) {
         this.channel = Objects.requireNonNull(channel);
     }
 
     @Override
     public void write(int b) throws IOException {
-        single.put(0, (byte) b).clear();
-        if (1 != channel.write(single)) throw new IOException("write error");
+        write((ByteBuffer) single.put(0, (byte) b).rewind());
     }
 
     @Override
     public final void write(byte[] b) throws IOException {
-        write(b, 0, b.length);
+        write(ByteBuffer.wrap(b));
     }
 
     @Override
     public void write(final byte[] b, final int off, final int len)
     throws IOException {
-        final ByteBuffer bb = ByteBuffer.wrap(b, off, len);
-        while (bb.hasRemaining()) channel.write(bb);
+        write(ByteBuffer.wrap(b, off, len));
+    }
+
+    @SuppressWarnings("SleepWhileInLoop")
+    private void write(final ByteBuffer bb) throws IOException {
+        while (bb.hasRemaining()) {
+            if (0 == channel.write(bb)) {
+                try {
+                    Thread.sleep(50);
+                } catch (final InterruptedException ex) {
+                    Thread.currentThread().interrupt(); // restore
+                }
+            }
+        }
     }
 
     @Override
