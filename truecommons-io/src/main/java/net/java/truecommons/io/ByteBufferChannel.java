@@ -117,6 +117,7 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
         } finally {
             if (0 <= srcLimit) buffer.limit(srcLimit);
         }
+        assert buffer.position() == oldPosition + remaining;
         this.position += remaining;
         return remaining;
     }
@@ -133,7 +134,7 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
         if (0 > oldLimit - newPosition) { // mind overflow!
             final int oldCapacity = buffer.capacity();
             if (0 <= oldCapacity - newPosition) { // mind overflow!
-                buffer.limit(newPosition);
+                buffer.limit(newPosition).position(oldPosition);
             } else if (0 > newPosition) {
                 throw new OutOfMemoryError();
             } else {
@@ -142,18 +143,23 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
                 int newCapacity = oldCapacity << 1;
                 if (0 > newCapacity - newPosition) newCapacity = newPosition;
                 if (0 > newCapacity) newCapacity = Integer.MAX_VALUE;
-                this.buffer = buffer = (buffer.isDirect()
+                assert newPosition <= newCapacity;
+                this.buffer = buffer = (ByteBuffer) (buffer.isDirect()
                         ? ByteBuffer.allocateDirect((int) newCapacity)
                         : ByteBuffer.allocate((int) newCapacity))
-                        .put((ByteBuffer) buffer.position(0));
+                        .put((ByteBuffer) buffer.position(0).limit(oldPosition))
+                        .limit(newPosition);
             }
+        } else {
+            buffer.position(oldPosition);
         }
-        buffer.position(oldPosition);
+        assert buffer.position() == oldPosition;
         try {
             buffer.put(src);
         } catch (final ReadOnlyBufferException ex) {
             throw new NonWritableChannelException();
         }
+        assert buffer.position() == newPosition;
         this.position = newPosition;
         return remaining;
     }
