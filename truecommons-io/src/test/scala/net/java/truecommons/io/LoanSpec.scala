@@ -12,9 +12,7 @@ import org.scalatest.matchers._
 import org.scalatest.mock._
 import org.mockito.Mockito._
 
-/**
-  * @author Christian Schlichtherle
-  */
+/** @author Christian Schlichtherle */
 @RunWith(classOf[JUnitRunner])
 class LoanSpec extends WordSpec with ShouldMatchers with MockitoSugar {
   import Loan._
