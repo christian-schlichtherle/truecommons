@@ -193,7 +193,7 @@ public final class Locator {
         for (final S service : loader.instancesOf(spec)) c.add(service);
         @SuppressWarnings("unchecked")
         final S[] a = c.toArray((S[]) Array.newInstance(spec, c.size()));
-        Arrays.sort(a, new ServiceComparator());
+        Arrays.sort(a, new LocatableComparator());
         for (final S service : a) logger.debug(CONFIG, "selecting", service);
         return a;
     }
