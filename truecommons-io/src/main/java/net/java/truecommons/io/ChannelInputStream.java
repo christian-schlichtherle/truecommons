@@ -64,15 +64,15 @@ public class ChannelInputStream extends InputStream {
     @SuppressWarnings("SleepWhileInLoop")
     private int read(ByteBuffer bb) throws IOException {
         if (0 == bb.remaining()) return 0;
-        final int oldPosition = bb.position();
-        while (0 == channel.read(bb)) {
+        int read;
+        while (0 == (read = channel.read(bb))) {
             try {
                 Thread.sleep(50);
             } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
         }
-        return bb.position() - oldPosition;
+        return read;
     }
 
     @Override
