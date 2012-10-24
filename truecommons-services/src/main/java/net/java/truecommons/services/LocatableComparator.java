@@ -13,7 +13,7 @@ import java.util.Comparator;
  */
 class LocatableComparator implements Comparator<Locatable> {
     @Override
-    public int compare(Locatable o1, Locatable o2) {
+    public int compare(final Locatable o1, final Locatable o2) {
         final int p1 = o1.getPriority();
         final int p2 = o2.getPriority();
         return p1 < p2 ? -1 : p1 == p2 ? 0 : 1;
