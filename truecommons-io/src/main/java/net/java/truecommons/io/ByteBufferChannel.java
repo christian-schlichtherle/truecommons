@@ -171,10 +171,10 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
     }
 
     @Override
-    public ByteBufferChannel position(long position) throws IOException {
+    public ByteBufferChannel position(long newPosition) throws IOException {
         checkOpen();
-        if (0 > position) throw new IllegalArgumentException();
-        this.position = position;
+        if (0 > newPosition) throw new IllegalArgumentException();
+        this.position = newPosition;
         return this;
     }
 
