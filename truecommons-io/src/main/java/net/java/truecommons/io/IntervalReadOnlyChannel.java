@@ -16,7 +16,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  * Provides read-only access to an interval of its decorated seekable byte
  * channel.
  * Note that this class implements its own virtual file pointer.
- * 
+ *
  * @author Christian Schlichtherle
  */
 @NotThreadSafe
@@ -105,14 +105,12 @@ public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
     public int read(final ByteBuffer dst) throws IOException {
         // Check no-op first for compatibility with FileChannel.
         int remaining = dst.remaining();
-        if (0 >= remaining)
-            return 0;
+        if (0 >= remaining) return 0;
 
         // Check is open and not at EOF.
         final long pos = position();
         final long size = this.size;
-        if (pos >= size)
-            return -1;
+        if (pos >= size) return -1;
 
         // Setup.
         final long available = size - pos;
@@ -128,12 +126,10 @@ public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
         // Operate.
         final int read;
         try {
-            if (!exclusive)
-                channel.position(start + pos);
+            if (!exclusive) channel.position(start + pos);
             read = channel.read(dst);
         } finally {
-            if (0 <= limit)
-                dst.limit(limit);
+            if (0 <= limit) dst.limit(limit);
         }
 
         // Update state.
@@ -148,7 +144,7 @@ public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
             assert 0 >= read;
             return -1;
         }
-        assert read > 0;
+        assert 0 < read;
         return read;
     }
 
@@ -160,8 +156,8 @@ public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
 
     @Override
     public SeekableByteChannel position(final long pos) throws IOException {
-        if (0 > pos)
-            throw new IllegalArgumentException();
+        //checkOpen();
+        if (0 > pos) throw new IllegalArgumentException();
         channel.position(start + pos);
         this.pos = pos;
         return this;
@@ -176,7 +172,7 @@ public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
     /**
      * Closes the decorated read only file if and only if it is exclusively
      * accessed by this decorating read only file.
-     * 
+     *
      * @throws IOException On any I/O error.
      */
     @Override
