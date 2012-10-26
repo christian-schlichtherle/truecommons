@@ -44,7 +44,7 @@ import net.java.truecommons.services.ServiceSpecification;
  */
 @SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class ImplementationProcessor extends AbstractProcessor {
+public class ServiceImplementationProcessor extends AbstractProcessor {
 
     private static final Comparator<Name> NAME_COMPARATOR = new Comparator<Name>() {
         @Override
