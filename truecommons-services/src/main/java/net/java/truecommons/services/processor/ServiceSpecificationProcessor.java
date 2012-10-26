@@ -24,7 +24,7 @@ import net.java.truecommons.services.ServiceSpecification;
  */
 @SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class SpecificationProcessor extends AbstractProcessor {
+public class ServiceSpecificationProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(

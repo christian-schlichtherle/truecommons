@@ -1,2 +1,2 @@
-net.java.truecommons.services.processor.ImplementationProcessor
-net.java.truecommons.services.processor.SpecificationProcessor
+net.java.truecommons.services.processor.ServiceImplementationProcessor
+net.java.truecommons.services.processor.ServiceSpecificationProcessor
