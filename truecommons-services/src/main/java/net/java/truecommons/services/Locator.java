@@ -50,6 +50,9 @@ import org.slf4j.MarkerFactory;
  * gets created which will use the instantiated provider and functions
  * to obtain a product and map it in order of their priorities.
  *
+ * @see    ServiceLoader
+ * @see    ServiceSpecification
+ * @see    ServiceImplementation
  * @author Christian Schlichtherle
  */
 @ThreadSafe
