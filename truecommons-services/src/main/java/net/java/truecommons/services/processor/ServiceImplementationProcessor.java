@@ -154,7 +154,7 @@ public class ServiceImplementationProcessor extends AbstractProcessor {
                     }
                     messager.printMessage(NOTE, String.format("Registered %d service(s) in: %s", coll.size(), relativeName), spec);
                 } catch (final IOException ex) {
-                    messager.printMessage(ERROR, "Cannot write to the service-registry of this specification: " + ex.getMessage(), spec);
+                    messager.printMessage(ERROR, String.format("Failed to register %d service(s) in: %s: " , coll.size(), relativeName, ex.getMessage()), spec);
                 }
             }
         }
