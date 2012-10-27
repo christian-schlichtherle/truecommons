@@ -10,5 +10,5 @@ import net.java.truecommons.services.annotations.ServiceSpecification;
 /** @author Christian Schlichtherle */
 @ServiceSpecification
 @ServiceImplementation
-public class SpecificationWithDefaultImplementation
-{ }
+public class SpecificationWithDefaultImplementation {
+}

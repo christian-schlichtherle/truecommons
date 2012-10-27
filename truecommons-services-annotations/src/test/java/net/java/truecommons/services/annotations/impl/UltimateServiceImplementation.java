@@ -8,7 +8,7 @@ import net.java.truecommons.services.annotations.ServiceImplementation;
 import net.java.truecommons.services.annotations.spec.UltimateServiceSpecification;
 
 /**
- * You won't need no others!
+ * You won't need no other!
  *
  * @author Christian Schlichtherle
  */

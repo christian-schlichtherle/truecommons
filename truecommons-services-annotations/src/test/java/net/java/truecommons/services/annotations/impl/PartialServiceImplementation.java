@@ -14,6 +14,8 @@ import net.java.truecommons.services.annotations.spec.YetAnotherServiceSpecifica
  */
 @ServiceImplementation
 public class PartialServiceImplementation
-implements YetAnotherServiceSpecification {
-    protected PartialServiceImplementation() { }
+extends YetAnotherServiceSpecification {
+
+    @ServiceImplementation
+    public static class BadPracticeImplementation extends BadPracticeSpecification { }
 }

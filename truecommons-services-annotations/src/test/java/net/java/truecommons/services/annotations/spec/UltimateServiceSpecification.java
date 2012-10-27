@@ -12,4 +12,5 @@ import net.java.truecommons.services.annotations.ServiceSpecification;
  * @author Christian Schlichtherle
  */
 @ServiceSpecification
-public interface UltimateServiceSpecification { }
+public interface UltimateServiceSpecification {
+}

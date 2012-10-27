@@ -4,50 +4,34 @@
  */
 package net.java.truecommons.services.annotations.processing;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.Element;
+import javax.annotation.processing.*;
+import javax.lang.model.*;
+import javax.lang.model.element.*;
 import static javax.lang.model.element.ElementKind.*;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
 import static javax.lang.model.element.Modifier.*;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.SimpleAnnotationValueVisitor6;
-import javax.lang.model.util.SimpleTypeVisitor6;
+import javax.lang.model.type.*;
+import javax.lang.model.util.*;
+import javax.tools.*;
 import static javax.tools.Diagnostic.Kind.*;
-import javax.tools.FileObject;
 import static javax.tools.StandardLocation.*;
-import net.java.truecommons.services.annotations.ServiceImplementation;
-import net.java.truecommons.services.annotations.ServiceSpecification;
+import net.java.truecommons.services.annotations.*;
 
 /**
  * Processes the {@link ServiceImplementation} annotation.
+ * If and only if the processing option
+ * {@code net.java.truecommons.services.annotations.processing.verbose} is set
+ * to {@code true} (whereby case is ignored), then this processor emits a note
+ * for every service class it registers in a {@code META-INF/services/*} file.
  *
  * @author Christian Schlichtherle
  */
 @SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class ServiceImplementationProcessor extends AbstractProcessor {
+@SupportedOptions("net.java.truecommons.services.annotations.processing.verbose")
+public final class ServiceImplementationProcessor extends AbstractProcessor {
 
     private static final Comparator<TypeElement> TYPE_ELEMENT_COMPARATOR =
             new Comparator<TypeElement>() {
@@ -57,6 +41,16 @@ public class ServiceImplementationProcessor extends AbstractProcessor {
                             o2.getQualifiedName().toString());
                 }
             };
+
+    private boolean verbose;
+
+    @Override
+    public void init(final ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        verbose = Boolean.parseBoolean(processingEnv
+                .getOptions()
+                .get("net.java.truecommons.services.annotations.processing.verbose"));
+    }
 
     @Override
     public boolean process(
@@ -81,29 +75,43 @@ public class ServiceImplementationProcessor extends AbstractProcessor {
                     || modifiers.contains(ABSTRACT)
                     || impl.getKind() != CLASS)
                 return error("Not a public and non-abstract class.", loc);
+            if (impl.getNestingKind().isNested()) {
+                if (!modifiers.contains(STATIC))
+                    return error("Impossible to instantiate without an instance of the enclosing class.", loc);
+                //warning("Bad practice: Not a top-level class.", loc);
+            }
         }
         final Collection<ExecutableElement>
                 ctors = new LinkedList<ExecutableElement>();
-        for (final Element e : impl.getEnclosedElements())
-            if (e.getKind() == CONSTRUCTOR) ctors.add((ExecutableElement) e);
+        for (final Element elem : impl.getEnclosedElements())
+            if (elem.getKind() == CONSTRUCTOR)
+                ctors.add((ExecutableElement) elem);
         return ctors.isEmpty() || valid(ctors)
-                || error("Doesn't have a public or protected constructor with no parameters.", loc);
+                || error("No public constructor with an empty parameter list available.", loc);
     }
 
     private boolean valid(final Collection<ExecutableElement> ctors) {
-        for (ExecutableElement ctor : ctors) if (valid(ctor)) return true;
+        for (final ExecutableElement ctor : ctors) if (valid(ctor)) return true;
         return false;
     }
 
     private boolean valid(final ExecutableElement ctor) {
-        final Set<Modifier> modifiers = ctor.getModifiers();
-        return (modifiers.contains(PUBLIC) || modifiers.contains(PROTECTED))
+        return ctor.getModifiers().contains(PUBLIC)
                 && ctor.getParameters().isEmpty();
     }
 
     private boolean error(final String message, final Element loc) {
         processingEnv.getMessager().printMessage(ERROR, message, loc);
         return false;
+    }
+
+    private void warning(final String message, final Element loc) {
+        processingEnv.getMessager().printMessage(WARNING, message , loc);
+    }
+
+    private void debug(final String message, final Element loc) {
+        if (verbose)
+            processingEnv.getMessager().printMessage(NOTE, message, loc);
     }
 
     private boolean processAnnotations(
@@ -206,7 +214,7 @@ public class ServiceImplementationProcessor extends AbstractProcessor {
                     try {
                         for (final TypeElement impl : coll) {
                             w.append(impl.getQualifiedName()).append("\n");
-                            messager.printMessage(NOTE, String.format("Registered at: %s", path), impl);
+                            debug(String.format("Registered at: %s", path), impl);
                         }
                     } finally {
                         w.close();

@@ -12,4 +12,9 @@ import net.java.truecommons.services.annotations.ServiceSpecification;
  * @author Christian Schlichtherle
  */
 @ServiceSpecification
-public interface YetAnotherServiceSpecification { }
+public abstract class YetAnotherServiceSpecification {
+    protected YetAnotherServiceSpecification() { }
+
+    @ServiceSpecification
+    public static abstract class BadPracticeSpecification { }
+}

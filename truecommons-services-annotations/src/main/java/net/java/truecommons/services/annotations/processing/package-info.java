@@ -4,8 +4,9 @@
  */
 /**
  * Provides annotation processors for
- * {@link net.java.truecommons.services.ServiceSpecification}s and
- * {@link net.java.truecommons.services.ServiceImplementation}s.
+ * {@linkplain net.java.truecommons.services.annotations.processing.ServiceSpecificationProcessor service specifications}
+ * and
+ * {@linkplain net.java.truecommons.services.annotations.processing.ServiceImplementationProcessor service implementations}.
  * These processors are registered in
  * {@code META-INF/services/javax.annotation.processing.Processor}, so you
  * normally don't need to set the annotation processor path when invoking
