@@ -30,6 +30,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleTypeVisitor6;
+import javax.tools.Diagnostic.Kind;
 import static javax.tools.Diagnostic.Kind.*;
 import javax.tools.FileObject;
 import static javax.tools.StandardLocation.*;
@@ -151,13 +152,13 @@ public class ServiceImplementationProcessor extends AbstractProcessor {
                     try {
                         for (final TypeElement impl : coll) {
                             w.append(impl.getQualifiedName()).append("\n");
-                            messager.printMessage(NOTE, String.format("Registered service in: %s", relativeName), impl);
+                            messager.printMessage(NOTE, String.format("Registered service class at: %s", relativeName), impl);
                         }
                     } finally {
                         w.close();
                     }
                 } catch (final IOException ex) {
-                    messager.printMessage(ERROR, String.format("Failed to register %d service(s) in: %s: " , coll.size(), relativeName, ex.getMessage()), spec);
+                    messager.printMessage(ERROR, String.format("Failed to register %d service class(es) at: %s: " , coll.size(), relativeName, ex.getMessage()), spec);
                 }
             }
         }
