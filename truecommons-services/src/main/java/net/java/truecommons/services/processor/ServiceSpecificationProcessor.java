@@ -32,21 +32,21 @@ public class ServiceSpecificationProcessor extends AbstractProcessor {
             final RoundEnvironment roundEnv) {
         for (final Element e : roundEnv.getElementsAnnotatedWith(ServiceSpecification.class)) {
             final TypeElement spec = (TypeElement) e;
-            validType(spec);
+            valid(spec, spec);
         }
         return false; // critical!
     }
 
-    private boolean validType(final TypeElement spec) {
+    boolean valid(final TypeElement spec, final Element loc) {
         final Set<Modifier> modifiers = spec.getModifiers();
-        if (!modifiers.contains(PUBLIC) || modifiers.contains(FINAL))
-            return invalidType("needs to be a public and non-final type", spec);
-        return true;
+        return modifiers.contains(PUBLIC) && !modifiers.contains(FINAL)
+            || error("Not a public and non-final class or interface.", loc);
     }
 
-    private boolean invalidType(final String message, final TypeElement impl) {
-        processingEnv.getMessager().printMessage(ERROR,
-                "A specification " + message + ".", impl);
+    private boolean error(
+            final String message,
+            final Element loc) {
+        processingEnv.getMessager().printMessage(ERROR, message , loc);
         return false;
     }
 }

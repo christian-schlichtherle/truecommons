@@ -12,10 +12,21 @@ import java.util.ServiceLoader;
 /**
  * Indicates that the annotated class implements a locatable service.
  *
- * @see    Locator
+ * @see    ServiceSpecification
  * @see    ServiceLoader
+ * @see    Locator
  * @author Christian Schlichtherle
  */
 @Target(ElementType.TYPE)
 @Documented
-public @interface ServiceImplementation { }
+public @interface ServiceImplementation {
+
+    /**
+     * Returns the implemented specification classes.
+     * If empty, all superclasses and implemented interfaces get scanned for
+     * {@link ServiceSpecification} annotations.
+     *
+     * @return The implemented specification classes.
+     */
+    Class<?>[] value() default {};
+}

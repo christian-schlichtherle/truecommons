@@ -10,10 +10,11 @@ import java.lang.annotation.Target;
 import java.util.ServiceLoader;
 
 /**
- * Indicates that the annotated class specifies a locatable service.
+ * Indicates that the annotated class or interface specifies a locatable service.
  *
- * @see    Locator
+ * @see    ServiceImplementation
  * @see    ServiceLoader
+ * @see    Locator
  * @author Christian Schlichtherle
  */
 @Target(ElementType.TYPE)
