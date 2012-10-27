@@ -206,14 +206,14 @@ public final class ServiceImplementationProcessor extends AbstractProcessor {
                 final TypeElement spec = entry.getKey();
                 final Collection<TypeElement> coll = entry.getValue();
                 if (coll.isEmpty()) continue;
-                final String path = "META-INF/services/" + spec.getQualifiedName();
+                final String path = "META-INF/services/" + name(spec);
                 try {
                     final FileObject fo = filer
                             .createResource(CLASS_OUTPUT, "", path);
                     final Writer w = fo.openWriter();
                     try {
                         for (final TypeElement impl : coll) {
-                            w.append(impl.getQualifiedName()).append("\n");
+                            w.append(name(impl)).append("\n");
                             debug(String.format("Registered at: %s", path), impl);
                         }
                     } finally {
@@ -223,6 +223,10 @@ public final class ServiceImplementationProcessor extends AbstractProcessor {
                     messager.printMessage(ERROR, String.format("Failed to register %d service implementation class(es) at: %s: " , coll.size(), path, ex.getMessage()));
                 }
             }
+        }
+
+        CharSequence name(TypeElement elem) {
+            return processingEnv.getElementUtils().getBinaryName(elem);
         }
     }
 }
