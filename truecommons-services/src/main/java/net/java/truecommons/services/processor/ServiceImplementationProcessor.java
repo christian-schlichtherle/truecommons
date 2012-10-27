@@ -26,7 +26,6 @@ import static javax.lang.model.element.ElementKind.*;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import static javax.lang.model.element.Modifier.*;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
@@ -65,7 +64,7 @@ public class ServiceImplementationProcessor extends AbstractProcessor {
             if (validType(impl)) scan(impl, registry);
         }
         registry.persist();
-        return false;
+        return false; // critical!
     }
 
     private boolean validType(final TypeElement impl) {
