@@ -46,12 +46,14 @@ import net.java.truecommons.services.ServiceSpecification;
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class ServiceImplementationProcessor extends AbstractProcessor {
 
-    private static final Comparator<Name> NAME_COMPARATOR = new Comparator<Name>() {
-        @Override
-        public int compare(Name o1, Name o2) {
-            return o1.toString().compareTo(o2.toString());
-        }
-    };
+    private static final Comparator<TypeElement> TYPE_ELEMENT_COMPARATOR =
+            new Comparator<TypeElement>() {
+                @Override
+                public int compare(TypeElement o1, TypeElement o2) {
+                    return o1.getQualifiedName().toString().compareTo(
+                            o2.getQualifiedName().toString());
+                }
+            };
 
     @Override
     public boolean process(
@@ -124,23 +126,23 @@ public class ServiceImplementationProcessor extends AbstractProcessor {
     }
 
     private final class Registry {
-        final Map<TypeElement, Collection<Name>>
-            services = new HashMap<TypeElement, Collection<Name>>();
+        final Map<TypeElement, Collection<TypeElement>>
+            services = new HashMap<TypeElement, Collection<TypeElement>>();
 
         void register(final TypeElement spec, final TypeElement impl) {
             //processingEnv.getMessager().printMessage(NOTE, "Implements " + spec + ".", impl);
-            Collection<Name> coll = services.get(spec);
-            if (null == coll) coll = new TreeSet<Name>(NAME_COMPARATOR);
-            coll.add(impl.getQualifiedName());
+            Collection<TypeElement> coll = services.get(spec);
+            if (null == coll) coll = new TreeSet<TypeElement>(TYPE_ELEMENT_COMPARATOR);
+            coll.add(impl);
             services.put(spec, coll);
         }
 
         void persist() {
             final Filer filer = processingEnv.getFiler();
             final Messager messager = processingEnv.getMessager();
-            for (final Entry<TypeElement, Collection<Name>> entry : services.entrySet()) {
+            for (final Entry<TypeElement, Collection<TypeElement>> entry : services.entrySet()) {
                 final TypeElement spec = entry.getKey();
-                final Collection<Name> coll = entry.getValue();
+                final Collection<TypeElement> coll = entry.getValue();
                 if (coll.isEmpty()) continue;
                 final String relativeName = "META-INF/services/" + spec.getQualifiedName();
                 try {
@@ -148,11 +150,13 @@ public class ServiceImplementationProcessor extends AbstractProcessor {
                             .createResource(CLASS_OUTPUT, "", relativeName);
                     final Writer w = fo.openWriter();
                     try {
-                        for (final Name impl : coll) w.append(impl).append("\n");
+                        for (final TypeElement impl : coll) {
+                            w.append(impl.getQualifiedName()).append("\n");
+                            messager.printMessage(NOTE, String.format("Registered service in: %s", relativeName), impl);
+                        }
                     } finally {
                         w.close();
                     }
-                    messager.printMessage(NOTE, String.format("Registered %d service(s) in: %s", coll.size(), relativeName), spec);
                 } catch (final IOException ex) {
                     messager.printMessage(ERROR, String.format("Failed to register %d service(s) in: %s: " , coll.size(), relativeName, ex.getMessage()), spec);
                 }
