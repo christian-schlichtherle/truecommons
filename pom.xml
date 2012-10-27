@@ -75,6 +75,7 @@
         <module>truecommons-io</module>
         <module>truecommons-logging</module>
         <module>truecommons-services</module>
+        <module>truecommons-services-annotations</module>
         <module>truecommons-shed</module>
     </modules>
 
