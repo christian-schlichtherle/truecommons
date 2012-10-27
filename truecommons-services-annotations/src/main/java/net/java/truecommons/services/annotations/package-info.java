@@ -8,12 +8,15 @@
  * and
  * {@linkplain net.java.truecommons.services.annotations.ServiceImplementation service implementations}.
  * Using these annotations saves you from the tedious and error-prone process
- * of manually editing files in the resource directory
- * {@code META-INF/services} and enables design-time error checking in your IDE.
+ * of manually editing service provider configuration files in
+ * {@code META-INF/services}
+ * and enables some design-time error checking for your service specifications
+ * and implementations in your IDE.
  *
  * <h3>The {@code @ServiceImplementation} Annotation</h3>
  * <p>
- * Suppose you wanted to implement a service specification class of the JSE API.
+ * Suppose you wanted to implement a service provider for location by the
+ * {@link java.util.ServiceLoader} class.
  * Using the {@code @ServiceImplementation} annotation, your implementation
  * could then look similar to this:
  * <pre>{@code
@@ -31,15 +34,15 @@
  * The
  * {@linkplain net.java.truecommons.services.annotations.processing.ServiceImplementationProcessor processor}
  * associated with the {@code @ServiceImplementation} annotation will then
- * generate the resource file
+ * generate the service provider configuration file
  * {@code META-INF/services/java.nio.charset.spi.CharsetProvider}
- * and place the class name {@code com.company.project.Ibm437CharsetProvider}
- * into it.
+ * and place the service provider class name
+ * {@code com.company.project.Ibm437CharsetProvider} into it.
  * <p>
  * The annotation processor performs some static code analysis in order to
  * detect any obvious errors and emits appropriate error messages,
  * e.g. if the implementation class is non-public or abstract
- * or if there is no public constructor with an empty parameter list available.
+ * or if there is no public constructor with zero parameters available.
  * <p>
  * If your IDE performs annotation processing, then any error messages should
  * get highlighted in the editor at design-time.
@@ -69,7 +72,7 @@
  * perform some static code analysis to detect any obvious errors and emit
  * appropriate error messages, e.g. if the specification class or interface is
  * non-public or final or if there is no public or protected constructor with
- * an empty parameter list available.
+ * zero parameters available.
  * <p>
  * An implementation of your specification could then look like this:
  * <pre>{@code
@@ -96,6 +99,7 @@
  * message gets emitted.
  *
  * @see    java.util.ServiceLoader
+ * @see    <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/jar/jar.html#Service%20Provider">JAR File Specification for Java SE 6, Section "Service Provider"</a>
  * @author Christian Schlichtherle
  */
 @javax.annotation.Nonnull @javax.annotation.ParametersAreNonnullByDefault
