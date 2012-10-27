@@ -34,7 +34,7 @@ public class ServiceSpecificationProcessor extends AbstractProcessor {
             final TypeElement spec = (TypeElement) e;
             validType(spec);
         }
-        return false;
+        return false; // critical!
     }
 
     private boolean validType(final TypeElement spec) {
