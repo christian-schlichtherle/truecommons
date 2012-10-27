@@ -17,5 +17,7 @@ public class PartialServiceImplementation
 extends YetAnotherServiceSpecification {
 
     @ServiceImplementation
-    public static class BadPracticeImplementation extends BadPracticeSpecification { }
+    public static class BadPracticeImplementation
+    extends BadPracticeSpecification {
+    }
 }
