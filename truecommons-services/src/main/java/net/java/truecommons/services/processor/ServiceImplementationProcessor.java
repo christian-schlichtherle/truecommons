@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -21,6 +22,8 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import static javax.lang.model.element.ElementKind.*;
 import javax.lang.model.element.ExecutableElement;
@@ -29,8 +32,8 @@ import static javax.lang.model.element.Modifier.*;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 import javax.lang.model.util.SimpleTypeVisitor6;
-import javax.tools.Diagnostic.Kind;
 import static javax.tools.Diagnostic.Kind.*;
 import javax.tools.FileObject;
 import static javax.tools.StandardLocation.*;
@@ -60,77 +63,128 @@ public class ServiceImplementationProcessor extends AbstractProcessor {
             final Set<? extends TypeElement> annotations,
             final RoundEnvironment roundEnv) {
         final Registry registry = new Registry();
-        for (final Element e : roundEnv.getElementsAnnotatedWith(ServiceImplementation.class)) {
-            final TypeElement impl = (TypeElement) e;
-            if (validType(impl)) scan(impl, registry);
+        for (final Element elem : roundEnv.getElementsAnnotatedWith(ServiceImplementation.class)) {
+            final TypeElement impl = (TypeElement) elem;
+            if (valid(impl, impl))
+                if (!processAnnotations(impl, registry))
+                    if (!processTypeHierarchy(impl, registry))
+                        error("Cannot find any specification.", impl);
         }
         registry.persist();
         return false; // critical!
     }
 
-    private boolean validType(final TypeElement impl) {
+    boolean valid(final TypeElement impl, final Element loc) {
         {
             final Set<Modifier> modifiers = impl.getModifiers();
             if (!modifiers.contains(PUBLIC)
                     || modifiers.contains(ABSTRACT)
                     || impl.getKind() != CLASS)
-                return invalidType("needs to be a public and non-abstract class", impl);
+                return error("Not a public and non-abstract class.", loc);
         }
         final Collection<ExecutableElement>
-                consColl = new LinkedList<ExecutableElement>();
+                ctors = new LinkedList<ExecutableElement>();
         for (final Element e : impl.getEnclosedElements())
-            if (e.getKind() == CONSTRUCTOR) consColl.add((ExecutableElement) e);
-        if (!consColl.isEmpty() && !validConstructors(consColl))
-            return invalidType("needs to have a public constructor with no parameters or no constructor at all", impl);
-        return true;
+            if (e.getKind() == CONSTRUCTOR) ctors.add((ExecutableElement) e);
+        return ctors.isEmpty() || valid(ctors)
+                || error("Doesn't have a public or protected constructor with no parameters.", loc);
     }
 
-    private boolean invalidType(final String message, final TypeElement impl) {
-        processingEnv.getMessager().printMessage(ERROR,
-                "An implementation " + message + ".", impl);
+    private boolean valid(final Collection<ExecutableElement> ctors) {
+        for (ExecutableElement ctor : ctors) if (valid(ctor)) return true;
         return false;
     }
 
-    private boolean validConstructors(final Collection<ExecutableElement> coll) {
-        for (ExecutableElement cons : coll)
-            if (validConstructor(cons)) return true;
+    private boolean valid(final ExecutableElement ctor) {
+        final Set<Modifier> modifiers = ctor.getModifiers();
+        return (modifiers.contains(PUBLIC) || modifiers.contains(PROTECTED))
+                && ctor.getParameters().isEmpty();
+    }
+
+    private boolean error(final String message, final Element loc) {
+        processingEnv.getMessager().printMessage(ERROR, message, loc);
         return false;
     }
 
-    private boolean validConstructor(final ExecutableElement cons) {
-        return cons.getModifiers().contains(PUBLIC)
-                && cons.getParameters().isEmpty();
+    private boolean processAnnotations(
+            final TypeElement impl,
+            final Registry registry) {
+        final DeclaredType implType = (DeclaredType) impl.asType();
+        for (final AnnotationMirror mirror
+                : processingEnv.getElementUtils().getAllAnnotationMirrors(impl)) {
+            if (!ServiceImplementation.class.getName().equals(
+                    ((TypeElement) mirror.getAnnotationType().asElement()).getQualifiedName().toString()))
+                continue;
+            final Map<? extends ExecutableElement, ? extends AnnotationValue>
+                    values = mirror.getElementValues();
+            for (final Entry<? extends ExecutableElement, ? extends AnnotationValue> entry
+                    : values.entrySet()) {
+                final ExecutableElement element = entry.getKey();
+                if (!"value".equals(element.getSimpleName().toString()))
+                    continue;
+
+                class Visitor extends SimpleAnnotationValueVisitor6<Boolean, Void> {
+
+                    Visitor() { super(false); }
+
+                    @Override
+                    public Boolean visitType(
+                            final TypeMirror type,
+                            final Void p) {
+                        if (processingEnv.getTypeUtils().isAssignable(implType, type))
+                            registry.add(impl, (TypeElement) ((DeclaredType) type).asElement());
+                        else
+                            error("Unassignable to " + type + ".", impl);
+                        return Boolean.TRUE;
+                    }
+
+                    @Override
+                    public Boolean visitArray(
+                            final List<? extends AnnotationValue> values,
+                            final Void p) {
+                        boolean found = false;
+                        for (final AnnotationValue value : values)
+                            found |= value.accept(this, p);
+                        return found;
+                    }
+                } // Visitor
+
+                return entry.getValue().accept(new Visitor(), null);
+            }
+        }
+        return false;
     }
 
-    private void scan(final TypeElement impl, final Registry registry) {
+    private boolean processTypeHierarchy(
+            final TypeElement impl,
+            final Registry registry) {
 
         class Visitor extends SimpleTypeVisitor6<Boolean, Void> {
+
             Visitor() { super(false); }
 
             @Override
-            public Boolean visitDeclared(DeclaredType t, Void p) {
+            public Boolean visitDeclared(DeclaredType type, Void p) {
                 boolean found = false;
-                final TypeElement spec = (TypeElement) t.asElement();
-                if (null != spec.getAnnotation(ServiceSpecification.class)) {
+                final TypeElement elem = (TypeElement) type.asElement();
+                if (null != elem.getAnnotation(ServiceSpecification.class)) {
                     found = true;
-                    registry.register(spec, impl);
+                    registry.add(impl, elem);
                 }
-                for (final TypeMirror m : spec.getInterfaces())
+                for (final TypeMirror m : elem.getInterfaces())
                     found |= m.accept(this, p);
-                return spec.getSuperclass().accept(this, p) || found;
+                return elem.getSuperclass().accept(this, p) || found;
             }
         } // Visitor
 
-        if (!impl.asType().accept(new Visitor(), null))
-            processingEnv.getMessager().printMessage(ERROR, "Cannot find any specification.", impl);
+        return impl.asType().accept(new Visitor(), null);
     }
 
     private final class Registry {
         final Map<TypeElement, Collection<TypeElement>>
             services = new HashMap<TypeElement, Collection<TypeElement>>();
 
-        void register(final TypeElement spec, final TypeElement impl) {
-            //processingEnv.getMessager().printMessage(NOTE, "Implements " + spec + ".", impl);
+        void add(final TypeElement impl, final TypeElement spec) {
             Collection<TypeElement> coll = services.get(spec);
             if (null == coll) coll = new TreeSet<TypeElement>(TYPE_ELEMENT_COMPARATOR);
             coll.add(impl);
@@ -144,21 +198,21 @@ public class ServiceImplementationProcessor extends AbstractProcessor {
                 final TypeElement spec = entry.getKey();
                 final Collection<TypeElement> coll = entry.getValue();
                 if (coll.isEmpty()) continue;
-                final String relativeName = "META-INF/services/" + spec.getQualifiedName();
+                final String path = "META-INF/services/" + spec.getQualifiedName();
                 try {
                     final FileObject fo = filer
-                            .createResource(CLASS_OUTPUT, "", relativeName);
+                            .createResource(CLASS_OUTPUT, "", path);
                     final Writer w = fo.openWriter();
                     try {
                         for (final TypeElement impl : coll) {
                             w.append(impl.getQualifiedName()).append("\n");
-                            messager.printMessage(NOTE, String.format("Registered service class at: %s", relativeName), impl);
+                            messager.printMessage(NOTE, String.format("Registered at: %s", path), impl);
                         }
                     } finally {
                         w.close();
                     }
                 } catch (final IOException ex) {
-                    messager.printMessage(ERROR, String.format("Failed to register %d service class(es) at: %s: " , coll.size(), relativeName, ex.getMessage()), spec);
+                    messager.printMessage(ERROR, String.format("Failed to register %d service implementation class(es) at: %s: " , coll.size(), path, ex.getMessage()));
                 }
             }
         }
