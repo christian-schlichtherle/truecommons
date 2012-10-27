@@ -189,6 +189,7 @@ public final class ServiceImplementationProcessor extends AbstractProcessor {
     }
 
     private final class Registry {
+        final Elements elements = processingEnv.getElementUtils();
         final Map<TypeElement, Collection<TypeElement>>
             services = new HashMap<TypeElement, Collection<TypeElement>>();
 
@@ -226,7 +227,7 @@ public final class ServiceImplementationProcessor extends AbstractProcessor {
         }
 
         CharSequence name(TypeElement elem) {
-            return processingEnv.getElementUtils().getBinaryName(elem);
+            return elements.getBinaryName(elem);
         }
     }
 }
