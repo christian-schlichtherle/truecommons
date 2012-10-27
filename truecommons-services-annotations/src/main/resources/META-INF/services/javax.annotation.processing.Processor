@@ -1,0 +1,2 @@
+net.java.truecommons.services.annotations.processing.ServiceImplementationProcessor
+net.java.truecommons.services.annotations.processing.ServiceSpecificationProcessor
