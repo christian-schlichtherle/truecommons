@@ -7,14 +7,11 @@ package net.java.truecommons.services.annotations;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
-import java.util.ServiceLoader;
 
 /**
  * Indicates that the annotated class or interface specifies a locatable service.
  *
- * @see    ServiceImplementation
- * @see    ServiceLoader
- * @see    Locator
+ * @see    <a href="package-summary.html">Package Summary</a>
  * @author Christian Schlichtherle
  */
 @Target(ElementType.TYPE)
