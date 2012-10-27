@@ -6,8 +6,6 @@ package net.java.truecommons.services;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.ServiceLoader;
 
@@ -19,6 +17,5 @@ import java.util.ServiceLoader;
  * @author Christian Schlichtherle
  */
 @Target(ElementType.TYPE)
-@Retention(RetentionPolicy.SOURCE)
 @Documented
 public @interface ServiceImplementation { }
