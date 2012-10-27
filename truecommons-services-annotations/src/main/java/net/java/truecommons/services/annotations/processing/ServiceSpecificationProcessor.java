@@ -50,7 +50,7 @@ public final class ServiceSpecificationProcessor extends AbstractProcessor {
             if (elem.getKind() == CONSTRUCTOR)
                 ctors.add((ExecutableElement) elem);
         return ctors.isEmpty() || valid(ctors)
-                || error("No public or protected constructor with an empty parameter list available.", loc);
+                || error("No public or protected constructor with zero parameters available.", loc);
     }
 
     private boolean valid(final Collection<ExecutableElement> ctors) {

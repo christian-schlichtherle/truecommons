@@ -13,6 +13,7 @@ import net.java.truecommons.services.annotations.ServiceSpecification;
  */
 @ServiceSpecification
 public abstract class YetAnotherServiceSpecification {
+
     protected YetAnotherServiceSpecification() { }
 
     @ServiceSpecification

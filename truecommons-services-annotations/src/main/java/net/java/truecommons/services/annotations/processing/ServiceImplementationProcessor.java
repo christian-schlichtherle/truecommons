@@ -87,7 +87,7 @@ public final class ServiceImplementationProcessor extends AbstractProcessor {
             if (elem.getKind() == CONSTRUCTOR)
                 ctors.add((ExecutableElement) elem);
         return ctors.isEmpty() || valid(ctors)
-                || error("No public constructor with an empty parameter list available.", loc);
+                || error("No public constructor with zero parameters available.", loc);
     }
 
     private boolean valid(final Collection<ExecutableElement> ctors) {
