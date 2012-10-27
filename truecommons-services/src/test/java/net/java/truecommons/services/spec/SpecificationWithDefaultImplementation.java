@@ -7,10 +7,8 @@ package net.java.truecommons.services.spec;
 import net.java.truecommons.services.ServiceImplementation;
 import net.java.truecommons.services.ServiceSpecification;
 
-/**
- * @author Christian Schlichtherle
- */
+/** @author Christian Schlichtherle */
 @ServiceSpecification
 @ServiceImplementation
-public class SpecificationWithImplementation
+public class SpecificationWithDefaultImplementation
 { }
