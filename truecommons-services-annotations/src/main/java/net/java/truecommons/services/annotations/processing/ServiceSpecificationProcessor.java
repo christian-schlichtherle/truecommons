@@ -16,6 +16,7 @@ import net.java.truecommons.services.annotations.*;
 /**
  * Processes the {@link ServiceSpecification} annotation.
  *
+ * @since  TrueCommons 2.1
  * @author Christian Schlichtherle
  */
 @SupportedAnnotationTypes("*")
