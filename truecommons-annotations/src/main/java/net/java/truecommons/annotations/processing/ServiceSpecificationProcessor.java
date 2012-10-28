@@ -19,8 +19,8 @@ import net.java.truecommons.annotations.ServiceSpecification;
  * @since  TrueCommons 2.1
  * @author Christian Schlichtherle
  */
-@SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
+@SupportedAnnotationTypes("*")
 public final class ServiceSpecificationProcessor extends AbstractProcessor {
 
     @Override
