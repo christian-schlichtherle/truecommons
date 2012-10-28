@@ -26,6 +26,7 @@ import net.java.truecommons.services.annotations.*;
  * to {@code true} (whereby case is ignored), then this processor emits a note
  * for every service class it registers in a {@code META-INF/services/*} file.
  *
+ * @since  TrueCommons 2.1
  * @author Christian Schlichtherle
  */
 @SupportedAnnotationTypes("*")

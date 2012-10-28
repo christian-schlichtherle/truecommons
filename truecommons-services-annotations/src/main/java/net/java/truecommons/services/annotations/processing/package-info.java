@@ -12,6 +12,7 @@
  * normally don't need to set the annotation processor path when invoking
  * {@code javac}.
  *
+ * @since  TrueCommons 2.1
  * @author Christian Schlichtherle
  */
 @javax.annotation.Nonnull @javax.annotation.ParametersAreNonnullByDefault

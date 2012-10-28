@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
  * Indicates that the annotated class implements a locatable service.
  *
  * @see    <a href="package-summary.html">Package Summary</a>
+ * @since  TrueCommons 2.1
  * @author Christian Schlichtherle
  */
 @Target(ElementType.TYPE)
