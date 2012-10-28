@@ -19,17 +19,17 @@
  * {@link java.util.ServiceLoader} class.
  * Using the {@code @ServiceImplementation} annotation, your implementation
  * could then look similar to this:
- * <pre>{@code
+ * <pre><code>
  * package com.company.project;
  *
  * import java.nio.charset.spi.CharsetProvider;
  * import net.java.truecommons.services.annotations.ServiceImplementation;
  *
- * \@ServiceImplementation(CharsetProvider.class)
+ * &#64;ServiceImplementation(CharsetProvider.class)
  * public class Ibm437CharsetProvider extends CharsetProvider {
  *     ...
  * }
- * }</pre>
+ * </code></pre>
  * <p>
  * The
  * {@linkplain net.java.truecommons.annotations.processing.ServiceImplementationProcessor processor}
@@ -55,16 +55,16 @@
  * Suppose you wanted to design your own specification class or interface.
  * Using the {@code @ServiceSpecification} annotation, your specification
  * could then look similar to this:
- * <pre>{@code
+ * <pre><code>
  * package com.company.project.spec;
  *
  * import net.java.truecommons.services.annotations.ServiceSpecification;
  *
- * \@ServiceSpecification
+ * &#64;ServiceSpecification
  * public interface UltimateServiceSpecification {
  *     ...
  * }
- * }</pre>
+ * </code></pre>
  * <p>
  * The
  * {@linkplain net.java.truecommons.annotations.processing.ServiceSpecificationProcessor processor}
@@ -75,18 +75,18 @@
  * zero parameters available.
  * <p>
  * An implementation of your specification could then look like this:
- * <pre>{@code
+ * <pre><code>
  * package com.company.project.impl;
  *
  * import com.company.project.spec.UltimateServiceSpecification;
  * import net.java.truecommons.services.annotations.ServiceSpecification;
  *
- * \@ServiceImplementation
+ * &#64;ServiceImplementation
  * public class UltimateServiceImplementation
  * implements UltimateServiceSpecification {
  *     ...
  * }
- * }</pre>
+ * </code></pre>
  * <p>
  * Note that the {@code @ServiceImplementation} annotation does not specify any
  * implemented classes or interfaces.
