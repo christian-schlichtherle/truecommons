@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
 import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.ThreadSafe;
 import net.java.truecommons.logging.BundledMessage;
@@ -51,8 +52,6 @@ import org.slf4j.MarkerFactory;
  * to obtain a product and map it in order of their priorities.
  *
  * @see    ServiceLoader
- * @see    ServiceSpecification
- * @see    ServiceImplementation
  * @author Christian Schlichtherle
  */
 @ThreadSafe
