@@ -9,7 +9,7 @@
     <parent>
         <groupId>net.java.truecommons</groupId>
         <artifactId>truecommons-parent</artifactId>
-        <version>21</version>
+        <version>22</version>
     </parent>
 
     <artifactId>truecommons</artifactId>
@@ -71,11 +71,11 @@
     </properties>
 
     <modules>
+        <module>truecommons-annotations</module>
         <module>truecommons-cio</module>
         <module>truecommons-io</module>
         <module>truecommons-logging</module>
         <module>truecommons-services</module>
-        <module>truecommons-services-annotations</module>
         <module>truecommons-shed</module>
     </modules>
 
