@@ -47,8 +47,8 @@
  * If your IDE performs annotation processing, then any error messages should
  * get highlighted in the editor at design-time.
  * Furthermore, if your IDE supports refactoring, then changing the class name
- * of the implementation automatically updates the entry in the registry
- * resource file.
+ * of the implementation automatically updates the entry in the service
+ * provider configuration file.
  *
  * <h3>The {@code @ServiceSpecification} Annotation</h3>
  * <p>
@@ -93,8 +93,8 @@
  * The annotation processor associated with the {@code @ServiceImplementation}
  * annotation will then scan the type hierarchy of the annotated class for any
  * superclass or interface which is annotated with the
- * {@code @ServiceSpecification} annotation and generate the registry resource
- * files according to its findings.
+ * {@code @ServiceSpecification} annotation and generate the service provider
+ * configuration files according to its findings.
  * If no specification class or interface is found then an appropriate error
  * message gets emitted.
  *
