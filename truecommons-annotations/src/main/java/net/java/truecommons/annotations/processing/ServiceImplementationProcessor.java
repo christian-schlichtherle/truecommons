@@ -22,17 +22,22 @@ import net.java.truecommons.annotations.ServiceSpecification;
 
 /**
  * Processes the {@link ServiceImplementation} annotation.
- * If and only if the processing option
- * {@code net.java.truecommons.annotations.processing.verbose} is set
- * to {@code true} (whereby case is ignored), then this processor emits a note
- * for every service class it registers in a {@code META-INF/services/*} file.
+ * If any of the processing options
+ * {@code net.java.truecommons.annotations.verbose} or
+ * {@code net.java.truecommons.annotations.processing.verbose}
+ * is set to {@code true} (whereby case is ignored), then this processor emits
+ * a note for every service implementation class it registers in a service
+ * provider configuration file in {@code META-INF/services}.
  *
  * @since  TrueCommons 2.1
  * @author Christian Schlichtherle
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 @SupportedAnnotationTypes("*")
-@SupportedOptions("net.java.truecommons.annotations.processing.verbose")
+@SupportedOptions({
+    "net.java.truecommons.annotations.verbose",
+    "net.java.truecommons.annotations.processing.verbose"
+})
 public final class ServiceImplementationProcessor extends AbstractProcessor {
 
     private static final Comparator<TypeElement> TYPE_ELEMENT_COMPARATOR =
@@ -49,9 +54,11 @@ public final class ServiceImplementationProcessor extends AbstractProcessor {
     @Override
     public void init(final ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        verbose = Boolean.parseBoolean(processingEnv
-                .getOptions()
-                .get("net.java.truecommons.annotations.processing.verbose"));
+        final String[] supported = ServiceImplementationProcessor.class.getAnnotation(SupportedOptions.class).value();
+        final Map<String, String> present = processingEnv.getOptions();
+        verbose = false;
+        for (final String option : supported)
+            verbose |= Boolean.parseBoolean(present.get(option));
     }
 
     @Override
