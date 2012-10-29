@@ -38,7 +38,7 @@
                     <execution>
                         <id>default-testCompile</id>
                         <configuration>
-                            <compilerArgument>-Anet.java.truecommons.annotations.processing.verbose=true</compilerArgument>
+                            <compilerArgument>-Anet.java.truecommons.annotations.verbose=true</compilerArgument>
                         </configuration>
                     </execution>
                 </executions>
