@@ -30,8 +30,8 @@
             <item name="Change Log" href="http://java.net/jira/browse/TRUECOMMONS#selectedTab=com.atlassian.jira.plugin.system.project:changelog-panel"/>
             <item name="Developer Site" href="http://java.net/projects/truecommons"/>
         </menu>
-        <menu name="Sub-Modules" ref="modules" inherit="bottom"/>
         <menu name="Parent Module" ref="parent" inherit="bottom"/>
+        <menu name="Sub-Modules" ref="modules" inherit="bottom"/>
         <menu name="Reports" ref="reports" inherit="bottom"/>
     </body>
 </project>
