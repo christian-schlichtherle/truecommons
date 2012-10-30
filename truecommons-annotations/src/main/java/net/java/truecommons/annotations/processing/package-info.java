@@ -7,7 +7,7 @@
  * {@linkplain net.java.truecommons.annotations.processing.ServiceSpecificationProcessor service specifications}
  * and
  * {@linkplain net.java.truecommons.annotations.processing.ServiceImplementationProcessor service implementations}.
- * These processors are registered in
+ * These processors are configured in
  * {@code META-INF/services/javax.annotation.processing.Processor}, so you
  * normally don't need to set the annotation processor path when invoking
  * {@code javac}.
