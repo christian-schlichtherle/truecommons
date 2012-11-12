@@ -216,9 +216,10 @@ public class CanonicalStringSet extends AbstractSet<String> {
      * @return {@code true} Iff this set changed as a result of the call.
      */
     public boolean retainAll(final String list) {
-        CanonicalStringSet set = new CanonicalStringSet(canonicalizer, separator);
+        final CanonicalStringSet
+                set = new CanonicalStringSet(canonicalizer, separator);
         set.addAll(list);
-        return set.retainAll(set);
+        return this.set.retainAll(set);
     }
 
     /**
