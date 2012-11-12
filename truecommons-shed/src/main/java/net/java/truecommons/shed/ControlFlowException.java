@@ -36,7 +36,7 @@ import javax.annotation.concurrent.Immutable;
  *     resource.cleanup(); // finally-block ensures cleanup
  * }
  * }</pre>
- * 
+ *
  * @author Christian Schlichtherle
  */
 @Immutable
@@ -67,12 +67,12 @@ public class ControlFlowException extends Error {
      * Returns {@code true} if and only if a control flow exception should have
      * a full stack trace instead of an empty stack trace.
      * If and only if the system property with the key string
-     * {@code net.truevfs.kernel.spec.util.ControlFlowException.traceable}
+     * {@code net.java.truecommons.shed.ControlFlowException.traceable}
      * is set to {@code true} (whereby case is ignored), then instances of this
      * class will have a regular stack trace, otherwise their stack trace will
      * be empty.
      * Note that this should be set to {@code true} for debugging purposes only.
-     * 
+     *
      * @return {@code true} if and only if a control flow exception should have
      *         a full stack trace instead of an empty stack trace.
      */
