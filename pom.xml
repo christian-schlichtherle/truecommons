@@ -13,7 +13,7 @@
     </parent>
 
     <artifactId>truecommons</artifactId>
-    <version>2.1.1-SNAPSHOT</version>
+    <version>2.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TrueCommons</name>
@@ -74,6 +74,7 @@
         <module>truecommons-annotations</module>
         <module>truecommons-cio</module>
         <module>truecommons-io</module>
+        <module>truecommons-key</module>
         <module>truecommons-logging</module>
         <module>truecommons-services</module>
         <module>truecommons-shed</module>
@@ -81,6 +82,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-annotations</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>truecommons-cio</artifactId>
@@ -100,6 +106,48 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-key-console</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-key-default</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-key-disable</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-key-hurlfb</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-key-macosx</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-key-spec</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-key-spec</artifactId>
+                <type>test-jar</type>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-key-swing</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>truecommons-logging</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -112,6 +160,11 @@
                 <groupId>${project.groupId}</groupId>
                 <artifactId>truecommons-shed</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna</artifactId>
+                <version>3.5.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -170,6 +223,29 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>non-transitive-test-source-dependencies</id>
+            <activation>
+                <file>
+                    <exists>src/test</exists>
+                </file>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                <!--dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                    <scope>test</scope>
+                </dependency-->
+            </dependencies>
+        </profile>
+    </profiles>
 
     <distributionManagement>
         <site>
