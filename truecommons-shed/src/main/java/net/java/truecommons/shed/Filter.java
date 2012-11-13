@@ -5,9 +5,9 @@
 package net.java.truecommons.shed;
 
 /**
- * A generic filter interface.
- * 
- * @param  <T> The type of the elements to filter.
+ * A generic filter for items of any type.
+ *
+ * @param  <T> The type of the items to filter.
  * @since  TrueCommons 1.0.11
  * @author Christian Schlichtherle
  */
@@ -15,26 +15,22 @@ public interface Filter<T> {
 
     /**
      * Returns {@code true} if and only if this filter accepts the given
-     * {@code element}.
-     * 
-     * @param  element the element to test.
-     * @return Whether or not this filter accepts the given {@code element}.
+     * {@code item}.
+     *
+     * @param  item the item to test.
+     * @return Whether or not this filter accepts the given {@code item}.
      */
-    boolean accept(T element);
+    boolean accept(T item);
 
-    /**
-     * A filter which accepts any object.
-     */
+    /** A filter which accepts any item. */
     Filter<Object> ACCEPT_ANY = new Filter() {
         @Override
-        public boolean accept(Object element) { return true; }
+        public boolean accept(Object item) { return true; }
     };
 
-    /**
-     * A filter which accepts no objects.
-     */
+    /** A filter which accepts no items. */
     Filter<Object> ACCEPT_NONE = new Filter() {
         @Override
-        public boolean accept(Object element) { return false; }
+        public boolean accept(Object item) { return false; }
     };
 }
