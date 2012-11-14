@@ -23,12 +23,13 @@ import net.java.truecommons.key.swing.io.FileComboBoxBrowser;
  * @since  TrueCommons 2.2
  * @author Christian Schlichtherle
  */
-public final class AuthenticationPanel extends JPanel {
+final class AuthenticationPanel extends JPanel {
 
-    private static final long serialVersionUID = 3876515923659236921L;
+    private static final long serialVersionUID = 0L;
 
     private static final ResourceBundle resources = ResourceBundle
             .getBundle(AuthenticationPanel.class.getName());
+
     private static final File
             BASE_DIR = FileSystemView.getFileSystemView().getDefaultDirectory();
 
@@ -43,7 +44,7 @@ public final class AuthenticationPanel extends JPanel {
      * This version of the constructor does not remember the key file path.
      */
     @SuppressWarnings("unchecked")
-    public AuthenticationPanel() {
+    AuthenticationPanel() {
         initComponents();
 
         // Order is important here: The file combo box browser installs its
@@ -59,7 +60,7 @@ public final class AuthenticationPanel extends JPanel {
      * @throws NullPointerException If {@code passwdPanel} is
      *         {@code null}.
      */
-    public void setPasswdPanel(final JPanel passwdPanel) {
+    void setPasswdPanel(final JPanel passwdPanel) {
         passwdPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         final String title = resources.getString("tab.passwd");
         if (title.equals(tabs.getTitleAt(AUTH_PASSWD)))
@@ -78,7 +79,7 @@ public final class AuthenticationPanel extends JPanel {
      *
      * @return The key file.
      */
-    public File getKeyFile() {
+    File getKeyFile() {
         String path = (String) keyFile.getSelectedItem();
         File file = new File(path);
         return file.isAbsolute() ? file : new File(BASE_DIR.getPath(), path);
@@ -101,7 +102,7 @@ public final class AuthenticationPanel extends JPanel {
      *
      * @return {@code AUTH_PASSWD} or {@code AUTH_KEY_FILE}.
      */
-    public int getAuthenticationMethod() {
+    int getAuthenticationMethod() {
         final int method = tabs.getSelectedIndex();
         switch (method) {
             case AUTH_PASSWD:

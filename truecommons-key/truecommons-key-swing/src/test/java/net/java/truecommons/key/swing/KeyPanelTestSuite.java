@@ -4,10 +4,6 @@
  */
 package net.java.truecommons.key.swing;
 
-import net.java.truecommons.key.swing.AuthenticationPanel;
-import net.java.truecommons.key.swing.KeyPanel;
-import net.java.truecommons.key.spec.AbstractPbeParameters;
-import net.java.truecommons.key.swing.util.JemmyUtils;
 import java.awt.EventQueue;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -15,6 +11,8 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import net.java.truecommons.key.spec.prompting.PromptingPbeParameters;
+import net.java.truecommons.key.swing.util.JemmyUtils;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -50,7 +48,7 @@ public abstract class KeyPanelTestSuite<P extends KeyPanel> extends JemmyUtils {
 
     protected abstract P newKeyPanel();
 
-    protected abstract AbstractPbeParameters<?, ?> newPbeParameters();
+    protected abstract PromptingPbeParameters<?, ?> newPbeParameters();
 
     @After
     public void tearDown() {
@@ -92,7 +90,7 @@ public abstract class KeyPanelTestSuite<P extends KeyPanel> extends JemmyUtils {
 
     @Test
     public void testKeyFile() throws InterruptedException {
-        final AbstractPbeParameters<?, ?> param = newPbeParameters();
+        final PromptingPbeParameters<?, ?> param = newPbeParameters();
 
         new JTabbedPaneOperator(frame).selectPage(AuthenticationPanel.AUTH_KEY_FILE); // select tab for key files
         new JButtonOperator(frame, KEY_FILE_CHOOSER).push(); // open file chooser
@@ -123,21 +121,21 @@ public abstract class KeyPanelTestSuite<P extends KeyPanel> extends JemmyUtils {
         fc.cancel(); // close file chooser
     }
 
-    protected final boolean updateParam(final AbstractPbeParameters<?, ?> param)
+    protected final boolean updateParam(
+            final PromptingPbeParameters<?, ?> param)
     throws InterruptedException {
+
         class Update implements Runnable {
             boolean result;
 
             @Override
-            public void run() {
-                result = panel.updateParam(param);
-            }
+            public void run() { result = panel.updateParam(param); }
         }
 
         final Update update = new Update();
         try {
             EventQueue.invokeAndWait(update);
-        } catch (InvocationTargetException ex) {
+        } catch (final InvocationTargetException ex) {
             throw new AssertionError(ex);
         }
         return update.result;

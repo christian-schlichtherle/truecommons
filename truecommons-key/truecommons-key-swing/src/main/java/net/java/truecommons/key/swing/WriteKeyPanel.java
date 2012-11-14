@@ -12,10 +12,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import javax.annotation.CheckForNull;
 import javax.swing.JComponent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import net.java.truecommons.key.spec.PbeParameters;
+import net.java.truecommons.key.spec.prompting.PromptingPbeParameters;
 
 /**
  * This panel prompts the user for a key to create or overwrite a protected
@@ -27,20 +28,23 @@ import net.java.truecommons.key.spec.PbeParameters;
  */
 final class WriteKeyPanel extends KeyPanel {
 
-    private static final long serialVersionUID = 6416529465492387235L;
-    private static final String CLASS_NAME = WriteKeyPanel.class.getName();
+    private static final long serialVersionUID = 0L;
+
     private static final ResourceBundle
-            resources = ResourceBundle.getBundle(CLASS_NAME);
+            resources = ResourceBundle.getBundle(WriteKeyPanel.class.getName());
 
     /** The minimum acceptable length of a password. */
     private static final int MIN_PASSWD_LEN = 8;
 
+    private final SwingPromptingPbeParametersView<?, ?> view;
     private final Color defaultForeground;
 
     private JComponent extraDataUI;
 
     /** Constructs a new write key panel. */
-    WriteKeyPanel() {
+    WriteKeyPanel(final SwingPromptingPbeParametersView<?, ?> view) {
+        assert null != view;
+        this.view = view;
         initComponents();
         final DocumentListener dl = new DocumentListener() {
             @Override
@@ -72,15 +76,14 @@ final class WriteKeyPanel extends KeyPanel {
     @Override
     @edu.umd.cs.findbugs.annotations.SuppressWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
     public void setResource(final URI resource) {
-        final URI lastResource = SwingPromptingPbeParametersView.lastResource;
-        if (!lastResource.equals(resource)
-                && !lastResource.equals(SwingPromptingPbeParametersView.INITIAL_RESOURCE)) {
+        final @CheckForNull URI lastResource = view.getLastResource();
+        if (null != lastResource && !resource.equals(lastResource)) {
             this.resource.setForeground(Color.RED);
         } else {
             this.resource.setForeground(defaultForeground);
         }
         this.resource.setText(resource.toString());
-        SwingPromptingPbeParametersView.lastResource = resource;
+        view.setLastResource(resource);
     }
 
     @Override
@@ -94,38 +97,31 @@ final class WriteKeyPanel extends KeyPanel {
         this.error.setText(error);
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("SF_SWITCH_FALLTHROUGH")
     @Override
-    boolean updateParam(final PbeParameters<?, ?> param) {
-        try {
-            switch (authenticationPanel.getAuthenticationMethod()) {
-                case AuthenticationPanel.AUTH_PASSWD:
-                    final char[] newPasswd1 = newPasswd1Field.getPassword();
-                    final char[] newPasswd2 = newPasswd2Field.getPassword();
-                    try {
-                        if (Arrays.equals(newPasswd1, newPasswd2)) {
-                            checkPasswdKey(newPasswd1);
-                            param.setPassword(newPasswd1);
-                            return true;
-                        } else {
-                            setError(resources.getString("passwd.noMatch"));
-                            return false;
-                        }
-                    } finally {
-                        Arrays.fill(newPasswd1, (char) 0);
-                        Arrays.fill(newPasswd2, (char) 0);
-                    }
-                case AuthenticationPanel.AUTH_KEY_FILE:
-                    final File keyFile = authenticationPanel.getKeyFile();
-                    SwingPromptingPbeParametersView
-                            .setPassword(param, keyFile, true);
-                    return true;
-                default:
-                    throw new AssertionError("Unsupported authentication method!");
-            }
-        } catch (final IOException | WeakKeyException ex) {
-            setError(ex.getLocalizedMessage());
-            return false;
+    void updateParamChecked(final PromptingPbeParameters<?, ?> param)
+    throws AuthenticationException {
+        switch (authenticationPanel.getAuthenticationMethod()) {
+            case AuthenticationPanel.AUTH_PASSWD:
+                final char[] newPasswd1 = newPasswd1Field.getPassword();
+                final char[] newPasswd2 = newPasswd2Field.getPassword();
+                try {
+                    if (!Arrays.equals(newPasswd1, newPasswd2))
+                        throw new AuthenticationException(
+                                resources.getString("passwd.noMatch"));
+                    checkPasswdKey(newPasswd1);
+                    param.setPassword(newPasswd1);
+                } finally {
+                    Arrays.fill(newPasswd1, (char) 0);
+                    Arrays.fill(newPasswd2, (char) 0);
+                }
+                break;
+            case AuthenticationPanel.AUTH_KEY_FILE:
+                final File keyFile = authenticationPanel.getKeyFile();
+                SwingPromptingPbeParametersView
+                        .setPasswordOn(param, keyFile, true);
+                break;
+            default:
+                throw new AssertionError("Unsupported authentication method!");
         }
     }
 
@@ -133,12 +129,12 @@ final class WriteKeyPanel extends KeyPanel {
      * Checks the entropy of the given key.
      *
      * @param key the key to check.
-     * @throws WeakKeyException if the entropy of the given key is too weak.
+     * @throws AuthenticationException if the entropy of the given key is too weak.
      */
     private void checkPasswdKey(char[] key)
-    throws WeakKeyException {
+    throws AuthenticationException {
         if (MIN_PASSWD_LEN > key.length)
-            throw new WeakKeyException(
+            throw new AuthenticationException(
                     String.format(resources.getString("passwd.tooShort"), MIN_PASSWD_LEN));
     }
 

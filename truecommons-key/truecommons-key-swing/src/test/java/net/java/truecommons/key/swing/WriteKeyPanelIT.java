@@ -4,24 +4,25 @@
  */
 package net.java.truecommons.key.swing;
 
-import net.java.truecommons.key.swing.KeyStrengthPanel;
-import net.java.truecommons.key.swing.WriteKeyPanel;
+import javax.annotation.concurrent.NotThreadSafe;
+import javax.swing.JComponent;
 import net.java.truecommons.key.spec.common.AesKeyStrength;
 import net.java.truecommons.key.spec.common.AesPbeParameters;
-import javax.swing.JComponent;
 import static org.junit.Assert.*;
 import org.junit.Test;
+import static org.mockito.Mockito.*;
 import org.netbeans.jemmy.operators.JComboBoxOperator;
 import org.netbeans.jemmy.operators.JPasswordFieldOperator;
 
 /**
  * @author  Christian Schlichtherle
  */
+@NotThreadSafe
 public final class WriteKeyPanelIT extends KeyPanelTestSuite<WriteKeyPanel> {
 
     @Override
     protected WriteKeyPanel newKeyPanel() {
-        return new WriteKeyPanel();
+        return new WriteKeyPanel(mock(SwingPromptingPbeParametersView.class));
     }
 
     @Override
@@ -65,7 +66,7 @@ public final class WriteKeyPanelIT extends KeyPanelTestSuite<WriteKeyPanel> {
     @Test
     @SuppressWarnings("ResultOfObjectAllocationIgnored")
     public void testExtraDataUI() {
-        final JComponent ui = new KeyStrengthPanel<AesKeyStrength>(AesKeyStrength.values());
+        final JComponent ui = new KeyStrengthPanel<>(AesKeyStrength.values());
         panel.setExtraDataUI(ui);
         frame.pack();
         assertSame(ui, panel.getExtraDataUI());

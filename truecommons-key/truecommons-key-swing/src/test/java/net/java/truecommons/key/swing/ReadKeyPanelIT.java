@@ -4,21 +4,23 @@
  */
 package net.java.truecommons.key.swing;
 
-import net.java.truecommons.key.swing.ReadKeyPanel;
+import javax.annotation.concurrent.NotThreadSafe;
 import net.java.truecommons.key.spec.common.AesPbeParameters;
 import static org.junit.Assert.*;
 import org.junit.Test;
+import static org.mockito.Mockito.*;
 import org.netbeans.jemmy.operators.JCheckBoxOperator;
 import org.netbeans.jemmy.operators.JPasswordFieldOperator;
 
 /**
  * @author  Christian Schlichtherle
  */
+@NotThreadSafe
 public final class ReadKeyPanelIT extends KeyPanelTestSuite<ReadKeyPanel> {
 
     @Override
     protected ReadKeyPanel newKeyPanel() {
-        return new ReadKeyPanel();
+        return new ReadKeyPanel(mock(SwingPromptingPbeParametersView.class));
     }
 
     @Override

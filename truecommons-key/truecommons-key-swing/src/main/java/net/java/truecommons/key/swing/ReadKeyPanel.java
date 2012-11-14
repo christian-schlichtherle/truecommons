@@ -14,9 +14,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import javax.annotation.CheckForNull;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import net.java.truecommons.key.spec.PbeParameters;
+import net.java.truecommons.key.spec.prompting.PromptingPbeParameters;
 
 /**
  * This panel prompts the user for a key to open an existing protected
@@ -33,15 +34,18 @@ import net.java.truecommons.key.spec.PbeParameters;
  */
 final class ReadKeyPanel extends KeyPanel {
 
-    private static final long serialVersionUID = 984673974236493651L;
-    private static final String CLASS_NAME = ReadKeyPanel.class.getName();
-    private static final ResourceBundle
-            resources = ResourceBundle.getBundle(CLASS_NAME);
+    private static final long serialVersionUID = 0L;
 
+    private static final ResourceBundle
+            resources = ResourceBundle.getBundle(ReadKeyPanel.class.getName());
+
+    private final SwingPromptingPbeParametersView<?, ?> view;
     private final Color defaultForeground;
 
     /** Constructs a new read key panel. */
-    ReadKeyPanel() {
+    ReadKeyPanel(final SwingPromptingPbeParametersView<?, ?> view) {
+        assert null != view;
+        this.view = view;
         initComponents();
         final DocumentListener dl = new DocumentListener() {
             @Override
@@ -72,15 +76,14 @@ final class ReadKeyPanel extends KeyPanel {
     @Override
     @edu.umd.cs.findbugs.annotations.SuppressWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
     public void setResource(final URI resource) {
-        final URI lastResource = SwingPromptingPbeParametersView.lastResource;
-        if (!lastResource.equals(resource)
-                && !lastResource.equals(SwingPromptingPbeParametersView.INITIAL_RESOURCE)) {
+        final @CheckForNull URI lastResource = view.getLastResource();
+        if (null != lastResource && !resource.equals(lastResource)) {
             this.resource.setForeground(Color.RED);
         } else {
             this.resource.setForeground(defaultForeground);
         }
         this.resource.setText(resource.toString());
-        SwingPromptingPbeParametersView.lastResource = resource;
+        view.setLastResource(resource);
     }
 
     @Override
@@ -95,7 +98,8 @@ final class ReadKeyPanel extends KeyPanel {
     }
 
     @Override
-    boolean updateParam(final PbeParameters<?, ?> param) {
+    void updateParamChecked(final PromptingPbeParameters<?, ?> param)
+    throws AuthenticationException {
         switch (authenticationPanel.getAuthenticationMethod()) {
             case AuthenticationPanel.AUTH_PASSWD:
                 final char[] passwd = passwdField.getPassword();
@@ -104,22 +108,16 @@ final class ReadKeyPanel extends KeyPanel {
                 } finally {
                     Arrays.fill(passwd, (char) 0);
                 }
-                return true;
+                break;
             case AuthenticationPanel.AUTH_KEY_FILE:
                 final File keyFile = authenticationPanel.getKeyFile();
-                try {
-                    SwingPromptingPbeParametersView
-                            .setPassword(param, keyFile, false);
-                } catch (final WeakKeyException cannotHappen) {
-                    throw new AssertionError(cannotHappen);
-                } catch (final IOException ex) {
-                    setError(ex.getLocalizedMessage());
-                    return false;
-                }
-                return true;
+                SwingPromptingPbeParametersView
+                        .setPasswordOn(param, keyFile, false);
+                break;
             default:
                 throw new AssertionError("Unsupported authentication method!");
         }
+        param.setChangeRequested(isChangeKeySelected());
     }
 
     /**
