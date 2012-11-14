@@ -101,8 +101,7 @@ extends UniqueObject {
         State os, ns = this.state;
         do {
             os = ns;
-            os.setupKeyForReading(provider, invalid);
-            invalid = false; // assume correct key for next iteration!
+            invalid = os.setupKeyForReading(provider, invalid);
             ns = this.state;
         } while (ns != os);
     }
@@ -163,11 +162,12 @@ extends UniqueObject {
             }
 
             @Override
-            <K extends PromptingKey<K>> void setupKeyForReading(
+            <K extends PromptingKey<K>> boolean setupKeyForReading(
                     final PromptingKeyProvider<K> provider,
                     final boolean invalid)
             throws UnknownKeyException {
                 provider.promptKeyForReading(invalid);
+                return false;
             }
 
             @Override
@@ -186,11 +186,12 @@ extends UniqueObject {
             }
 
             @Override
-            <K extends PromptingKey<K>> void setupKeyForReading(
+            <K extends PromptingKey<K>> boolean setupKeyForReading(
                     final PromptingKeyProvider<K> provider,
                     final boolean invalid)
             throws UnknownKeyException {
                 if (invalid) provider.resetUnconditionally();
+                return invalid;
             }
 
             @Override
@@ -208,7 +209,7 @@ extends UniqueObject {
             }
 
             @Override
-            <K extends PromptingKey<K>> void setupKeyForReading(
+            <K extends PromptingKey<K>> boolean setupKeyForReading(
                     PromptingKeyProvider<K> provider,
                     boolean invalid)
             throws UnknownKeyException {
@@ -234,7 +235,7 @@ extends UniqueObject {
                 PromptingKeyProvider<K> provider)
         throws UnknownKeyException;
 
-        abstract <K extends PromptingKey<K>> void setupKeyForReading(
+        abstract <K extends PromptingKey<K>> boolean setupKeyForReading(
                 PromptingKeyProvider<K> provider,
                 boolean invalid)
         throws UnknownKeyException;
