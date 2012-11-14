@@ -5,7 +5,7 @@
 package net.java.truecommons.key.swing.feedback;
 
 import java.util.Objects;
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import javax.swing.JPanel;
 
 /**
@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 public abstract class DecoratingFeedback implements Feedback {
 
     /** The nullable decorated feedback. */
-    protected @CheckForNull Feedback feedback;
+    protected @Nullable Feedback feedback;
 
     public DecoratingFeedback() { }
 
