@@ -96,12 +96,13 @@ extends UniqueObject {
      */
     private void setupKeyForReading(
             final PromptingKeyProvider<K> provider,
-            final boolean invalid)
+            boolean invalid)
     throws UnknownKeyException {
         State os, ns = this.state;
         do {
             os = ns;
             os.setupKeyForReading(provider, invalid);
+            invalid = false; // assume correct key for next iteration!
             ns = this.state;
         } while (ns != os);
     }
