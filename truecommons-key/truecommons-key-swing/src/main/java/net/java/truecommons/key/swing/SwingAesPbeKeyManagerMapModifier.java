@@ -27,14 +27,13 @@ extends KeyManagerMapModifier {
 
     @Override
     public Map<Class<?>, KeyManager<?>> apply(Map<Class<?>, KeyManager<?>> map) {
-        map.put(AesPbeParameters.class,
-                new PromptingKeyManager<>(new SwingAesPbeParametersView()));
+        if (!GraphicsEnvironment.isHeadless())
+            map.put(AesPbeParameters.class,
+                    new PromptingKeyManager<>(new SwingAesPbeParametersView()));
         return map;
     }
 
-    /** @return zero if the graphics environment is available, -200 otherwise. */
+    /** @return -200 */
     @Override
-    public int getPriority() {
-        return GraphicsEnvironment.isHeadless() ? -200 : 0;
-    }
+    public int getPriority() { return -200; }
 }

@@ -28,7 +28,5 @@ extends InvalidKeyFeedbackDecorator {
 
     /** Returns -100. */
     @Override
-    public int getPriority() {
-        return -100;
-    }
+    public int getPriority() { return -100; }
 }

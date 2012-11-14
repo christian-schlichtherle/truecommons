@@ -4,11 +4,11 @@
  */
 package net.java.truecommons.key.def;
 
-import net.java.truecommons.key.def.DefaultAesPbeKeyManagerMapModifier;
 import java.util.Arrays;
 import net.java.truecommons.key.spec.common.AesPbeParameters;
 import net.java.truecommons.key.spec.spi.KeyManagerMapModifier;
 import net.java.truecommons.key.spec.spi.KeyManagerMapModifierTestSuite;
+import static org.junit.Assert.*;
 
 /**
  * @since  TrueCommons 2.2
@@ -26,5 +26,10 @@ extends KeyManagerMapModifierTestSuite {
     @Override
     protected KeyManagerMapModifier newModifier() {
         return new DefaultAesPbeKeyManagerMapModifier();
+    }
+
+    @Override
+    public void testPriority() {
+        assertTrue(modifier.getPriority() == Integer.MIN_VALUE);
     }
 }

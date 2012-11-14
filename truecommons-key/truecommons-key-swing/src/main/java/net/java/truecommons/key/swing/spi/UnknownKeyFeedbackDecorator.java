@@ -27,5 +27,4 @@ import net.java.truecommons.services.LocatableDecorator;
  */
 @ServiceSpecification
 public abstract class UnknownKeyFeedbackDecorator
-extends LocatableDecorator<Feedback> {
-}
+extends LocatableDecorator<Feedback> { }
