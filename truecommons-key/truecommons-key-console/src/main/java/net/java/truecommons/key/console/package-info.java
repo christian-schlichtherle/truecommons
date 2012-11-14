@@ -4,7 +4,7 @@
  */
 /**
  * Provides the console based implementation of the interface
- * {@link net.java.truecommons.key.spec.PromptingKeyProvider.View}.
+ * {@link net.java.truecommons.key.spec.prompting.PromptingKey.View}.
  *
  * @since  TrueCommons 2.2
  * @author Christian Schlichtherle

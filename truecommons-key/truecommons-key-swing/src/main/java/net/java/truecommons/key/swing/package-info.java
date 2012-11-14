@@ -4,7 +4,7 @@
  */
 /**
  * Provides the Swing based implementation of the interface
- * {@link net.java.truecommons.key.spec.PromptingKeyProvider.View}.
+ * {@link net.java.truecommons.key.spec.prompting.PromptingKey.View}.
  * If a key file is used for authentication instead of a password, then the
  * file size must be 512 bytes or more, of which only the first 512 bytes are
  * used.
