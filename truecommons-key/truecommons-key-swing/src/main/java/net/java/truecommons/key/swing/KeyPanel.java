@@ -6,7 +6,7 @@ package net.java.truecommons.key.swing;
 
 import java.net.URI;
 import javax.annotation.CheckForNull;
-import net.java.truecommons.key.spec.PbeParameters;
+import net.java.truecommons.key.spec.prompting.PromptingPbeParameters;
 import net.java.truecommons.key.swing.feedback.Feedback;
 import net.java.truecommons.key.swing.util.EnhancedPanel;
 import net.java.truecommons.key.swing.util.PanelEvent;
@@ -20,7 +20,7 @@ import net.java.truecommons.key.swing.util.PanelListener;
  */
 abstract class KeyPanel extends EnhancedPanel {
 
-    private static final long serialVersionUID = 2762934728646652873L;
+    private static final long serialVersionUID = 0L;
 
     private @CheckForNull Feedback feedback;
 
@@ -32,9 +32,7 @@ abstract class KeyPanel extends EnhancedPanel {
      * Returns the feedback to run when this panel is shown in its ancestor
      * window.
      */
-    public @CheckForNull Feedback getFeedback() {
-        return feedback;
-    }
+    public @CheckForNull Feedback getFeedback() { return feedback; }
 
     /**
      * Sets the feedback to run when this panel is shown in its ancestor
@@ -73,9 +71,20 @@ abstract class KeyPanel extends EnhancedPanel {
      *
      * @param error New value of property error.
      */
-    public abstract void setError(final @CheckForNull String error);
+    public abstract void setError(@CheckForNull String error);
 
-    abstract boolean updateParam(final PbeParameters<?, ?> param);
+    final boolean updateParam(final PromptingPbeParameters<?, ?> param) {
+        try {
+            updateParamChecked(param);
+            return true;
+        } catch (final AuthenticationException ex) {
+            setError(ex.getLocalizedMessage());
+            return false;
+        }
+    }
+
+    abstract void updateParamChecked(PromptingPbeParameters<?, ?> param)
+    throws AuthenticationException;
 
     private static class KeyPanelListener implements PanelListener {
         @Override
@@ -84,7 +93,6 @@ abstract class KeyPanel extends EnhancedPanel {
         }
 
         @Override
-        public void ancestorWindowHidden(PanelEvent evt) {
-        }
+        public void ancestorWindowHidden(PanelEvent evt) { }
     }
 }

@@ -14,12 +14,10 @@ import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.WeakHashMap;
 import java.util.zip.Deflater;
+import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.ThreadSafe;
-import javax.inject.Provider;
 import javax.swing.JOptionPane;
 import net.java.truecommons.key.spec.KeyStrength;
 import net.java.truecommons.key.spec.PbeParameters;
@@ -29,7 +27,6 @@ import net.java.truecommons.key.spec.prompting.KeyPromptingInterruptedException;
 import net.java.truecommons.key.spec.prompting.PromptingKey;
 import net.java.truecommons.key.spec.prompting.PromptingKey.Controller;
 import net.java.truecommons.key.spec.prompting.PromptingPbeParameters;
-import net.java.truecommons.key.swing.feedback.Feedback;
 import net.java.truecommons.key.swing.sl.InvalidKeyFeedbackLocator;
 import net.java.truecommons.key.swing.sl.UnknownKeyFeedbackLocator;
 import net.java.truecommons.key.swing.util.Windows;
@@ -49,8 +46,6 @@ implements PromptingKey.View<P> {
     private static final ResourceBundle resources = ResourceBundle
             .getBundle(SwingPromptingPbeParametersView.class.getName());
 
-    static final URI INITIAL_RESOURCE = URI.create(""); // NOI18N
-
     /**
      * This is the number of bytes to load from the beginning of a key file.
      * A valid key file for encryption must contain at least this number of
@@ -61,46 +56,30 @@ implements PromptingKey.View<P> {
     // output.
     public static final int KEY_FILE_LEN = 512;
 
-    private static final Map<URI, ReadKeyPanel> readKeyPanels = new WeakHashMap<>();
-
-    /**
-     * The last resource ID used when prompting.
-     * Initialized to the empty string.
-     */
-    static volatile URI lastResource = INITIAL_RESOURCE;
-
-    private volatile Provider<Feedback>
-            unknownKeyFeedbackProvider = UnknownKeyFeedbackLocator.SINGLETON;
-    private volatile Provider<Feedback>
-            invalidKeyFeedbackProvider = InvalidKeyFeedbackLocator.SINGLETON;
-
-    /**
-     * Returns new parameters for safe password based encryption.
-     *
-     * @return New parameters for safe password based encryption.
-     */
-    protected abstract P newPbeParameters();
-
-    static void setPassword(
+    static void setPasswordOn(
             final PbeParameters<?, ?> param,
             final File keyFile,
             final boolean check)
-    throws IOException, WeakKeyException {
+    throws AuthenticationException {
         if (check && keyFile.canWrite())
-            throw new IOException(resources.getString("keyFile.canWrite"));
+            throw new AuthenticationException(
+                    resources.getString("keyFile.canWrite"));
         final byte[] key;
         try {
             key = readKeyFile(keyFile);
         } catch (final FileNotFoundException ex) {
-            throw new IOException(resources.getString("keyFile.fileNotFoundException"), ex);
+            throw new AuthenticationException(
+                    resources.getString("keyFile.fileNotFoundException"), ex);
         } catch (final EOFException ex) {
-            throw new IOException(resources.getString("keyFile.eofException"), ex);
+            throw new AuthenticationException(
+                    resources.getString("keyFile.eofException"), ex);
         } catch (final IOException ex) {
-            throw new IOException(resources.getString("keyFile.ioException"), ex);
+            throw new AuthenticationException(
+                    resources.getString("keyFile.ioException"), ex);
         }
         try {
             if (check) checkKeyEntropy(key);
-            setPassword(param, key);
+            setPasswordOn(param, key);
         } finally {
             Arrays.fill(key, (byte) 0);
         }
@@ -110,9 +89,9 @@ implements PromptingKey.View<P> {
      * Checks the entropy of the given key bytes.
      *
      * @param key the key to check.
-     * @throws WeakKeyException if the entropy of the given key is too weak.
+     * @throws AuthenticationException if the entropy of the given key is too weak.
      */
-    private static void checkKeyEntropy(byte[] key) throws WeakKeyException {
+    private static void checkKeyEntropy(byte[] key) throws AuthenticationException {
         Deflater def = new Deflater();
         def.setInput(key);
         def.finish();
@@ -121,7 +100,7 @@ implements PromptingKey.View<P> {
         assert def.getTotalOut() == n;
         def.end();
         if (n < 2 * 256 / 8) // see RandomAccessEncryptionSpecification
-            throw new WeakKeyException(resources.getString("keyFile.badEntropy"));
+            throw new AuthenticationException(resources.getString("keyFile.badEntropy"));
     }
 
     /**
@@ -141,7 +120,9 @@ implements PromptingKey.View<P> {
         return buf;
     }
 
-    private static void setPassword(final PbeParameters<?, ?> param, final byte[] key) {
+    private static void setPasswordOn(
+            final PbeParameters<?, ?> param,
+            final byte[] key) {
         final char[] password = decode(key);
         try {
             param.setPassword(password);
@@ -165,32 +146,36 @@ implements PromptingKey.View<P> {
         return chars;
     }
 
-    Provider<Feedback> getUnknownKeyFeedbackProvider() {
-        return unknownKeyFeedbackProvider;
+    private volatile @CheckForNull URI lastResource;
+
+    /** Returns the last resource ID used when prompting. */
+    URI getLastResource() {
+        return lastResource;
     }
 
-    void setUnkownKeyFeedbackProvider(final Provider<Feedback> provider) {
-        unknownKeyFeedbackProvider = provider;
+    /** Sets the last resource ID used when prompting. */
+    void setLastResource(final URI lastResource) {
+        this.lastResource = lastResource;
     }
 
-    Provider<Feedback> getInvalidKeyFeedbackProvider() {
-        return invalidKeyFeedbackProvider;
-    }
-
-    void setInvalidKeyFeedback(final Provider<Feedback> provider) {
-        invalidKeyFeedbackProvider = provider;
-    }
+    /**
+     * Returns new parameters for safe password based encryption.
+     *
+     * @return New parameters for safe password based encryption.
+     */
+    protected abstract P newPbeParameters();
 
     @Override
-    public void promptKeyForWriting(
+    public final void promptKeyForWriting(
             final Controller<P> controller)
     throws UnknownKeyException {
+
         class PromptKeyForWriting implements Runnable {
             @Override
             public void run() { promptKeyForWritingOnEDT(controller); }
         } // PromptKeyForWriting
 
-        multiplexToEDT(new PromptKeyForWriting());
+        multiplexOnEDT(new PromptKeyForWriting());
     }
 
     /**
@@ -210,7 +195,7 @@ implements PromptingKey.View<P> {
         final KeyStrengthPanel<S> keyStrengthPanel = new KeyStrengthPanel<>(
                 param.getAllKeyStrengths());
         keyStrengthPanel.setKeyStrength(param.getKeyStrength());
-        final WriteKeyPanel keyPanel = new WriteKeyPanel();
+        final WriteKeyPanel keyPanel = new WriteKeyPanel(this);
         keyPanel.setExtraDataUI(keyStrengthPanel);
 
         final Window parent = Windows.getParentWindow();
@@ -220,9 +205,9 @@ implements PromptingKey.View<P> {
             // loop iteration has to be repeated due to an invalid
             // user input.
             keyPanel.setResource(resource);
-            keyPanel.setFeedback(null != keyPanel.getError()
-                    ? getInvalidKeyFeedbackProvider().get()
-                    : getUnknownKeyFeedbackProvider().get());
+            keyPanel.setFeedback((null != keyPanel.getError()
+                    ? InvalidKeyFeedbackLocator.SINGLETON
+                    : UnknownKeyFeedbackLocator.SINGLETON).get());
 
             final int result = JOptionPane.showConfirmDialog(
                     parent,
@@ -248,10 +233,11 @@ implements PromptingKey.View<P> {
     }
 
     @Override
-    public void promptKeyForReading(
+    public final void promptKeyForReading(
             final Controller<P> controller,
             final boolean invalid)
     throws UnknownKeyException {
+
         class PromptKeyForReading implements Runnable {
             @Override
             public void run() {
@@ -259,7 +245,7 @@ implements PromptingKey.View<P> {
             }
         } // PromptKeyForReading
 
-        multiplexToEDT(new PromptKeyForReading());
+        multiplexOnEDT(new PromptKeyForReading());
     }
 
     /**
@@ -274,19 +260,8 @@ implements PromptingKey.View<P> {
         final URI resource = controller.getResource();
         assert null != resource;
 
-        final ReadKeyPanel keyPanel;
-        if (invalid) {
-            final ReadKeyPanel panel = readKeyPanels.get(resource);
-            if (panel != null) {
-                keyPanel = panel;
-            } else {
-                keyPanel = new ReadKeyPanel();
-            }
-            keyPanel.setError(resources.getString("invalidKey"));
-        } else {
-            keyPanel = new ReadKeyPanel();
-        }
-        readKeyPanels.put(resource, keyPanel);
+        final ReadKeyPanel keyPanel = new ReadKeyPanel(this);
+        if (invalid) keyPanel.setError(resources.getString("invalid"));
 
         final Window parent = Windows.getParentWindow();
         while (!Thread.interrupted()) { // test and clear status!
@@ -295,9 +270,9 @@ implements PromptingKey.View<P> {
             // loop iteration has to be repeated due to an invalid
             // user input.
             keyPanel.setResource(resource);
-            keyPanel.setFeedback(null != keyPanel.getError()
-                    ? getInvalidKeyFeedbackProvider().get()
-                    : getUnknownKeyFeedbackProvider().get());
+            keyPanel.setFeedback((null != keyPanel.getError()
+                    ? InvalidKeyFeedbackLocator.SINGLETON
+                    : UnknownKeyFeedbackLocator.SINGLETON).get());
 
             final int result = JOptionPane.showConfirmDialog(
                     parent,
@@ -309,13 +284,12 @@ implements PromptingKey.View<P> {
                 break;*/
 
             if (result != JOptionPane.OK_OPTION) {
-                controller.setKeyClone(null);
+                controller.setKeyClone(null); // cancel
                 return;
             }
 
             final P param = newPbeParameters();
             if (keyPanel.updateParam(param)) { // valid input?
-                param.setChangeRequested(keyPanel.isChangeKeySelected());
                 controller.setKeyClone(param);
                 return;
             }
@@ -343,20 +317,19 @@ implements PromptingKey.View<P> {
      * If a {@link Throwable} is thrown by the EDT, then it's wrapped in an
      * {@link UndeclaredThrowableException} and re-thrown by this thread.
      */
-    private static void multiplexToEDT(final Runnable task)
+    private static void multiplexOnEDT(final Runnable task)
     throws UnknownKeyException {
         if (GraphicsEnvironment.isHeadless())
             throw new KeyPromptingDisabledException();
-
         if (EventQueue.isDispatchThread()) {
             task.run();
         } else {
             synchronized (SwingPromptingPbeParametersView.class) {
                 try {
                     EventQueue.invokeAndWait(task);
-                } catch (InterruptedException interrupt) {
+                } catch (final InterruptedException interrupt) {
                     throw new KeyPromptingInterruptedException(interrupt);
-                } catch (InvocationTargetException failure) {
+                } catch (final InvocationTargetException failure) {
                     throw new UnknownKeyException(failure);
                 }
             }
