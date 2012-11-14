@@ -9,7 +9,7 @@ import javax.annotation.CheckForNull;
 /**
  * Thrown to indicate that password authentication failed for some reason.
  *
- * @since  TrueCommons 2.3
+ * @since  TrueCommons 2.2.2
  * @author Christian Schlichtherle
  */
 final class AuthenticationException extends Exception {
