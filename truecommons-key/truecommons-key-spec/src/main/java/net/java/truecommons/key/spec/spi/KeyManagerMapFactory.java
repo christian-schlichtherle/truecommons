@@ -38,4 +38,16 @@ extends LocatableFactory<Map<Class<?>, KeyManager<?>>> {
     public Map<Class<?>, KeyManager<?>> get() {
         return new HashMap<>(32);
     }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * If the {@linkplain #getClass() runtime class} of this object is
+     * {@link KeyManagerMapFactory}, then {@code -100} gets returned.
+     * Otherwise, zero gets returned.
+     */
+    @Override
+    public int getPriority() {
+        return KeyManagerMapFactory.class.equals(getClass()) ? -100 : 0;
+    }
 }

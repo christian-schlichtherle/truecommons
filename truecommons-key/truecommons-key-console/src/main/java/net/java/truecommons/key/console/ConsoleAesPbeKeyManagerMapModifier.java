@@ -26,14 +26,13 @@ extends KeyManagerMapModifier {
 
     @Override
     public Map<Class<?>, KeyManager<?>> apply(final Map<Class<?>, KeyManager<?>> map) {
-        map.put(AesPbeParameters.class,
-                new PromptingKeyManager<>(new ConsoleAesPbeParametersView()));
+        if (null != System.console())
+            map.put(AesPbeParameters.class,
+                    new PromptingKeyManager<>(new ConsoleAesPbeParametersView()));
         return map;
     }
 
-    /** @return -100 if console I/O is available, -300 otherwise. */
+    /** @return -300 */
     @Override
-    public int getPriority() {
-        return null == System.console() ? -300 : -100;
-    }
+    public int getPriority() { return -300; }
 }

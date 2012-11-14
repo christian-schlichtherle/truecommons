@@ -15,7 +15,7 @@ import net.java.truecommons.key.spec.spi.KeyManagerMapModifier;
 /**
  * Adds the {@link OsxKeyManager} to the map if and only if this JVM is running
  * on Mac OS X.
- * 
+ *
  * @since  TrueCommons 2.2
  * @author Christian Schlichtherle
  */
@@ -37,7 +37,7 @@ extends KeyManagerMapModifier {
         return map;
     }
 
-    /** @return 100 */
+    /** @return -100 */
     @Override
-    public int getPriority() { return 100; }
+    public int getPriority() { return -100; }
 }

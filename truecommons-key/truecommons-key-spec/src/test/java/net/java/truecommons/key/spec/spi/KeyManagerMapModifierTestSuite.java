@@ -4,13 +4,12 @@
  */
 package net.java.truecommons.key.spec.spi;
 
-import net.java.truecommons.key.spec.spi.KeyManagerMapFactory;
-import net.java.truecommons.key.spec.spi.KeyManagerMapModifier;
 import java.util.Map;
 import net.java.truecommons.key.spec.KeyManager;
 import net.java.truecommons.key.spec.sl.KeyManagerMapLocator;
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -18,22 +17,29 @@ import org.junit.Test;
  */
 public abstract class KeyManagerMapModifierTestSuite {
 
+    protected KeyManagerMapModifier modifier;
+
     protected abstract Iterable<Class<?>> getClasses();
     protected abstract KeyManagerMapModifier newModifier();
+
+    @Before
+    public void before() { modifier = newModifier(); }
 
     @Test
     public void testApply() {
         final Map<Class<?>, KeyManager<?>> map = new KeyManagerMapFactory().get();
-        assertThat(newModifier().apply(map), is(sameInstance(map)));
-        assertThat(map.size(), is(not(0)));
-        for (final Class<?> clazz : getClasses())
-            assertThat(map.get(clazz), notNullValue());
+        assertThat(modifier.apply(map), is(sameInstance(map)));
+    }
+
+    @Test
+    public void testPriority() {
+        assertTrue(modifier.getPriority() < 0);
     }
 
     @Test
     public void testIsLocatable() {
         final Map<Class<?>, KeyManager<?>>
-                modified = newModifier().apply(new KeyManagerMapFactory().get());
+                modified = modifier.apply(new KeyManagerMapFactory().get());
         final Map<Class<?>, KeyManager<?>>
                 located = KeyManagerMapLocator.SINGLETON.get();
         for (final Class<?> clazz : modified.keySet())

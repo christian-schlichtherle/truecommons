@@ -28,5 +28,4 @@ import net.java.truecommons.services.LocatableDecorator;
  */
 @ServiceSpecification
 public abstract class InvalidKeyFeedbackDecorator
-extends LocatableDecorator<Feedback> {
-}
+extends LocatableDecorator<Feedback> { }
