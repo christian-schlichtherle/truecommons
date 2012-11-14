@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.key.spec;
 
-import net.java.truecommons.key.spec.AbstractSecretKey;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.ByteArrayInputStream;

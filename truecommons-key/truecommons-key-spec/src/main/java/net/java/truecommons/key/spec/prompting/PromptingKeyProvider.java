@@ -56,12 +56,14 @@ extends AbstractKeyProvider<K> {
         return provider.getKeyCloneForReading(this, invalid);
     }
 
-    K getKeyClone() { return provider.getKeyClone(); }
-
-    void setKeyClone(@CheckForNull K key) { provider.setKeyClone(key); }
-
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The implementation in the class {@link PromptingKeyProvider} clones the
+     * given nullable key before setting it.
+     */
     @Override
-    public void setKey(@CheckForNull K key) { setKeyClone(key); }
+    public void setKey(@CheckForNull K key) { provider.setKeyClone(key); }
 
     @CheckForNull PersistentUnknownKeyException getException() {
         return provider.getException();
