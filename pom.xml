@@ -13,7 +13,7 @@
     </parent>
 
     <artifactId>truecommons</artifactId>
-    <version>2.2.3-SNAPSHOT</version>
+    <version>2.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TrueCommons</name>
@@ -74,6 +74,7 @@
         <module>truecommons-annotations</module>
         <module>truecommons-cio</module>
         <module>truecommons-io</module>
+        <module>truecommons-jmx</module>
         <module>truecommons-key</module>
         <module>truecommons-logging</module>
         <module>truecommons-services</module>
@@ -103,6 +104,11 @@
                 <type>test-jar</type>
                 <version>${project.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>truecommons-jmx</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>

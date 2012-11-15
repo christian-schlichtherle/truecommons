@@ -1,0 +1,64 @@
+    ------------------------
+    About
+    ------------------------
+    Christian Schlichtherle
+    ------------------------
+
+About
+
+    Provides service locators and components for safely interfacing with JMX
+    in a library module.
+
+* Use Case
+
+    Sometimes, a library module may wish to register MBeans with unique object
+    names in order to provide monitoring and management capabilities via JMX.
+    However, if multiple class loader definitions of this module exist in the
+    JVM, then registering these object names at the platform MBean server
+    will fail for all but the first class loader definition because the same
+    object names are used for different definitions of the same MBean class.
+    This typically happens if the library module gets bundled in multiple WAR
+    files which get deployed to the same web app container, e.g. a Tomcat
+    server.
+
+    By adding this module to the runtime class path, an additional qualifier
+    which identifies the class loader gets transparently added to each object
+    name so that the corresponding MBean has a unique object name when it gets
+    registered at the platform MBean server, even if multiple definitions of
+    the same MBean class exist in the JVM.
+
+    In a standalone application where this module is defined by the system
+    class loader it will have no effect, so it's safe to always add it to the
+    runtime class path.
+
+* How it works
+
+    This module works by proxying access to the platform MBean server via the
+    {{{../../apidocs/net/java/truecommons/jmx/sl/MBeanServerLocator.html#SINGLETON}<<<MBeanServerLocator.SINGLETON>>>}}.
+    This is a container for the <<<MBeanServer>>> to use in the library for
+    registering, unregistering or querying its MBeans.
+
+    Depending on the class loader environment, the container will provide the
+    platform MBean server (as returned by
+    <<<ManagementFactory.getPlatformMBeanServer>>>) or a proxy which
+    transparently adds another key-value qualifier which identifies the class
+    loader to each object name.
+
+    Mind that this procedure only affects MBeans which get registered at the
+    MBean server which is provided by the <<<MBeanServerLocator.SINGLETON>>>.
+    MBeans directly registered at the platform MBean server are <not> affected.
+
+* How to use it
+
+    Just call <<<MBeanServerLocator.SINGLETON.get()>>> in order to obtain an
+    MBean server.
+    If this module is defined by the system class loader, then the call should
+    simply return the platform MBean server - unless other MBean server
+    factories or decorators are present on the class path.
+
+    However, if this module is defined by another class loader than the system
+    class loader, then each object name gets transparently modified to contain
+    an additional key-value qualifier which identifies the class loader.
+    You can change the qualifier by providing another
+    {{{../../apidocs/net/java/truecommons/jmx/spi/ObjectNameModifierFactory.html}<<<ObjectNameModifierFactory>>>}}
+    on the class path.
