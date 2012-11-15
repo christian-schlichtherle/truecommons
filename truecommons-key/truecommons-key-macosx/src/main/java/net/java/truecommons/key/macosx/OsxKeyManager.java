@@ -15,6 +15,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import net.java.truecommons.key.macosx.keychain.DuplicateItemException;
 import net.java.truecommons.key.macosx.keychain.Keychain;
@@ -34,7 +35,7 @@ import org.slf4j.Logger;
 
 /**
  * Uses Apple's Keychain Services API to persist passwords.
- * 
+ *
  * @since  TrueCommons 2.2
  * @author Christian Schlichtherle
  */
@@ -129,6 +130,7 @@ extends AbstractKeyManager<P> {
 
                 if (null != param) {
                     final ByteBuffer newSecret = param.getSecret();
+                    if (null == newSecret) throw new IllegalArgumentException();
                     try {
                         final ByteBuffer newXml = serialize(param);
                         final P newParam = (P) deserialize(newXml); // rip off transient fields

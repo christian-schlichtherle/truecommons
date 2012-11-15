@@ -5,6 +5,7 @@
 package net.java.truecommons.key.macosx;
 
 import java.net.URI;
+import java.util.Objects;
 import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.ThreadSafe;
 import net.java.truecommons.key.spec.KeyProvider;
@@ -61,10 +62,10 @@ implements KeyProvider<P> {
     }
 
     @Override
-    public void setKey(final P np) {
+    public void setKey(final @CheckForNull P np) {
         final P op = param;
         provider.setKey(np);
-        if (!np.equals(op)) manager.setKey(resource, np);
+        if (!Objects.equals(np, op)) manager.setKey(resource, np);
         param = np;
     }
 }
