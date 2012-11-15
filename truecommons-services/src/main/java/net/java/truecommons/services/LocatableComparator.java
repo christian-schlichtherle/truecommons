@@ -12,7 +12,7 @@ import java.util.Comparator;
  *
  * @author Christian Schlichtherle
  */
-final class LocatableComparator implements Comparator<Locatable>, Serializable {
+class LocatableComparator implements Comparator<Locatable>, Serializable {
 
     private static final long serialVersionUID = 0L;
 
