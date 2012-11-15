@@ -38,7 +38,7 @@ public interface ObjectNameModifier {
     /**
      * Encodes the object name in the given object instance.
      *
-     * @param name the object instance with the object name to encode.
+     * @param instance the object instance with the object name to encode.
      * @return The transformed object instance.
      */
     @Nullable ObjectInstance apply(@CheckForNull ObjectInstance instance);
@@ -46,7 +46,7 @@ public interface ObjectNameModifier {
     /**
      * Decodes the object name in the given object instance.
      *
-     * @param name the object instance with the object name to decode.
+     * @param instance the object instance with the object name to decode.
      * @return The transformed object instance.
      */
     @Nullable ObjectInstance unapply(@CheckForNull ObjectInstance instance);
