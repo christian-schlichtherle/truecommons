@@ -230,7 +230,7 @@ public final class ServiceImplementationProcessor extends AbstractProcessor {
                         w.close();
                     }
                 } catch (final IOException ex) {
-                    messager.printMessage(ERROR, String.format("Failed to register %d service implementation class(es) at: %s: " , coll.size(), path, ex.getMessage()));
+                    messager.printMessage(ERROR, String.format("Failed to register %d service implementation class(es) at: %s: %s" , coll.size(), path, ex.getMessage()));
                 }
             }
         }
