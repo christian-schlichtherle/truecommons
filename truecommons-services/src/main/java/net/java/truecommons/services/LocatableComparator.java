@@ -4,6 +4,7 @@
  */
 package net.java.truecommons.services;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -11,7 +12,10 @@ import java.util.Comparator;
  *
  * @author Christian Schlichtherle
  */
-class LocatableComparator implements Comparator<Locatable> {
+final class LocatableComparator implements Comparator<Locatable>, Serializable {
+
+    private static final long serialVersionUID = 0L;
+
     @Override
     public int compare(final Locatable o1, final Locatable o2) {
         final int p1 = o1.getPriority();
