@@ -5,6 +5,7 @@
 package net.java.truecommons.key.macosx;
 
 import java.net.URI;
+import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.ThreadSafe;
 import net.java.truecommons.key.spec.KeyProvider;
 import net.java.truecommons.key.spec.UnknownKeyException;
@@ -13,7 +14,7 @@ import net.java.truecommons.key.spec.prompting.AbstractPromptingPbeParameters;
 /**
  * Interacts with the {@link OsxKeyManager} to persist passwords into Apple's
  * Keychain Services API.
- * 
+ *
  * @since  TrueCommons 2.2
  * @author Christian Schlichtherle
  */
@@ -24,7 +25,7 @@ implements KeyProvider<P> {
     private final OsxKeyManager<P> manager;
     private final URI resource;
     private final KeyProvider<P> provider;
-    private volatile P param;
+    private volatile @CheckForNull P param;
 
     OsxKeyProvider(
             final OsxKeyManager<P> manager,

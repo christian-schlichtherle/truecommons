@@ -194,7 +194,8 @@ implements PromptingKey.View<P> {
 
         final KeyStrengthPanel<S> keyStrengthPanel = new KeyStrengthPanel<>(
                 param.getAllKeyStrengths());
-        keyStrengthPanel.setKeyStrength(param.getKeyStrength());
+        final @CheckForNull S keyStrength = param.getKeyStrength();
+        if (null != keyStrength) keyStrengthPanel.setKeyStrength(keyStrength);
         final WriteKeyPanel keyPanel = new WriteKeyPanel(this);
         keyPanel.setExtraDataUI(keyStrengthPanel);
 

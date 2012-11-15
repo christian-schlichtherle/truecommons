@@ -119,10 +119,11 @@ implements PromptingKey.View<P> {
             }
 
             while (true) {
+                final S keyStrength = param.getKeyStrength();
                 String input = con.readLine(
                         resources.getString("keyStrength.prompt"),
                         selection,
-                        param.getKeyStrength().getBits());
+                        null == keyStrength ? 0 : keyStrength.getBits());
                 if (null == input || input.length() <= 0) break;
                 try {
                     final int bits = Integer.parseInt(input);
