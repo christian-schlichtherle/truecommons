@@ -32,10 +32,10 @@ extends DecoratingFeedback implements Feedback {
     private static final double PI      = Math.PI;
     private static final double TWO_PI  = 2.0 * PI;
 
-    private final double amplitude = 25;
-    private final double cycle = 150;
-    private final int    duration = SuspensionPenalty.MIN_KEY_RETRY_DELAY / 2;
-    private final int    fps = 75;
+    private static final double amplitude = 25;
+    private static final double cycle = 150;
+    private static final int    duration = SuspensionPenalty.MIN_KEY_RETRY_DELAY / 2;
+    private static final int    fps = 75;
 
     HurlingWindowFeedback(Feedback feedback) {
         super(feedback);
