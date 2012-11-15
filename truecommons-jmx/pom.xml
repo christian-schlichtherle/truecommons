@@ -8,30 +8,38 @@
 
     <parent>
         <groupId>net.java.truecommons</groupId>
-        <artifactId>truecommons-key</artifactId>
+        <artifactId>truecommons</artifactId>
         <version>2.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>truecommons-key-swing</artifactId>
+    <artifactId>truecommons-jmx</artifactId>
 
-    <name>TrueCommons KeyManager Swing</name>
+    <name>TrueCommons JMX</name>
     <description>
-        Prompts the user for passwords via a Swing based dialog, if available.
+    Provides service locators and components for safely interfacing with JMX
+    in a library module.
     </description>
+
+    <properties>
+        <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>truecommons-key-spec</artifactId>
+            <artifactId>truecommons-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>truecommons-key-spec</artifactId>
-            <type>test-jar</type>
+            <artifactId>truecommons-services</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.netbeans</groupId>
-            <artifactId>jemmy</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>truecommons-shed</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
         </dependency>
     </dependencies>
 </project>
