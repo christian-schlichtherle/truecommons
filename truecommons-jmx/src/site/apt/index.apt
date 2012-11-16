@@ -34,7 +34,7 @@ About
 * How it works
 
     This module works by proxying access to the platform MBean server via the
-    {{{../../apidocs/net/java/truecommons/jmx/sl/MBeanServerLocator.html#SINGLETON}<<<MBeanServerLocator.SINGLETON>>>}}.
+    {{{../apidocs/net/java/truecommons/jmx/sl/MBeanServerLocator.html#SINGLETON}<<<MBeanServerLocator.SINGLETON>>>}}.
     This is a container for the <<<MBeanServer>>> to use in the library for
     registering, unregistering or querying its MBeans.
 
@@ -60,5 +60,5 @@ About
     class loader, then each object name gets transparently modified to contain
     an additional key-value qualifier which identifies the class loader.
     You can change the qualifier by providing another
-    {{{../../apidocs/net/java/truecommons/jmx/spi/ObjectNameModifierFactory.html}<<<ObjectNameModifierFactory>>>}}
+    {{{../apidocs/net/java/truecommons/jmx/spi/ObjectNameModifierFactory.html}<<<ObjectNameModifierFactory>>>}}
     on the class path.
