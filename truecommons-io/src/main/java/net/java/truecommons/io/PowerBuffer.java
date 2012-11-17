@@ -23,6 +23,7 @@ import java.nio.channels.WritableByteChannel;
 public abstract class PowerBuffer<This extends PowerBuffer<This>>
 implements Comparable<This>, Cloneable {
 
+    @SuppressWarnings("PackageVisibleField")
     ByteBuffer bb;
 
     //

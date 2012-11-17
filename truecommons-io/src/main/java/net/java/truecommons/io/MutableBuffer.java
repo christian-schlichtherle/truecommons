@@ -82,9 +82,7 @@ public final class MutableBuffer extends PowerBuffer<MutableBuffer> {
     //
 
     @Override
-    public MutableBuffer slice() {
-        return new MutableBuffer(bb.slice());
-    }
+    public MutableBuffer slice() { return new MutableBuffer(bb.slice()); }
 
     @Override
     public MutableBuffer duplicate() {
