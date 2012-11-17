@@ -21,7 +21,8 @@
     </description>
 
     <properties>
-        <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -36,10 +37,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>truecommons-shed</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
         </dependency>
     </dependencies>
 </project>
