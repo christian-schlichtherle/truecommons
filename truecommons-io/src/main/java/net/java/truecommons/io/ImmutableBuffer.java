@@ -173,7 +173,7 @@ public final class ImmutableBuffer extends PowerBuffer<ImmutableBuffer> {
 
     @Override
     public ImmutableBuffer duplicate() {
-        return new ImmutableBuffer(bb.duplicate()); // no need to duplicate bb!
+        return new ImmutableBuffer(bb.duplicate());
     }
 
     @Override
