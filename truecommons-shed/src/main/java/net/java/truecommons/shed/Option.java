@@ -69,7 +69,13 @@ extends AbstractCollection<E> implements Serializable {
         return null == element ? (Option<T>) none() : some(element);
     }
 
-    private static <T> Option<T> none() { return (Option<T>) None.INSTANCE; }
+    /**
+     * Returns an option with no element.
+     *
+     * @param <T> the type of the absent element.
+     * @return An option with no element.
+     */
+    public static <T> Option<T> none() { return (Option<T>) None.INSTANCE; }
 
     private static <T> Option<T> some(final T element) {
         assert null != element;
