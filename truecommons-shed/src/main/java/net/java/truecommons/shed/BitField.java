@@ -18,8 +18,8 @@ import javax.annotation.concurrent.Immutable;
  * As an immutable class, it's inherently thread-safe.
  * All modifying methods return a modified clone of this instance.
  *
- * @param   <E> The type of {@link Enum} objects contained in this set.
- * @author  Christian Schlichtherle
+ * @param  <E> The type of {@link Enum} objects contained in this set.
+ * @author Christian Schlichtherle
  */
 // TODO: Add more modifying methods.
 @Immutable

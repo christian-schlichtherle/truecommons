@@ -9,7 +9,6 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
 
 /**
  * A link has a nullable {@link #get() target} property.
@@ -17,8 +16,8 @@ import javax.annotation.Nullable;
  * and access to the decorated or adapted object should be provided as part of
  * the public API of the decorating or adapting class.
  *
- * @param   <T> The type of the target.
- * @author  Christian Schlichtherle
+ * @param  <T> The type of the target.
+ * @author Christian Schlichtherle
  */
 
 public interface Link<T> {
@@ -28,10 +27,10 @@ public interface Link<T> {
      * <p>
      * The returned object reference may be {@code null} subject to the terms
      * and conditions of sub-interfaces or implementations.
-     * 
+     *
      * @return The target of this link.
      */
-    @Nullable T get();
+    @CheckForNull T get();
 
     /**
      * A factory for links which defines the terms and conditions for clearing
