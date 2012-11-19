@@ -9,6 +9,7 @@ import java.util.AbstractCollection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
@@ -23,13 +24,25 @@ import javax.annotation.concurrent.Immutable;
  * <p>
  * A less idiomatic way is the following:
  * <pre>{@code
- * Option<String> option = Option.apply("Hello world!"); // or Option.apply(null)
+ * Option<String> option = Option.some("Hello world!"); // or Option.none()
  * if (!option.isEmpty()) System.out.println(option.get());
  * }</pre>
  * <p>
  * If you use this class in these ways, your code clearly expresses the
  * intention that its prepared to deal with the absence of an object in a
  * collection and won't throw a {@link NullPointerException} in this case.
+ * Here's a more complex example with composed options:
+ * <p>
+ * <pre>{@code
+ * class Container {
+ *     Option<String> getMessage() { return Option.some("Hello world!"); }
+ * }
+ *
+ * Option<Container> option = Option.some(new Container()); // or Option.none()
+ * for (Container c : option)
+ *     for (String s : c.getMessage())
+ *         System.out.println(s);
+ * }</pre>
  * <p>
  * This class is inspired by the Scala Library and checked with Google's Guava
  * Library:
@@ -66,7 +79,9 @@ extends AbstractCollection<E> implements Serializable {
      * @return An option for the given nullable element.
      */
     public static <T> Option<T> apply(@CheckForNull T element) {
-        return null == element ? (Option<T>) none() : some(element);
+        return null == element
+                ? (Option<T>) None.INSTANCE
+                : new Some<>(element);
     }
 
     /**
@@ -77,9 +92,16 @@ extends AbstractCollection<E> implements Serializable {
      */
     public static <T> Option<T> none() { return (Option<T>) None.INSTANCE; }
 
-    private static <T> Option<T> some(final T element) {
-        assert null != element;
-        return new Some<>(element);
+    /**
+     * Returns an option with the given element.
+     *
+     * @param <T> the type of the element.
+     * @param element the element in this option.
+     * @return An option with the given element.
+     * @throws NullPointerException if {@code element} is {@code null}.
+     */
+    public static <T> Option<T> some(T element) {
+        return new Some<>(Objects.requireNonNull(element));
     }
 
     /**
