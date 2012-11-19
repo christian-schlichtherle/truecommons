@@ -25,6 +25,7 @@ public final class OsxAesPbeKeyManagerMapModifier
 extends KeyManagerMapModifier {
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<Class<?>, KeyManager<?>> apply(
             final Map<Class<?>, KeyManager<?>> map) {
         if (!"Mac OS X".equals(System.getProperty("os.name"))) return map;

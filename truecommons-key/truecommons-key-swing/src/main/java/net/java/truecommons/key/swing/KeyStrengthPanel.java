@@ -19,7 +19,7 @@ import net.java.truecommons.key.swing.util.EnhancedPanel;
  * @author Christian Schlichtherle
  */
 @NotThreadSafe
-@SuppressWarnings("UseOfObsoleteCollectionType")
+@SuppressWarnings({ "UseOfObsoleteCollectionType", "unchecked", "rawtypes" })
 final class KeyStrengthPanel<S extends KeyStrength> extends EnhancedPanel {
     private static final long serialVersionUID = 5629581723148235643L;
 
@@ -38,7 +38,7 @@ final class KeyStrengthPanel<S extends KeyStrength> extends EnhancedPanel {
     }
 
     private ComboBoxModel<S> newModel() {
-        return new DefaultComboBoxModel<S>(availableKeyStrengths);
+        return new DefaultComboBoxModel<>(availableKeyStrengths);
     }
 
     /** This method is called from within the constructor to
@@ -88,7 +88,6 @@ final class KeyStrengthPanel<S extends KeyStrength> extends EnhancedPanel {
      *
      * @return The value of the property {@code keyStrength}.
      */
-    @SuppressWarnings("unchecked")
     public S getKeyStrength() {
         return (S) keyStrength.getSelectedItem();
     }

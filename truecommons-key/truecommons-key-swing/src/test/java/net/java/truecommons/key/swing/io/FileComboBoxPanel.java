@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 /**
  * @author Christian Schlichtherle
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class FileComboBoxPanel extends JPanel {
     private static final long serialVersionUID = 1065812374938719922L;
 

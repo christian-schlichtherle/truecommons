@@ -29,7 +29,7 @@ extends AbstractKey<K> implements SecretKey<K> {
     private transient @CheckForNull ByteBuffer secret;
 
     @Override
-    @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
+    @SuppressWarnings({"AccessingNonPublicFieldOfAnotherObject", "unchecked"})
     public K clone() {
         final AbstractSecretKey<K> clone = super.clone();
         clone.secret = copy(this.secret);
