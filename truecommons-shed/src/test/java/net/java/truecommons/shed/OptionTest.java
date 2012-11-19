@@ -28,4 +28,16 @@ public class OptionTest {
     public void testLessIdiomaticUseCase() {
         if (!option.isEmpty()) assertSame(string, option.get());
     }
+
+    @Test
+    public void testComposition() {
+        class Container {
+            Option<String> getMessage() { return Option.some("Hello world!"); }
+        }
+
+        Option<Container> option = Option.some(new Container());
+        for (Container c : option)
+            for (String s : c.getMessage())
+                System.out.println(s);
+    }
 }
