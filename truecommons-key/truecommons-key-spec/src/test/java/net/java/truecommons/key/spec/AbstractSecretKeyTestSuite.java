@@ -79,6 +79,7 @@ public abstract class AbstractSecretKeyTestSuite<
                 updateTransientProperties(key)));
     }
 
+    @SuppressWarnings("unchecked")
     private static <T> T cloneViaObjectSerialization(
             final int sizeHint,
             final T original)
@@ -107,6 +108,7 @@ public abstract class AbstractSecretKeyTestSuite<
                 updateTransientProperties(key)));
     }
 
+    @SuppressWarnings("unchecked")
     private static <T> T cloneViaXmlSerialization(
             final int sizeHint,
             final T original)

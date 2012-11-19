@@ -15,7 +15,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import net.java.truecommons.key.macosx.keychain.DuplicateItemException;
 import net.java.truecommons.key.macosx.keychain.Keychain;
@@ -93,6 +92,7 @@ extends AbstractKeyManager<P> {
                     private @CheckForNull P param;
 
                     @Override
+                    @SuppressWarnings("unchecked")
                     public void visit(final Item item) throws KeychainException {
                         param = (P) deserialize(item.getAttribute(GENERIC));
                         if (null == param) try {
@@ -133,6 +133,7 @@ extends AbstractKeyManager<P> {
                     if (null == newSecret) throw new IllegalArgumentException();
                     try {
                         final ByteBuffer newXml = serialize(param);
+                        @SuppressWarnings("unchecked")
                         final P newParam = (P) deserialize(newXml); // rip off transient fields
 
                         class Update implements Visitor {
@@ -148,6 +149,7 @@ extends AbstractKeyManager<P> {
                                 {
                                     final @CheckForNull ByteBuffer oldXml =
                                             item.getAttribute(GENERIC);
+                                    @SuppressWarnings("unchecked")
                                     final @CheckForNull P oldParam =
                                             (P) deserialize(oldXml);
                                     if (!newParam.equals(oldParam))

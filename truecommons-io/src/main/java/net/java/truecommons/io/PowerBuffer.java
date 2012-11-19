@@ -20,6 +20,7 @@ import java.nio.channels.WritableByteChannel;
  * @param  <This> The type of this power buffer.
  * @author Christian Schlichtherle
  */
+@SuppressWarnings("unchecked")
 public abstract class PowerBuffer<This extends PowerBuffer<This>>
 implements Comparable<This>, Cloneable {
 

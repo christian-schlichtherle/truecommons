@@ -23,6 +23,7 @@ public abstract class AbstractKey<K extends AbstractKey<K>>
 implements Key<K>, Serializable {
 
     @Override
+    @SuppressWarnings("unchecked")
     public K clone() {
         try {
             return (K) super.clone();

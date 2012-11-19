@@ -11,6 +11,7 @@ package net.java.truecommons.shed;
  * @since  TrueCommons 1.0.11
  * @author Christian Schlichtherle
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public interface Filter<T> {
 
     /**
