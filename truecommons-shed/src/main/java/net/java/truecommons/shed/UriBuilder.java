@@ -4,12 +4,12 @@
  */
 package net.java.truecommons.shed;
 
-import static net.java.truecommons.shed.UriEncoder.Encoding.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.CharBuffer;
 import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.NotThreadSafe;
+import static net.java.truecommons.shed.UriEncoder.Encoding.*;
 
 /**
  * A mutable JavaBean for composing URIs according to
@@ -40,7 +40,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  * quote the colon before parsing so the resulting URI will have a scheme
  * component {@code foo} and a path component {@code bar} instead of just a
  * path component {@code foo:bar}.
- * 
+ *
  * <h3>Identities</h3>
  * For any {@link URI} {@code u} it is generally true that
  * <pre>{@code new UriBuilder(u).toUri().equals(u);}</pre>
@@ -59,7 +59,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  * }</pre>
  * These identity productions apply for the method {@link #toUri()} as well as
  * the method {@link #getUri()}.
- * 
+ *
  * @see    <a href="http://www.ietf.org/rfc/rfc2396.txt">
  *         RFC&nbsp;2396: Uniform Resource Identifiers (URI): Generic Syntax</a>
  * @see    <a href="http://www.ietf.org/rfc/rfc2732.txt">
@@ -87,7 +87,7 @@ public final class UriBuilder {
 
     /**
      * Constructs a new URI builder.
-     * 
+     *
      * @param raw If {@code true}, then the {@code '%'} character doesn't get
      *        quoted.
      */
@@ -98,7 +98,7 @@ public final class UriBuilder {
     /**
      * Constructs a new URI builder.
      * Equivalent to {@link #UriBuilder(URI, boolean) UriBuilder(uri, false)}.
-     * 
+     *
      * @param uri the uri for initializing the initial state.
      */
     public UriBuilder(URI uri) {
@@ -107,7 +107,7 @@ public final class UriBuilder {
 
     /**
      * Constructs a new URI builder.
-     * 
+     *
      * @param uri the uri for initializing the initial state.
      * @param raw If {@code true}, then the {@code '%'} character doesn't get
      *        quoted.
@@ -121,7 +121,7 @@ public final class UriBuilder {
      * Clears the state of this URI builder.
      * Calling this method is effectively the same as setting all URI component
      * properties to {@code null}.
-     * 
+     *
      * @return {@code this}
      */
     public UriBuilder clear() {
@@ -270,7 +270,7 @@ public final class UriBuilder {
 
     /**
      * Initializes all URI components from the given URI string.
-     * 
+     *
      * @param  uri the URI string.
      * @throws IllegalArgumentException if {@code uri} does not conform to the
      *         syntax constraints of the {@link URI} class.
@@ -281,7 +281,7 @@ public final class UriBuilder {
 
     /**
      * Initializes all URI components from the given URI string.
-     * 
+     *
      * @param  uri the URI string.
      * @throws IllegalArgumentException if {@code uri} does not conform to the
      *         syntax constraints of the {@link URI} class.
@@ -338,7 +338,7 @@ public final class UriBuilder {
 
     /**
      * Initializes all URI components from the given URI.
-     * 
+     *
      * @param  uri the URI.
      */
     public void setUri(final URI uri) {
@@ -359,7 +359,7 @@ public final class UriBuilder {
 
     /**
      * Initializes all URI components from the given URI.
-     * 
+     *
      * @param  uri the URI.
      * @return {@code this}
      */
@@ -370,7 +370,7 @@ public final class UriBuilder {
 
     /**
      * Returns the URI scheme component.
-     * 
+     *
      * @return The URI scheme component.
      */
     @CheckForNull
@@ -402,7 +402,7 @@ public final class UriBuilder {
      * Returns the URI authority component.
      * If this URI builder has been {@link #setUri(URI) initialized} from an
      * {@link URI#isOpaque() opaque} URI, then this property is {@code null}.
-     * 
+     *
      * @return The URI authority component.
      */
     @CheckForNull
@@ -435,7 +435,7 @@ public final class UriBuilder {
      * If this URI builder has been {@link #setUri(URI) initialized} from an
      * {@link URI#isOpaque() opaque} URI, then this property contains the
      * scheme specific part of the URI.
-     * 
+     *
      * @return The URI path component.
      */
     @CheckForNull
@@ -467,7 +467,7 @@ public final class UriBuilder {
      * Returns the URI query component.
      * If this URI builder has been {@link #setUri(URI) initialized} from an
      * {@link URI#isOpaque() opaque} URI, then this property is {@code null}.
-     * 
+     *
      * @return The URI query component.
      */
     @CheckForNull
@@ -526,7 +526,7 @@ public final class UriBuilder {
 
     /**
      * Returns the URI fragment component.
-     * 
+     *
      * @return The URI fragment component.
      */
     @CheckForNull
@@ -542,7 +542,7 @@ public final class UriBuilder {
     public void setFragment(final @CheckForNull String fragment) {
         this.fragment = fragment;
     }
-    
+
     /**
      * Sets the URI fragment component.
      *
