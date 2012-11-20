@@ -65,7 +65,7 @@ final class UriEncoder {
      * Constructs a new URI codec which uses the UTF-8 character set to encode
      * non-US-ASCII characters.
      * Equivalent to {@link #UriEncoder(Charset, boolean) UriEncoder(UTF8, false)}.
-     * 
+     *
      * @param raw If {@code true}, then the {@code '%'} character doesn't get
      *        quoted.
      */
@@ -77,7 +77,7 @@ final class UriEncoder {
      * Constructs a new URI codec which uses the given character set to encode
      * non-US-ASCII characters.
      * Equivalent to {@link #UriEncoder(Charset, boolean) UriEncoder(charset, false)}.
-     * 
+     *
      * @param charset the character set to use for encoding non-US-ASCII
      *        characters.
      *        If this parameter is {@code null},
@@ -96,7 +96,7 @@ final class UriEncoder {
      * Constructs a new URI codec which uses the given character set to escape
      * non-US-ASCII characters.
      * <p>
-     * 
+     *
      * @param charset the character set to use for encoding non-US-ASCII
      *        characters.
      *        If this parameter is {@code null},
@@ -127,7 +127,7 @@ final class UriEncoder {
      * Note that calling this method on an already encoded string escapes any
      * escape sequences again, that is, each occurence of the character
      * {@code '%'} is substituted with the string {@code "%25"} again.
-     * 
+     *
      * @param  dS the decoded string to encode.
      * @param  comp the URI component to encode.
      * @return The encoded string.
@@ -153,7 +153,7 @@ final class UriEncoder {
      * Note that calling this method on an already encoded string escapes
      * any escape sequences again, that is, each occurence of the character
      * {@code '%'} is substituted with the string {@code "%25"} again.
-     * 
+     *
      * @param  dS the decoded string to encode.
      * @param  comp the URI component to encode.
      * @param  eS the string builder to which all encoded characters shall get
@@ -176,6 +176,7 @@ final class UriEncoder {
             final Encoding comp,
             @CheckForNull StringBuilder eS)         // encoded String
     throws URISyntaxException {
+        @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
         final String[] escapes = comp.escapes;
         final CharBuffer dC = CharBuffer.wrap(dS);  // decoded characters
         ByteBuffer eB = null;                       // encoded bytes
@@ -261,7 +262,7 @@ final class UriEncoder {
          * This encoding may produce redundant escape sequences, however.
          */
         ANY(DEFAULT_LEGAL_CHARS),
-        
+
         /** Encoding for exclusive use with the URI authority component. */
         AUTHORITY(DEFAULT_LEGAL_CHARS + ":[]"),
 
@@ -270,7 +271,7 @@ final class UriEncoder {
          * where the path may contain arbitrary characters.
          * This encoding may produce redundant escape sequences for absolute
          * paths, however.
-         * 
+         *
          * @see #ABSOLUTE_PATH
          */
         PATH(DEFAULT_LEGAL_CHARS + "/"),
@@ -278,7 +279,7 @@ final class UriEncoder {
         /**
          * Encoding for exclusive use with the URI path component
          * where the path starts with the separator character {@code '/'}.
-         * 
+         *
          * @see #PATH
          */
         ABSOLUTE_PATH(DEFAULT_LEGAL_CHARS + ":/"),
