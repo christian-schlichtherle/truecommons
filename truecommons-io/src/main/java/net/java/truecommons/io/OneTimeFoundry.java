@@ -9,15 +9,18 @@ import java.io.IOException;
 import java.nio.channels.Channel;
 import java.util.Objects;
 import javax.annotation.CheckForNull;
+import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * A source or sink which provides a given stream or channel at most once.
- * 
+ *
  * @param  <S> the type of the stream which gets returned by {@link #stream()}.
  * @param  <C> the type of the channel which gets returned by {@link #channel()}.
  * @author Christian Schlichtherle
  */
+@NotThreadSafe
 public abstract class OneTimeFoundry<S extends Closeable, C extends Channel> {
+
     private @CheckForNull S stream;
     private @CheckForNull C channel;
 
@@ -31,16 +34,14 @@ public abstract class OneTimeFoundry<S extends Closeable, C extends Channel> {
 
     public S stream() throws IOException {
         final S stream = this.stream;
-        if (null == stream)
-            throw new IllegalStateException();
+        if (null == stream) throw new IllegalStateException();
         this.stream = null;
         return stream;
     }
 
     public C channel() throws IOException {
         final C channel = this.channel;
-        if (null == channel)
-            throw new IllegalStateException();
+        if (null == channel) throw new IllegalStateException();
         this.channel = null;
         return channel;
     }
