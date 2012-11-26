@@ -6,14 +6,16 @@ package net.java.truecommons.io;
 
 import java.io.InputStream;
 import java.nio.channels.SeekableByteChannel;
+import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * A source which can get used only once to obtain a given input stream or
  * seekable byte channel.
- * 
+ *
  * @see    OneTimeSink
  * @author Christian Schlichtherle
  */
+@NotThreadSafe
 public final class OneTimeSource
 extends OneTimeFoundry<InputStream, SeekableByteChannel>
 implements Source {
