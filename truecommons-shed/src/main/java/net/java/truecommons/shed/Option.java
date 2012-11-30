@@ -78,6 +78,7 @@ extends AbstractCollection<E> implements Serializable {
      * @param element the element.
      * @return An option for the given nullable element.
      */
+    @SuppressWarnings("unchecked")
     public static <T> Option<T> apply(@CheckForNull T element) {
         return null == element
                 ? (Option<T>) None.INSTANCE
@@ -90,6 +91,7 @@ extends AbstractCollection<E> implements Serializable {
      * @param <T> the type of the absent element.
      * @return An option with no element.
      */
+    @SuppressWarnings("unchecked")
     public static <T> Option<T> none() { return (Option<T>) None.INSTANCE; }
 
     /**
