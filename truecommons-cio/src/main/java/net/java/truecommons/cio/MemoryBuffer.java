@@ -39,7 +39,7 @@ import net.java.truecommons.io.DisconnectingSeekableChannel;
  * {@link #MemoryBuffer(String, ByteBuffer)} or the method
  * {@link #setBuffer(ByteBuffer)}.
  *
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 @NotThreadSafe

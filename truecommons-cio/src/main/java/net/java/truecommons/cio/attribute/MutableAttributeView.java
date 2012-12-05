@@ -25,7 +25,7 @@ import java.util.Set;
  *
  * @param  <K> The type of the attribute keys.
  * @param  <V> The type of the attribute values.
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface MutableAttributeView<K, V> extends AttributeView<K, V> {

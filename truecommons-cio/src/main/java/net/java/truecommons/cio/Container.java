@@ -12,7 +12,7 @@ import net.java.truecommons.shed.*;
  * A stream of entries with an additional size and lookup method.
  *
  * @param  <E> the type of the entries in this container.
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface Container<E extends Entry> extends Stream<E> {

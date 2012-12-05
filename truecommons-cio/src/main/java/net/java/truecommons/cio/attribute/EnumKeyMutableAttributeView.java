@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * A mutable attribute view for enumeratable keys.
  *
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public abstract class EnumKeyMutableAttributeView<K extends Enum<K>, V>

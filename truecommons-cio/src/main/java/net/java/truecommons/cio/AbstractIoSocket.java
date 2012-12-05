@@ -15,7 +15,7 @@ import net.java.truecommons.shed.UniqueObject;
  *
  * @param  <E> the type of the {@linkplain #target() target entry} for I/O
  *         operations.
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 @Immutable

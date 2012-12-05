@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * An object with {@link #permissions}.
  *
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface WithPermissions {

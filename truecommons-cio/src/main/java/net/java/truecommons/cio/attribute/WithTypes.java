@@ -9,7 +9,7 @@ import net.java.truecommons.cio.Entry;
 /**
  * An object with {@link #types}.
  *
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface WithTypes extends Entry {

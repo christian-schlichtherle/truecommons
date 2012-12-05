@@ -15,7 +15,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * anymore and no other exceptional conditions apply.
  *
  * @see    OutputBusyException
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 @ThreadSafe

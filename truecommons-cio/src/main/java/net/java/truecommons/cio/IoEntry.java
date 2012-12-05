@@ -8,7 +8,7 @@ package net.java.truecommons.cio;
  * An entry which provides I/O services.
  *
  * @param  <This> the type of this I/O entry.
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface IoEntry<This extends IoEntry<This>> extends Entry {

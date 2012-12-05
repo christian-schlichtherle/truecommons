@@ -17,7 +17,7 @@ import net.java.truecommons.shed.UniqueObject;
  * An abstract decorator for an entry.
  *
  * @param  <E> the type of the decorated entry.
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 @ThreadSafe

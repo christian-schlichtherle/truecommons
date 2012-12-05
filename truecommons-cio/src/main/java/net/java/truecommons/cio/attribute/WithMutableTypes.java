@@ -7,7 +7,7 @@ package net.java.truecommons.cio.attribute;
 /**
  * An object with mutable {@link #types}.
  *
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface WithMutableTypes extends WithTypes {

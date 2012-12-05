@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * An attribute view for enumeratable keys.
  *
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public abstract class EnumKeyAttributeView<K extends Enum<K>, V>

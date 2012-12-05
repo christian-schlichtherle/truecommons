@@ -25,7 +25,7 @@ import javax.lang.model.element.Name;
  * {@code "./abc/../foo/./def/./../bar/."} both refer to the same entry
  * when being parsed.
  *
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface EntryName extends Comparable<EntryName>, Name { }
