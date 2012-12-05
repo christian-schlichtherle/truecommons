@@ -17,6 +17,7 @@ import javax.annotation.concurrent.Immutable;
  * @param  <E> the type of the {@linkplain #target() target entry} for I/O
  *         operations.
  * @see    DecoratingOutputSocket
+ * @since  TrueCommons 2.4
  * @author Christian Schlichtherle
  */
 @Immutable

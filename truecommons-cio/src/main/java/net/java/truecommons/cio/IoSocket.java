@@ -44,6 +44,7 @@ import java.io.IOException;
  *
  * @param  <E> the type of the {@linkplain #target() target entry} for I/O
  *         operations.
+ * @since  TrueCommons 2.4
  * @author Christian Schlichtherle
  */
 public interface IoSocket<E extends Entry> {

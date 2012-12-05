@@ -7,12 +7,14 @@ package net.java.truecommons.cio;
 import net.java.truecommons.cio.attribute.*;
 
 /**
- * An object which typically resides in a container or pool.
+ * An entry in an archive file.
  *
  * @since  TrueCommons 2.4
  * @author Christian Schlichtherle
  */
-public interface Entry
-extends WithSizes, WithTimes,
-        WithPermissions, WithPrincipals,
-        WithAttributes<Object, Object> { }
+public interface ArchiveEntry
+extends Entry, WithName<EntryName>,
+        WithMutableSizes, WithMutableTimes,
+        WithMutablePermissions, WithMutablePrincipals,
+        WithMutableAttributes<Object, Object> {
+}

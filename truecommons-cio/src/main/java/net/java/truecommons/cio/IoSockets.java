@@ -17,6 +17,7 @@ import net.java.truecommons.io.Streams;
 /**
  * Provides utility methods for {@link IoSocket}s.
  *
+ * @since  TrueCommons 2.4
  * @author Christian Schlichtherle
  */
 @Immutable

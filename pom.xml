@@ -73,7 +73,6 @@
     <modules>
         <module>truecommons-annotations</module>
         <module>truecommons-cio</module>
-        <module>truecommons-cio2</module>
         <module>truecommons-io</module>
         <module>truecommons-jmx</module>
         <module>truecommons-key</module>

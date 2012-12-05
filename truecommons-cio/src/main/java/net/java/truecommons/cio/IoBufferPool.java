@@ -17,6 +17,7 @@ import net.java.truecommons.shed.UniqueObject;
  * <p>
  * Subclasses should be thread-safe.
  *
+ * @since  TrueCommons 2.4
  * @author Christian Schlichtherle
  */
 @ThreadSafe

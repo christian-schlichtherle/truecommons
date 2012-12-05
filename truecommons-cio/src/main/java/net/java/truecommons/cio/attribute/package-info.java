@@ -3,13 +3,10 @@
  * All rights reserved. Use is subject to license terms.
  */
 /**
- * Defines abstractions for modelling containers, pools and entries which
- * provide I/O services.
- * Implementations may represent (virtual) file systems with nodes,
- * archive files with entries, pools of I/O buffers etc.
+ * Defines abstractions for modelling entry attributes.
  *
  * @since  TrueCommons 2.4
  * @author Christian Schlichtherle
  */
 @javax.annotation.Nonnull @javax.annotation.ParametersAreNonnullByDefault
-package net.java.truecommons.cio;
+package net.java.truecommons.cio.attribute;
