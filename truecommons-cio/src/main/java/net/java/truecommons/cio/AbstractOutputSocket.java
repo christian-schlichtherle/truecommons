@@ -19,6 +19,7 @@ import net.java.truecommons.io.ChannelOutputStream;
  * @param  <E> the type of the {@linkplain #target() target entry} for I/O
  *         operations.
  * @see    AbstractInputSocket
+ * @since  TrueCommons 2.4
  * @author Christian Schlichtherle
  */
 @Immutable

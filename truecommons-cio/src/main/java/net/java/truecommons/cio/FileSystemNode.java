@@ -7,12 +7,14 @@ package net.java.truecommons.cio;
 import net.java.truecommons.cio.attribute.*;
 
 /**
- * An object which typically resides in a container or pool.
+ * Represents a node in a file system.
  *
  * @since  TrueCommons 2.4
  * @author Christian Schlichtherle
  */
-public interface Entry
-extends WithSizes, WithTimes,
-        WithPermissions, WithPrincipals,
-        WithAttributes<Object, Object> { }
+public interface FileSystemNode
+extends Entry, WithTypes,
+        WithMutableTimes,
+        WithMutablePermissions, WithMutablePrincipals,
+        WithMutableAttributes<Object, Object> {
+}

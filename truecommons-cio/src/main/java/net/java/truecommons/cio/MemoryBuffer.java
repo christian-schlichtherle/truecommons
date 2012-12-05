@@ -10,16 +10,18 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
+import java.nio.file.attribute.AclEntry;
+import java.nio.file.attribute.UserPrincipal;
+import java.util.Collections;
 import java.util.EnumMap;
-import java.util.Objects;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
-import static net.java.truecommons.cio.Entry.Access.READ;
-import static net.java.truecommons.cio.Entry.Access.WRITE;
-import net.java.truecommons.cio.Entry.Entity;
-import net.java.truecommons.cio.Entry.Size;
-import static net.java.truecommons.cio.Entry.UNKNOWN;
+import net.java.truecommons.cio.attribute.*;
+import static net.java.truecommons.cio.attribute.Access.*;
 import net.java.truecommons.io.ByteBufferChannel;
 import net.java.truecommons.io.DisconnectingSeekableChannel;
 
@@ -37,17 +39,16 @@ import net.java.truecommons.io.DisconnectingSeekableChannel;
  * {@link #MemoryBuffer(String, ByteBuffer)} or the method
  * {@link #setBuffer(ByteBuffer)}.
  *
+ * @since  TrueCommons 2.4
  * @author Christian Schlichtherle
  */
 @NotThreadSafe
 public class MemoryBuffer implements IoBuffer {
 
-    private final String name;
     private int initialCapacity;
     private @CheckForNull ByteBuffer buffer;
     private final EnumMap<Access, Long> times = new EnumMap<>(Access.class);
-    private int reads;
-    private int writes;
+    private final EnumMap<Access, Integer> counts = new EnumMap<>(Access.class);
 
     /**
      * Constructs a new memory buffer.
@@ -58,9 +59,7 @@ public class MemoryBuffer implements IoBuffer {
      * @param initialCapacity the initial capacity of the next backing buffer
      *        to allocate when starting output to this memory buffer.
      */
-    public MemoryBuffer(String name, int initialCapacity) {
-        this(name, null, initialCapacity);
-    }
+    public MemoryBuffer(int initialCapacity) { this(null, initialCapacity); }
 
     /**
      * Constructs a new memory buffer.
@@ -71,17 +70,15 @@ public class MemoryBuffer implements IoBuffer {
      * @param buffer the byte buffer with the contents to share with this
      *        memory buffer.
      */
-    public MemoryBuffer(String name, ByteBuffer buffer) {
-        this(name, buffer, buffer.capacity());
-    }
+    public MemoryBuffer(ByteBuffer buffer) { this(buffer, buffer.capacity()); }
 
     private MemoryBuffer(
-            final String name,
             final @CheckForNull ByteBuffer buffer,
             final int initialCapacity) {
-        this.name = Objects.requireNonNull(name);
         setBuffer(buffer);
         setInitialCapacity(initialCapacity);
+        times.put(CREATE, System.currentTimeMillis());
+        for (final Access access : Access.values()) counts.put(access, 0);
     }
 
     /**
@@ -140,11 +137,38 @@ public class MemoryBuffer implements IoBuffer {
     }
 
     @Override
-    public final String getName() { return name; }
+    public final AttributeView<Size, Long> sizes() {
+        class Sizes extends EnumKeyAttributeView<Size, Long> {
+            @Override public Class<Size> clazz() { return Size.class; }
+
+            @Override
+            public Map<Size, Long> read(final Set<? extends Size> keys) {
+                if (null == buffer) return Collections.emptyMap();
+                final Long value = Long.valueOf(buffer.limit());
+                final Map<Size, Long> map = new EnumMap<>(Size.class);
+                for (final Size size : keys) map.put(size, value);
+                return map;
+            }
+        } // Sizes
+
+        return new Sizes();
+    }
 
     @Override
-    public final long getSize(Size type) {
-        return null != buffer ? buffer.limit() : UNKNOWN;
+    public final AttributeView<Access, Long> times() {
+        class Times implements AttributeView<Access, Long> {
+            @Override
+            public Map<Access, Long> read() { return times.clone(); }
+
+            @Override
+            public Map<Access, Long> read(final Set<? extends Access> keys) {
+                final Map<Access, Long> clone = times.clone();
+                clone.keySet().retainAll(keys);
+                return clone;
+            }
+        } // Times
+
+        return new Times();
     }
 
     /**
@@ -152,23 +176,36 @@ public class MemoryBuffer implements IoBuffer {
      * @return The number of times an input or output connection to the backing
      *         buffer has been opened.
      */
-    // http://java.net/jira/browse/TRUEZIP-83
-    public final int getCount(Access type) {
-        return type == WRITE ? writes : reads;
+    public final AttributeView<Access, Integer> counts() {
+        class Counts implements AttributeView<Access, Integer> {
+            @Override
+            public Map<Access, Integer> read() { return counts.clone(); }
+
+            @Override
+            public Map<Access, Integer> read(final Set<? extends Access> keys) {
+                final Map<Access, Integer> clone = counts.clone();
+                clone.keySet().retainAll(keys);
+                return clone;
+            }
+        } // Counts
+
+        return new Counts();
     }
 
-    /**
-     * @return The last time an input or output connection to the backing
-     *         buffer has been {@code close()}d.
-     */
     @Override
-    public final long getTime(Access type) {
-        final Long time = times.get(type);
-        return null != time ? time : UNKNOWN;
+    public AttributeView<Entity, List<AclEntry>> permissions() {
+        return NullAttributeView.get();
     }
 
     @Override
-    public Boolean isPermitted(Access type, Entity entity) { return true; }
+    public AttributeView<Entity, UserPrincipal> principals() {
+        return NullAttributeView.get();
+    }
+
+    @Override
+    public AttributeView<Object, Object> attributes() {
+        return NullAttributeView.get();
+    }
 
     @Override
     public final InputSocket<MemoryBuffer> input() { return new Input(); }
@@ -177,17 +214,9 @@ public class MemoryBuffer implements IoBuffer {
     public final OutputSocket<MemoryBuffer> output() { return new Output(); }
 
     @Override
-    public void release() throws IOException { buffer = null; }
-
-    /**
-     * Returns a string representation of this object for debugging and logging
-     * purposes.
-     */
-    @Override
-    public String toString() {
-        return String.format("%s[name=%s]",
-                getClass().getName(),
-                getName());
+    public void release() throws IOException {
+        times.put(DELETE, System.currentTimeMillis());
+        buffer = null;
     }
 
     private final class Input extends AbstractInputSocket<MemoryBuffer> {
@@ -224,7 +253,7 @@ public class MemoryBuffer implements IoBuffer {
             final ByteBuffer buffer = MemoryBuffer.this.buffer;
             if (null == buffer) throw new FileNotFoundException();
             channel = new ByteBufferChannel(buffer.asReadOnlyBuffer());
-            reads++;
+            counts.put(READ, counts.get(READ) + 1);
         }
 
         @Override
@@ -248,7 +277,7 @@ public class MemoryBuffer implements IoBuffer {
                     .allocateDirect(initialCapacity)
                     .limit(0);
             channel = new ByteBufferChannel(buffer);
-            writes++;
+            counts.put(WRITE, counts.get(WRITE) + 1);
         }
 
         @Override

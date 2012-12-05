@@ -4,15 +4,20 @@
  */
 package net.java.truecommons.cio;
 
+import java.nio.file.attribute.AclEntry;
+import java.nio.file.attribute.UserPrincipal;
+import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
+import net.java.truecommons.cio.attribute.*;
 import net.java.truecommons.shed.UniqueObject;
 
 /**
  * An abstract decorator for an entry.
  *
  * @param  <E> the type of the decorated entry.
+ * @since  TrueCommons 2.4
  * @author Christian Schlichtherle
  */
 @ThreadSafe
@@ -20,6 +25,7 @@ public abstract class DecoratingEntry<E extends Entry>
 extends UniqueObject implements Entry {
 
     /** The nullable decorated entry. */
+    @SuppressWarnings("ProtectedField")
     protected @Nullable E entry;
 
     protected DecoratingEntry() { }
@@ -29,23 +35,24 @@ extends UniqueObject implements Entry {
     }
 
     @Override
-    public String getName() {
-        return entry.getName();
+    public AttributeView<Size, Long> sizes() { return entry.sizes(); }
+
+    @Override
+    public AttributeView<Access, Long> times() { return entry.times(); }
+
+    @Override
+    public AttributeView<Entity, List<AclEntry>> permissions() {
+        return entry.permissions();
     }
 
     @Override
-    public long getSize(Size type) {
-        return entry.getSize(type);
+    public AttributeView<Entity, UserPrincipal> principals() {
+        return entry.principals();
     }
 
     @Override
-    public long getTime(Access type) {
-        return entry.getTime(type);
-    }
-
-    @Override
-    public Boolean isPermitted(Access type, Entity entity) {
-        return entry.isPermitted(type, entity);
+    public AttributeView<Object, Object> attributes() {
+        return entry.attributes();
     }
 
     /**

@@ -12,7 +12,8 @@ import net.java.truecommons.shed.Releasable;
  * <p>
  * Implementations should be thread-safe.
  *
+ * @since  TrueCommons 2.4
  * @author Christian Schlichtherle
  */
-public interface IoBuffer extends Releasable<IOException>, IoEntry<IoBuffer> {
-}
+public interface IoBuffer
+extends Releasable<IOException>, IoEntry<IoBuffer> { }
