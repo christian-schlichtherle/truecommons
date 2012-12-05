@@ -61,6 +61,7 @@ import javax.annotation.concurrent.Immutable;
  * functional interface in Java is not as convenient as the for-loop.
  *
  * @param  <E> The type of the optional element in this container.
+ * @since  TrueCommons 2.4
  * @author Christian Schlichtherle
  */
 @Immutable
