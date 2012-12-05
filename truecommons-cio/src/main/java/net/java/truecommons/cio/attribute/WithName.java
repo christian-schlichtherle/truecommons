@@ -10,7 +10,7 @@ import javax.lang.model.element.Name;
  * An object with a {@link #name}.
  *
  * @param  <N> The type of the object name.
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface WithName<N extends Name> {

@@ -9,7 +9,7 @@ import net.java.truecommons.cio.attribute.*;
 /**
  * An object which typically resides in a container or pool.
  *
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface Entry

@@ -13,7 +13,7 @@ import javax.annotation.WillCloseWhenClosed;
  *
  * @param  <E> the type of the entries in the decorated container.
  * @see    DecoratingOutputContainer
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public abstract class DecoratingInputContainer<E extends Entry>

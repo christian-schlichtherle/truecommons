@@ -9,7 +9,7 @@ package net.java.truecommons.cio.attribute;
  *
  * @param  <K> The type of the custom attribute keys.
  * @param  <V> The type of the custom attribute values.
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface WithMutableAttributes<K, V> extends WithAttributes<K, V> {

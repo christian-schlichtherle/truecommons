@@ -8,7 +8,7 @@
  * Implementations may represent (virtual) file systems with nodes,
  * archive files with entries, pools of I/O buffers etc.
  *
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 @javax.annotation.Nonnull @javax.annotation.ParametersAreNonnullByDefault

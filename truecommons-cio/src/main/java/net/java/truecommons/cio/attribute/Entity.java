@@ -12,7 +12,7 @@ package net.java.truecommons.cio.attribute;
  * @see    <a href="http://www.ietf.org/rfc/rfc3530.txt">RFC 3530: Network File System (NFS) version 4 Protocol</a>
  * @see    WithPermissions
  * @see    WithPrincipals
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public enum Entity { OWNER, GROUP, EVERYONE }

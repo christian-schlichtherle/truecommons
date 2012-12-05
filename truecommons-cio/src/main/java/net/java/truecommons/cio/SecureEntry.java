@@ -9,7 +9,7 @@ import net.java.truecommons.cio.attribute.*;
 /**
  * An entry with permissions and principals.
  *
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface SecureEntry extends Entry, WithPermissions, WithPrincipals { }

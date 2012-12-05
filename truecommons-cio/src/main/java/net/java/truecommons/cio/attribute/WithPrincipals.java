@@ -9,7 +9,7 @@ import java.nio.file.attribute.UserPrincipal;
 /**
  * An object with user {@link #principals}.
  *
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface WithPrincipals {

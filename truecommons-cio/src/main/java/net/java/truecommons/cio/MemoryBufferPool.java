@@ -14,7 +14,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * A pool of I/O buffers which share their contents with
  * {@linkplain ByteBuffer byte buffer}s.
  *
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 @ThreadSafe

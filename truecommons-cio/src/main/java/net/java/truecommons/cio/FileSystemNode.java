@@ -9,7 +9,7 @@ import net.java.truecommons.cio.attribute.*;
 /**
  * Represents a node in a file system.
  *
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface FileSystemNode

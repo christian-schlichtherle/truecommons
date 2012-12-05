@@ -11,7 +11,7 @@ import java.io.Closeable;
  *
  * @param  <E> the type of the entries in this container.
  * @see    InputContainer
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface OutputContainer<E extends Entry>

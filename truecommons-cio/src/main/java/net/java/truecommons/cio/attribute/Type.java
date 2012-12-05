@@ -7,7 +7,7 @@ package net.java.truecommons.cio.attribute;
 /**
  * Defines the type of an entry.
  *
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public enum Type {

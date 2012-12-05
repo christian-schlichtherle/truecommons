@@ -17,7 +17,7 @@ import net.java.truecommons.shed.UniqueObject;
  *
  * @param  <E> the type of the entries in the decorated container.
  * @param  <C> the type of the decorated entry container.
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public abstract class DecoratingContainer<

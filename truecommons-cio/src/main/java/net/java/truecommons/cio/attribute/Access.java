@@ -8,7 +8,7 @@ package net.java.truecommons.cio.attribute;
  * Attribute keys for access types.
  *
  * @see    WithTimes
- * @since  TrueCommons 2.4
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public enum Access { CREATE, READ, WRITE, DELETE }
