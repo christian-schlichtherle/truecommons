@@ -10,6 +10,7 @@ import javax.annotation.concurrent.ThreadSafe;
 /**
  * An abstract decorator for an I/O buffer.
  *
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 @ThreadSafe
