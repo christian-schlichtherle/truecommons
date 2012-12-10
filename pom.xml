@@ -67,7 +67,7 @@
         <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
 
         <!-- clirr-maven-plugin -->
-        <comparisonVersion>[2.0,${project.version})</comparisonVersion>
+        <comparisonVersion>2.0</comparisonVersion>
     </properties>
 
     <modules>
