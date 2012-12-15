@@ -31,7 +31,7 @@ import java.util.Set;
 public interface MutableAttributeView<K, V> extends AttributeView<K, V> {
 
     /**
-     * Write some attributes to the underlying object (optional operation).
+     * Write some attributes to the underlying object.
      * In order to facilitate interoperability, implementations should meet the
      * following requirements:
      * <ul>
@@ -62,13 +62,11 @@ public interface MutableAttributeView<K, V> extends AttributeView<K, V> {
      *         write.
      * @throws IOException if writing the attributes <em>completely</em>
      *         failed for some I/O related reason.
-     * @throws UnsupportedOperationException if and only if this attribute
-     *         store is immutable.
      */
     void write(Map<? extends K, ? extends V> attributes) throws IOException;
 
     /**
-     * Deletes all attributes from the underlying object (optional operation).
+     * Deletes all attributes from the underlying object.
      * In order to facilitate interoperability, implementations should meet the
      * following requirements:
      * <ul>
@@ -80,13 +78,11 @@ public interface MutableAttributeView<K, V> extends AttributeView<K, V> {
      *
      * @throws IOException if deleting all attributes <em>completely</em>
      *         failed for some I/O related reason.
-     * @throws UnsupportedOperationException if and only if this attribute
-     *         store is immutable.
      */
     void delete() throws IOException;
 
     /**
-     * Deletes some attributes from the underlying object (optional operation).
+     * Deletes some attributes from the underlying object.
      * In order to facilitate interoperability, implementations should meet the
      * following requirements:
      * <ul>
@@ -101,8 +97,6 @@ public interface MutableAttributeView<K, V> extends AttributeView<K, V> {
      * @param  keys a set with the keys of the attributes to delete.
      * @throws IOException if deleting the attributes <em>completely</em>
      *         failed for some I/O related reason.
-     * @throws UnsupportedOperationException if and only if this attribute
-     *         store is immutable.
      */
     void delete(Set<? extends K> keys) throws IOException;
 }
