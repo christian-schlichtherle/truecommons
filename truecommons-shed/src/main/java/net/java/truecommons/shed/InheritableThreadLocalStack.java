@@ -31,6 +31,7 @@ import javax.annotation.concurrent.ThreadSafe;
  */
 @ThreadSafe
 public final class InheritableThreadLocalStack<T> {
+
     private final InheritableThreadLocal<Node<T>> nodes
             = new InheritableThreadLocal<>();
 
@@ -87,8 +88,7 @@ public final class InheritableThreadLocalStack<T> {
      */
     public @Nullable T pop() {
         final Node<T> node = nodes.get();
-        if (null == node)
-            throw new NoSuchElementException();
+        if (null == node) throw new NoSuchElementException();
         if (!Thread.currentThread().equals(node.get()))
             throw new NoSuchElementException();
         nodes.set(node.previous); // may be null!
@@ -116,6 +116,7 @@ public final class InheritableThreadLocalStack<T> {
     }
 
     private static class Node<T> extends WeakReference<Thread> {
+
         final @CheckForNull Node<T> previous;
         @CheckForNull T element;
 
