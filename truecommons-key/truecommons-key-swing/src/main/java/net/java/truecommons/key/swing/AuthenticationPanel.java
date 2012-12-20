@@ -23,7 +23,7 @@ import net.java.truecommons.key.swing.io.FileComboBoxBrowser;
  * @since  TrueCommons 2.2
  * @author Christian Schlichtherle
  */
-final class AuthenticationPanel extends JPanel {
+public final class AuthenticationPanel extends JPanel {
 
     private static final long serialVersionUID = 0L;
 
@@ -39,12 +39,8 @@ final class AuthenticationPanel extends JPanel {
     /** The key file authentication method. */
     static final int AUTH_KEY_FILE = 1;
 
-    /**
-     * Constructs a new authentication panel.
-     * This version of the constructor does not remember the key file path.
-     */
     @SuppressWarnings("unchecked")
-    AuthenticationPanel() {
+    public AuthenticationPanel() {
         initComponents();
 
         // Order is important here: The file combo box browser installs its
@@ -60,7 +56,7 @@ final class AuthenticationPanel extends JPanel {
      * @throws NullPointerException If {@code passwdPanel} is
      *         {@code null}.
      */
-    void setPasswdPanel(final JPanel passwdPanel) {
+    public void setPasswdPanel(final JPanel passwdPanel) {
         passwdPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         final String title = resources.getString("tab.passwd");
         if (title.equals(tabs.getTitleAt(AUTH_PASSWD)))
