@@ -10,7 +10,6 @@ import javax.lang.model.*;
 import javax.lang.model.element.*;
 import static javax.lang.model.element.ElementKind.*;
 import static javax.lang.model.element.Modifier.*;
-import static javax.tools.Diagnostic.Kind.*;
 import net.java.truecommons.annotations.ServiceSpecification;
 
 /**
@@ -21,7 +20,7 @@ import net.java.truecommons.annotations.ServiceSpecification;
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 @SupportedAnnotationTypes("*")
-public final class ServiceSpecificationProcessor extends AbstractProcessor {
+public final class ServiceSpecificationProcessor extends ServiceProcessor {
 
     @Override
     public boolean process(
@@ -63,14 +62,5 @@ public final class ServiceSpecificationProcessor extends AbstractProcessor {
         return (ctor.getModifiers().contains(PUBLIC)
                 || ctor.getModifiers().contains(PROTECTED))
                 && ctor.getParameters().isEmpty();
-    }
-
-    private boolean error(final String message, final Element loc) {
-        processingEnv.getMessager().printMessage(ERROR, message , loc);
-        return false;
-    }
-
-    private void warning(final String message, final Element loc) {
-        processingEnv.getMessager().printMessage(WARNING, message , loc);
     }
 }

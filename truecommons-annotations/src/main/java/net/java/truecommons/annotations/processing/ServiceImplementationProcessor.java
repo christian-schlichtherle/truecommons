@@ -38,7 +38,7 @@ import net.java.truecommons.annotations.ServiceSpecification;
     "net.java.truecommons.annotations.verbose",
     "net.java.truecommons.annotations.processing.verbose"
 })
-public final class ServiceImplementationProcessor extends AbstractProcessor {
+public final class ServiceImplementationProcessor extends ServiceProcessor {
 
     private static final Comparator<TypeElement> TYPE_ELEMENT_COMPARATOR =
             new Comparator<TypeElement>() {
@@ -54,12 +54,15 @@ public final class ServiceImplementationProcessor extends AbstractProcessor {
     @Override
     public void init(final ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        final String[] supported = ServiceImplementationProcessor.class.getAnnotation(SupportedOptions.class).value();
+        final Set<String> supported = getSupportedOptions();
         final Map<String, String> present = processingEnv.getOptions();
         verbose = false;
         for (final String option : supported)
             verbose |= Boolean.parseBoolean(present.get(option));
     }
+
+    @Override
+    boolean isDebugEnabled() { return verbose; }
 
     @Override
     public boolean process(
@@ -107,20 +110,6 @@ public final class ServiceImplementationProcessor extends AbstractProcessor {
     private boolean valid(final ExecutableElement ctor) {
         return ctor.getModifiers().contains(PUBLIC)
                 && ctor.getParameters().isEmpty();
-    }
-
-    private boolean error(final String message, final Element loc) {
-        processingEnv.getMessager().printMessage(ERROR, message, loc);
-        return false;
-    }
-
-    private void warning(final String message, final Element loc) {
-        processingEnv.getMessager().printMessage(WARNING, message , loc);
-    }
-
-    private void debug(final String message, final Element loc) {
-        if (verbose)
-            processingEnv.getMessager().printMessage(NOTE, message, loc);
     }
 
     private boolean processAnnotations(
@@ -211,7 +200,7 @@ public final class ServiceImplementationProcessor extends AbstractProcessor {
 
         void persist() {
             final Filer filer = processingEnv.getFiler();
-            final Messager messager = processingEnv.getMessager();
+            final Messager messager = getMessager();
             for (final Entry<TypeElement, Collection<TypeElement>> entry : services.entrySet()) {
                 final TypeElement spec = entry.getKey();
                 final Collection<TypeElement> coll = entry.getValue();
