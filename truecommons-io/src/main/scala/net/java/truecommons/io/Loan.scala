@@ -9,7 +9,7 @@ import javax.annotation.concurrent._
 
 /** Simulates Java's basic `try`-with-resources statement to implement the loan
   * pattern.
-  * 
+  *
   * When used like this
   * {{{
   * import net.java.truecommons.io.Loan
@@ -18,12 +18,12 @@ import javax.annotation.concurrent._
   * }}}
   * then `w.close()` is guaranteed to get called, even if the function block
   * terminates with a [[java.lang.Throwable]].
-  * 
+  *
   * If the function block throws a `Throwable` `ex` and the `close` method
   * throws another `Throwable` `ex2`, then the exception of the `close` method
   * gets added to the exception of the function block using
   * `ex.addSuppressed(ex2)`.
-  * 
+  *
   * If you prefer a more readable syntax, please check the companion object of
   * this class.
   *
@@ -38,7 +38,7 @@ final class Loan[A <: AutoCloseable](resource: A) {
     * This is pretty much a literal translation of Java's
     * <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-14.html#jls-14.20.3.1">basic <code>try</code>-with-resources</a>
     * statement.
-    * 
+    *
     * @param block the function with the nullable resource parameter.
     */
   def to[B](block: A => B) = {
@@ -46,14 +46,14 @@ final class Loan[A <: AutoCloseable](resource: A) {
     try {
       block(resource)
     } catch {
-      case x => t = x; throw x
+      case x: Throwable => t = x; throw x
     } finally {
       if (resource != null) {
         if (t != null) {
           try {
             resource.close()
           } catch {
-            case y => t.addSuppressed(y)
+            case y: Throwable => t.addSuppressed(y)
           }
         } else {
           resource.close()
@@ -68,7 +68,7 @@ final class Loan[A <: AutoCloseable](resource: A) {
 
 /** Simulates Java's basic `try`-with-resources statement to implement the loan
   * pattern.
-  * 
+  *
   * When used like this
   * {{{
   * import net.java.truecommons.io.Loan._
@@ -77,15 +77,15 @@ final class Loan[A <: AutoCloseable](resource: A) {
   * }}}
   * then `w.close()` is guaranteed to get called, even if the function block
   * terminates with a [[java.lang.Throwable]].
-  * 
+  *
   * If the function block throws a `Throwable` `ex` and the `close` method
   * throws another `Throwable` `ex2`, then the exception of the `close` method
   * gets added to the exception of the function block using
   * `ex.addSuppressed(ex2)`.
-  * 
+  *
   * If you prefer a more concise syntax, please check the companion class of
   * this object.
-  * 
+  *
   * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-14.html#jls-14.20.3.1">The Java Language Specification: Java SE 7 Edition: 14.20.3.1 Basic try-with-resources</a>
   * @author Christian Schlichtherle
   */
