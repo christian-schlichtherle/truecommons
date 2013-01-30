@@ -14,12 +14,11 @@ import javax.annotation.concurrent.ThreadSafe;
  * A pool of I/O buffers which share their contents with
  * {@linkplain ByteBuffer byte buffer}s.
  *
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 @ThreadSafe
 public final class MemoryBufferPool extends IoBufferPool {
-
-    private static final String BUFFER_NAME = "buffer-";
 
     private final int initialCapacity;
     private final AtomicInteger total = new AtomicInteger();
@@ -59,9 +58,7 @@ public final class MemoryBufferPool extends IoBufferPool {
     private final class Buffer extends MemoryBuffer {
         private boolean released;
 
-        Buffer(int i) {
-            super(BUFFER_NAME + i, MemoryBufferPool.this.initialCapacity);
-        }
+        Buffer(int i) { super(MemoryBufferPool.this.initialCapacity); }
 
         @Override
         public void release() throws IOException {
