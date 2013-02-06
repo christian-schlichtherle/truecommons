@@ -60,6 +60,16 @@
         <tag>HEAD</tag>
     </scm>
 
+    <distributionManagement>
+        <site>
+            <id>truecommons-website</id>
+            <name>Commons Website</name>
+            <!-- DON'T use ${project.groupId}, ${project.artifactId} here.
+                 This would change in sub-modules! -->
+            <url>file://${env.HOME}/sites/net.java.truecommons/</url>
+        </site>
+    </distributionManagement>
+
     <properties>
         <netbeans.hint.jdkPlatform>JDK_1.7</netbeans.hint.jdkPlatform>
 
@@ -255,12 +265,4 @@
             </dependencies>
         </profile>
     </profiles>
-
-    <distributionManagement>
-        <site>
-            <id>truecommons-website</id>
-            <name>Commons Website</name>
-            <url>file:/Users/christian/Projects/truecommons~web</url>
-        </site>
-    </distributionManagement>
 </project>
