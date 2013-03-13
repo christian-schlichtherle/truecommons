@@ -35,10 +35,10 @@ extends AbstractIoSocket<E> implements OutputSocket<E> {
      *         given peer socket otherwise.
      * @throws IOException if resolving the peer's local target fails.
      */
-    protected final @CheckForNull <E extends Entry> E target(
+    protected static @CheckForNull <E extends Entry> E target(
             @CheckForNull InputSocket<E> peer)
     throws IOException {
-        return null != peer ? peer.target() : null;
+        return null == peer ? null : peer.target();
     }
 
     /**
