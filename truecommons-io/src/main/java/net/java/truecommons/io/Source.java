@@ -38,8 +38,8 @@ public interface Source {
      * Buffering should get addressed by the caller instead.
      * <p>
      * Because the intention of this interface is input, the returned channel
-     * need not be able to write data and any attempt to do so may fail with a
-     * {@link NonWritableChannelException}.
+     * does not need to be able to write data and any attempt to do so may fail
+     * with a {@link NonWritableChannelException}.
      *
      * @return A seekable byte channel for reading bytes.
      * @throws IOException on any I/O error.
