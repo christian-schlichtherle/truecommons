@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.filechooser.FileSystemView;
 import net.java.truecommons.key.swing.util.JemmyUtils;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -33,19 +34,19 @@ public final class FileComboBoxBrowserIT extends JemmyUtils {
     @Test
     public void testDirectory() {
         final FileComboBoxBrowser browser = new FileComboBoxBrowser();
-        final File cur = new File(".");
+        final File def = FileSystemView.getFileSystemView().getDefaultDirectory();
         File dir;
 
         dir = browser.getDirectory();
-        assertEquals(cur, dir);
+        assertEquals(def, dir);
 
-        browser.setDirectory(cur);
+        browser.setDirectory(def);
         dir = browser.getDirectory();
-        assertSame(cur, dir);
+        assertSame(def, dir);
 
         browser.setDirectory(null);
         dir = browser.getDirectory();
-        assertEquals(cur, dir);
+        assertEquals(def, dir);
     }
 
     @Test
