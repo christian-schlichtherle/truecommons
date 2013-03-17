@@ -11,7 +11,6 @@ import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -41,7 +40,6 @@ import javax.swing.text.JTextComponent;
  * @since  TrueCommons 2.2
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public abstract class AbstractComboBoxBrowser<E> implements Serializable {
 
     private static final long serialVersionUID = 1065103960246722893L;
@@ -176,7 +174,7 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
                 try {
                     txt = newDoc.getText(0, newDoc.getLength());
                 } catch (BadLocationException e) {
-                    txt = null;
+                    txt = "";
                 }
                 update(txt);
             }
@@ -233,11 +231,11 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
      * {@link #getComboBox} is guaranteed to return non-{@code null} if this
      * method is called from this abstract base class.
      *
-     * @param  initials The text to auto complete. May be {@code null}.
+     * @param  initials The text to auto complete..
      * @return Whether or not the combo box should pop up to show the updated
      *         contents of its model.
      */
-    protected abstract boolean update(@CheckForNull String initials);
+    protected abstract boolean update(String initials);
 
     /**
      * Locks out mutual recursive event notification.
@@ -257,9 +255,7 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
      * <b>Warning:</b> This method works in a synchronized or single threaded
      * environment only!
      */
-    private void unlock() {
-        recursion = false;
-    }
+    private void unlock() { recursion = false; }
 
     private class Listener implements DocumentListener, PropertyChangeListener {
 
