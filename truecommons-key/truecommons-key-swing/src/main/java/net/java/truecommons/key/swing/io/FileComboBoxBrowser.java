@@ -8,8 +8,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.text.Collator;
 import java.util.Arrays;
+import java.util.Objects;
 import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.filechooser.FileSystemView;
@@ -31,27 +31,18 @@ import net.java.truecommons.key.swing.util.AbstractComboBoxBrowser;
  * @since  TrueCommons 2.2
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
 
     private static final long serialVersionUID = -6878885832542209810L;
 
-    private transient @CheckForNull FileSystemView fileSystemView;
-    private transient @CheckForNull File directory;
+    private transient @CheckForNull FileSystemView fsv;
+    private transient @CheckForNull File dir;
 
     /**
      * Constructs a new file combo box auto completion browser.
      * {@link #setComboBox} must be called in order to use this object.
      */
-    public FileComboBoxBrowser() { this(null, null); }
-
-    public FileComboBoxBrowser(@CheckForNull JComboBox<String> comboBox) {
-        this(comboBox, null);
-    }
-
-    public FileComboBoxBrowser(@CheckForNull FileSystemView fileSystemView) {
-        this(null, fileSystemView);
-    }
+    public FileComboBoxBrowser() { this(null); }
 
     /**
      * Creates a new combo box auto completion browser.
@@ -59,70 +50,51 @@ public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
      * @param comboBox The combo box to enable browsing for auto completions.
      *        May be {@code null}.
      */
-    public FileComboBoxBrowser(
-            final @CheckForNull JComboBox<String> comboBox,
-            final @CheckForNull FileSystemView fileSystemView) {
+    public FileComboBoxBrowser(final @CheckForNull JComboBox<String> comboBox) {
         super(comboBox);
-        this.fileSystemView = fileSystemView;
-        if (null != comboBox) {
-            Object item = comboBox.getSelectedItem();
-            if (null == item || item instanceof String)
-                update0((String) item);
-        }
+        if (null != comboBox)
+            update0(Objects.toString(comboBox.getSelectedItem(), ""));
+    }
+
+    /**
+     * Returns the file system view.
+     * If this property has never been initialized or has been explicitly set
+     * to {@code null}, then a call to this method reinitializes it by calling
+     * {@link FileSystemView#getFileSystemView}.
+     */
+    public FileSystemView getFileSystemView() {
+        final FileSystemView fsv = this.fsv;
+        return null != fsv
+                ? fsv
+                : (this.fsv = FileSystemView.getFileSystemView());
+
+    }
+
+    /** Sets the file system view. */
+    public void setFileSystemView(final @CheckForNull FileSystemView fsv) {
+        this.fsv = fsv;
     }
 
     /**
      * Returns the directory which is used for autocompleting relative path
      * names.
-     * If this property has been set to {@code null} before, it's reinitialized
-     * by calling
-     * {@link FileSystemView#createFileObject(String) createFileObject(".")} on
-     * the current file system view, so {@code null} is never returned.
-     *
-     * @return The directory which is used for autocompleting relative path
-     *         names.
+     * If this property has never been initialized or has been explicitly set
+     * to {@code null}, then a call to this method reinitializes it by calling
+     * {@link FileSystemView#getDefaultDirectory} on the
+     * {@linkplain #getFileSystemView file system view}.
      */
     public File getDirectory() {
-        final File directory = this.directory;
-        return null != directory
-                ? directory
-                : (this.directory = getFileSystemView().createFileObject("."));
+        final File dir = this.dir;
+        return null != dir
+                ? dir
+                : (this.dir = getFileSystemView().getDefaultDirectory());
     }
 
     /**
      * Sets the directory which is used for autocompleting relative path names.
-     *
-     * @param directory The directory to use for autocompletion.
-     *        If this is {@code null}, the directory is reset to the
-     *        current directory.
      */
-    public void setDirectory(final @CheckForNull File directory) {
-        this.directory = directory;
-    }
-
-    /**
-     * Returns the file system view.
-     * If this property has been set to {@code null} before, it's reinitialized
-     * by calling {@link FileSystemView#getFileSystemView()}, so {@code null}
-     * is never returned.
-     *
-     * @return The file system view.
-     */
-    public FileSystemView getFileSystemView() {
-        final FileSystemView fileSystemView = this.fileSystemView;
-        return null != fileSystemView
-                ? fileSystemView
-                : (this.fileSystemView = FileSystemView.getFileSystemView());
-
-    }
-
-    /**
-     * Sets the file system view.
-     *
-     * @param fileSystemView the file system view.
-     */
-    public void setFileSystemView(final @CheckForNull FileSystemView fileSystemView) {
-        this.fileSystemView = fileSystemView;
+    public void setDirectory(final @CheckForNull File dir) {
+        this.dir = dir;
     }
 
     /**
@@ -133,8 +105,7 @@ public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
      * The elements in the combo box model are sorted according to their
      * natural comparison order.
      *
-     * @param initials The initial characters of a file or directory path name.
-     *        May be {@code null}.
+     * @param  initials The initial characters of a file or directory path name.
      * @return {@code true} if and only if the file system contains a
      *         node with {@code initials} as its initial characters and
      *         hence the popup window with the completions should be shown.
@@ -142,11 +113,11 @@ public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
      *         {@code null}.
      */
     @Override
-    protected boolean update(@CheckForNull String initials) {
+    protected boolean update(String initials) {
         return update0(initials);
     }
 
-    private boolean update0(@CheckForNull String initials) {
+    private boolean update0(final String initials) {
         File dir = getDirectory();
 
         // This is actually a pretty ugly piece of code, but I don't know
@@ -154,8 +125,6 @@ public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
         // platform specific file separator (e.g. '\\' on Windows)
         // AND the standard URI name separator '/' in a file path
         // name.
-
-        if (null == initials) initials = "";
 
         // Identify the directory to list, the prefix of the elements we want
         // to find and the base string which prepends the elements we will find.
@@ -166,10 +135,6 @@ public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
             File node = getFileSystemView().createFileObject(initials);
             if (node.isAbsolute()) {
                 final boolean dirPath = node.getPath().length() < initials.length();
-                // TODO: Evaluate why this was needed in TrueZIP 6 & 7 and if
-                // it's still required in TrueCommons KeyManager.
-                /*if (dirPath)
-                    PromptingKeyManager.resetCancelledPrompts();*/
                 // The test order is important here because isDirectory() may
                 // actually prompt the user for a key if node is an RAES
                 // encrypted ZIP file!
@@ -197,10 +162,6 @@ public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
                 node = getFileSystemView().createFileObject(directory, initials); // copies archive detector from directory
                 final boolean dirPath = node.getPath().length()
                         < (directory.getPath() + File.separator + initials).length();
-                // TODO: Evaluate why this was needed in TrueZIP 6 & 7 and if
-                // it's still required in TrueCommons KeyManager.
-                /*if (dirPath)
-                    PromptingKeyManager.resetCancelledPrompts();*/
                 // The test order is important here because isDirectory() may
                 // actually prompt the user!
                 if (dirPath && node.isDirectory()) {
@@ -208,7 +169,7 @@ public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
                     prefix = "";
                 } else {
                     dir = node.getParentFile();
-                    assert dir != null : "node is child of directory";
+                    assert null != dir;
                     prefix = node.getName();
                 }
                 // Keep the platform specific file separator.
