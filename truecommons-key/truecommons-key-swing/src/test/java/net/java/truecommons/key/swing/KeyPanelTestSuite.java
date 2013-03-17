@@ -17,7 +17,6 @@ import java.util.Objects;
 import net.java.truecommons.key.spec.prompting.PromptingPbeParameters;
 import org.junit.After;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.netbeans.jemmy.ComponentChooser;
 import org.netbeans.jemmy.operators.*;
@@ -64,7 +63,6 @@ extends JemmyUtilsWithFile {
     }
 
     @Test
-    @Ignore(/* FIXME */ "JFileChooserOperator does not work with JDK 1.7.0_17.")
     public void testUpdateErrorLabel() {
         panel.setError("This is a test error message!");
         assertFalse(isBlank(error.getText()));
@@ -88,7 +86,6 @@ extends JemmyUtilsWithFile {
     }
 
     @Test
-    @Ignore(/* FIXME */ "JFileChooserOperator does not work with JDK 1.7.0_17.")
     public void testKeyFile() throws InterruptedException {
         final PromptingPbeParameters<?, ?> param = newPbeParameters();
 

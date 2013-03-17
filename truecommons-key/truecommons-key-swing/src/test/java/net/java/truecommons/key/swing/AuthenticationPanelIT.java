@@ -11,7 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.netbeans.jemmy.ComponentChooser;
 import org.netbeans.jemmy.operators.*;
@@ -39,7 +38,6 @@ public class AuthenticationPanelIT extends JemmyUtilsWithFile {
 
     @SuppressWarnings("ResultOfObjectAllocationIgnored")
     @Test
-    @Ignore(/* FIXME */ "JFileChooserOperator does not work with JDK 1.7.0_17.")
     public void testTabbedPane() {
         final ComponentChooser
                 keyFileChooser = new NameComponentChooser("keyFileChooser");
