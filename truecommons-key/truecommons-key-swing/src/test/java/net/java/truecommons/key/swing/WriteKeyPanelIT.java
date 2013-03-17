@@ -4,6 +4,7 @@
  */
 package net.java.truecommons.key.swing;
 
+import java.io.IOException;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.JComponent;
 import net.java.truecommons.key.spec.common.AesKeyStrength;
@@ -15,10 +16,12 @@ import org.netbeans.jemmy.operators.JComboBoxOperator;
 import org.netbeans.jemmy.operators.JPasswordFieldOperator;
 
 /**
- * @author  Christian Schlichtherle
+ * @author Christian Schlichtherle
  */
 @NotThreadSafe
 public final class WriteKeyPanelIT extends KeyPanelTestSuite<WriteKeyPanel> {
+
+    public WriteKeyPanelIT() throws IOException, InterruptedException { }
 
     @Override
     protected WriteKeyPanel newKeyPanel() {
