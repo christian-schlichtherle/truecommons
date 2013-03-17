@@ -38,8 +38,8 @@ public interface Sink {
      * Buffering should get addressed by the caller instead.
      * <p>
      * Because the intention of this interface is output, the returned channel
-     * need not be able to position the file pointer or read data and any
-     * attempt to do so may fail with a {@link NonReadableChannelException}.
+     * does not need to be able to position the file pointer or read data and
+     * any attempt to do so may fail with a {@link NonReadableChannelException}.
      *
      * @return A seekable byte channel for writing bytes.
      * @throws IOException on any I/O error.
