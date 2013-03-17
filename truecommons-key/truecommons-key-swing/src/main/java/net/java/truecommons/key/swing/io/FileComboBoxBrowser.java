@@ -177,30 +177,18 @@ public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
             }
         }
 
-        final FilenameFilter filter;
-        /*if (TFile.separatorChar != '\\') {
-            // Consider case (Unix).
-            filter = new FilenameFilter() {
-                public boolean accept(java.io.TFile d, String child) {
-                    return child.startsWith(prefix);
-                }
-            };
-        } else {*/
-            // Ignore case (Windows).
-            class Filter implements FilenameFilter {
-                final int pl = prefix.length();
+        class Filter implements FilenameFilter {
+            final int pl = prefix.length();
 
-                @Override
-                public boolean accept(File d, String child) {
-                    if (child.length() >= pl)
-                        return prefix.equalsIgnoreCase(child.substring(0, pl));
-                    else
-                        return false;
-                }
-            } // class Filter
-            filter = new Filter();
-        //}
-        final String[] children = dir.list(filter);
+            @Override
+            public boolean accept(File d, String child) {
+                // Always ignore case, not just on Windoze.
+                return pl <= child.length()
+                        ? prefix.equalsIgnoreCase(child.substring(0, pl))
+                        : false;
+            }
+        } // Filter
+        final String[] children = dir.list(new Filter());
 
         // Update combo box model.
         // Note that the list MUST be cleared and repopulated because its
