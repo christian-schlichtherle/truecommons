@@ -59,8 +59,9 @@ public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
      * @param comboBox The combo box to enable browsing for auto completions.
      *        May be {@code null}.
      */
-    public FileComboBoxBrowser( final @CheckForNull JComboBox<String> comboBox,
-                                @CheckForNull FileSystemView fileSystemView) {
+    public FileComboBoxBrowser(
+            final @CheckForNull JComboBox<String> comboBox,
+            final @CheckForNull FileSystemView fileSystemView) {
         super(comboBox);
         this.fileSystemView = fileSystemView;
         if (null != comboBox) {
@@ -154,8 +155,7 @@ public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
         // AND the standard URI name separator '/' in a file path
         // name.
 
-        if (null == initials)
-            initials = "";
+        if (null == initials) initials = "";
 
         // Identify the directory to list, the prefix of the elements we want
         // to find and the base string which prepends the elements we will find.

@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.key.swing;
 
-import net.java.truecommons.key.swing.KeyStrengthPanel;
 import net.java.truecommons.key.spec.common.AesKeyStrength;
 import static net.java.truecommons.key.spec.common.AesKeyStrength.*;
 import net.java.truecommons.key.swing.util.JemmyUtils;
@@ -25,7 +24,7 @@ public final class KeyStrengthPanelIT extends JemmyUtils {
 
     @Before
     public void setUp() throws InterruptedException {
-        panel = new KeyStrengthPanel<AesKeyStrength>(AesKeyStrength.values());
+        panel = new KeyStrengthPanel<>(AesKeyStrength.values());
         frame = showFrameWith(panel);
     }
 

@@ -4,8 +4,6 @@
  */
 package net.java.truecommons.key.swing.util;
 
-import net.java.truecommons.key.swing.util.Windows;
-import net.java.truecommons.key.swing.util.JemmyUtils;
 import java.awt.Window;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -14,7 +12,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * @author  Christian Schlichtherle
+ * @author Christian Schlichtherle
  */
 public class WindowsIT extends JemmyUtils {
 
