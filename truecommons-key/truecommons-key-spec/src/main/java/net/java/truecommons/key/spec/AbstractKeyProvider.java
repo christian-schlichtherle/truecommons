@@ -4,6 +4,7 @@
  */
 package net.java.truecommons.key.spec;
 
+import javax.annotation.concurrent.Immutable;
 import net.java.truecommons.shed.UniqueObject;
 
 /**
@@ -18,6 +19,7 @@ import net.java.truecommons.shed.UniqueObject;
  * @since TrueCommons 2.2
  * @author Christian Schlichtherle
  */
+@Immutable
 public abstract class AbstractKeyProvider<K>
 extends UniqueObject implements KeyProvider<K> {
 
