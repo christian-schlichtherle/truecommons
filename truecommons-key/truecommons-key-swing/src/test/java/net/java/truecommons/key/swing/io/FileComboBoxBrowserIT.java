@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.key.swing.io;
 
-import net.java.truecommons.key.swing.io.FileComboBoxBrowser;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -117,7 +116,7 @@ public final class FileComboBoxBrowserIT extends JemmyUtils {
     }
 
     private static List<Object> asList(final JComboBox<String> combo) {
-        final List<Object> list = new LinkedList<Object>();
+        final List<Object> list = new LinkedList<>();
         final ComboBoxModel<String> model = combo.getModel();
         for (int i = 0, l = model.getSize(); i < l; i++)
             list.add(model.getElementAt(i));

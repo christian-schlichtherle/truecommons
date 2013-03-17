@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.key.swing;
 
-import net.java.truecommons.key.swing.SwingAesPbeKeyManagerMapModifier;
 import java.util.Arrays;
 import net.java.truecommons.key.spec.common.AesPbeParameters;
 import net.java.truecommons.key.spec.spi.KeyManagerMapModifier;

@@ -47,8 +47,8 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
     private static final long serialVersionUID = 1065103960246722893L;
 
     private final Listener listener = new Listener();
-    private @CheckForNull
-    JComboBox<E> comboBox;
+
+    private @CheckForNull JComboBox<E> comboBox;
 
     /**
      * Used to inhibit mutual recursive event firing.
@@ -79,9 +79,7 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
      *
      * @return The combo box which this object is auto completing.
      */
-    public @Nullable JComboBox<E> getComboBox() {
-        return comboBox;
-    }
+    public @Nullable JComboBox<E> getComboBox() { return comboBox; }
 
     /**
      * Sets the combo box which this object is auto completing and updates the
@@ -98,8 +96,7 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
             final @CheckForNull JComboBox<E> oldCB,
             final @CheckForNull JComboBox<E> newCB,
             final boolean update) {
-        if (newCB == oldCB)
-            return;
+        if (newCB == oldCB) return;
 
         ComboBoxEditor oldCBE = null;
         if (null != oldCB) {
@@ -125,8 +122,7 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
             final @CheckForNull ComboBoxEditor oldCBE,
             final @CheckForNull ComboBoxEditor newCBE,
             final boolean update) {
-        if (newCBE == oldCBE)
-            return;
+        if (newCBE == oldCBE) return;
 
         JTextComponent oldText = null;
         if (null != oldCBE) {
@@ -149,8 +145,7 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
             final @CheckForNull JTextComponent oldTC,
             final @CheckForNull JTextComponent newTC,
             final boolean update) {
-        if (newTC == oldTC)
-            return;
+        if (newTC == oldTC) return;
 
         Document oldDocument = null;
         if (null != oldTC) {
@@ -171,11 +166,9 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
             final @CheckForNull Document oldDoc,
             final @CheckForNull Document newDoc,
             final boolean update) {
-        if (newDoc == oldDoc)
-            return;
+        if (newDoc == oldDoc) return;
 
-        if (null != oldDoc)
-            oldDoc.removeDocumentListener(listener);
+        if (null != oldDoc) oldDoc.removeDocumentListener(listener);
 
         if (null != newDoc) {
             if (update) {
@@ -192,38 +185,32 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
     }
 
     private void documentUpdated() {
-        if (lock())
-            return;
+        if (lock()) return;
         try {
             final JComboBox<E> cb = getComboBox();
             final ComboBoxEditor cbe = cb.getEditor();
             final JTextComponent tc = (JTextComponent) cbe.getEditorComponent();
             assert cb.isShowing() || !tc.isFocusOwner();
-            if (!tc.isFocusOwner() /* || !cb.isShowing() */)
-                return;
+            if (!tc.isFocusOwner() /* || !cb.isShowing() */) return;
 
             //cb.setPopupVisible(update(tc.getText())); // doesn't work: adjusts popup size!
             cb.setPopupVisible(false);
-            if (update(tc.getText()))
-                cb.setPopupVisible(true);
+            if (update(tc.getText())) cb.setPopupVisible(true);
         } finally {
             unlock();
         }
     }
 
     private void updateEditor(final ComboBoxEditor cbe, final @CheckForNull Object item) {
-        if (lock())
-            return;
+        if (lock()) return;
         try {
             cbe.setItem(item);
-            if (!(item instanceof String))
-                return;
+            if (!(item instanceof String)) return;
 
             final JComboBox<E> cb = getComboBox();
             final JTextComponent tc = (JTextComponent) cbe.getEditorComponent();
             assert cb.isShowing() || !tc.isFocusOwner();
-            if (!tc.isFocusOwner() /* || !cb.isShowing() */)
-                return;
+            if (!tc.isFocusOwner() /* || !cb.isShowing() */) return;
 
             // Compensate for an issue with some look and feels
             // which select the entire tc if an item is changed.
@@ -260,8 +247,7 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
      * @return Whether or not updating the combo box model was already locked.
      */
     private boolean lock() {
-        if (recursion)
-            return true;
+        if (recursion) return true;
         recursion = true;
         return false;
     }
@@ -278,19 +264,13 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
     private class Listener implements DocumentListener, PropertyChangeListener {
 
         @Override
-        public void insertUpdate(DocumentEvent e) {
-            documentUpdated();
-        }
+        public void insertUpdate(DocumentEvent e) { documentUpdated(); }
 
         @Override
-        public void removeUpdate(DocumentEvent e) {
-            documentUpdated();
-        }
+        public void removeUpdate(DocumentEvent e) { documentUpdated(); }
 
         @Override
-        public void changedUpdate(DocumentEvent e) {
-            documentUpdated();
-        }
+        public void changedUpdate(DocumentEvent e) { documentUpdated(); }
 
         @Override
         public void propertyChange(final PropertyChangeEvent e) {
@@ -325,9 +305,7 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
         }
 
         /** Returns the decorated combo box editor. */
-        ComboBoxEditor getEditor() {
-            return editor;
-        }
+        ComboBoxEditor getEditor() { return editor; }
 
         @Override
         public Component getEditorComponent() {
@@ -340,14 +318,10 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
         }
 
         @Override
-        public @CheckForNull Object getItem() {
-            return editor.getItem();
-        }
+        public @CheckForNull Object getItem() { return editor.getItem(); }
 
         @Override
-        public void selectAll() {
-            editor.selectAll();
-        }
+        public void selectAll() { editor.selectAll(); }
 
         @Override
         public void addActionListener(ActionListener actionListener) {
