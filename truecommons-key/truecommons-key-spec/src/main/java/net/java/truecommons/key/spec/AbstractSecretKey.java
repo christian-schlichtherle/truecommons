@@ -8,7 +8,6 @@ import java.beans.Transient;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.NotThreadSafe;
 import static net.java.truecommons.shed.Buffers.*;
 
 /**
@@ -22,7 +21,6 @@ import static net.java.truecommons.shed.Buffers.*;
  * @since TrueCommons 2.2
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public abstract class AbstractSecretKey<K extends AbstractSecretKey<K>>
 extends AbstractKey<K> implements SecretKey<K> {
 
