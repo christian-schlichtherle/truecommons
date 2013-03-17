@@ -12,7 +12,7 @@ import java.nio.channels.SeekableByteChannel;
 
 /**
  * A provider for output streams or seekable byte channels.
- * 
+ *
  * @see    Source
  * @author Christian Schlichtherle
  */
@@ -38,9 +38,9 @@ public interface Sink {
      * Buffering should get addressed by the caller instead.
      * <p>
      * Because the intention of this interface is output, the returned channel
-     * may not be able to position the file pointer or read data and any
+     * need not be able to position the file pointer or read data and any
      * attempt to do so may fail with a {@link NonReadableChannelException}.
-     * 
+     *
      * @return A seekable byte channel for writing bytes.
      * @throws IOException on any I/O error.
      * @throws UnsupportedOperationException if this operation is not supported.

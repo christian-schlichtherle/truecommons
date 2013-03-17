@@ -12,7 +12,7 @@ import java.nio.channels.SeekableByteChannel;
 
 /**
  * A provider for input streams or seekable byte channels.
- * 
+ *
  * @see    Sink
  * @author Christian Schlichtherle
  */
@@ -28,7 +28,7 @@ public interface Source {
      * @throws IllegalStateException if another input stream is not available.
      */
     @CreatesObligation
-    InputStream stream() throws IOException;    
+    InputStream stream() throws IOException;
 
     /**
      * <b>Optional operation:</b> Returns a seekable byte channel for
@@ -38,7 +38,7 @@ public interface Source {
      * Buffering should get addressed by the caller instead.
      * <p>
      * Because the intention of this interface is input, the returned channel
-     * may not be able to write data and any attempt to do so may fail with a
+     * need not be able to write data and any attempt to do so may fail with a
      * {@link NonWritableChannelException}.
      *
      * @return A seekable byte channel for reading bytes.
