@@ -24,9 +24,7 @@ abstract class KeyPanel extends EnhancedPanel {
 
     private @CheckForNull Feedback feedback;
 
-    KeyPanel() {
-        addPanelListener(new KeyPanelListener());
-    }
+    KeyPanel() { super.addPanelListener(new KeyPanelListener()); }
 
     /**
      * Returns the feedback to run when this panel is shown in its ancestor
@@ -92,7 +90,6 @@ abstract class KeyPanel extends EnhancedPanel {
             ((KeyPanel) evt.getSource()).runFeedback();
         }
 
-        @Override
-        public void ancestorWindowHidden(PanelEvent evt) { }
+        @Override public void ancestorWindowHidden(PanelEvent evt) { }
     }
 }
