@@ -2,7 +2,7 @@
  * Copyright (C) 2005-2012 Schlichtherle IT Services.
  * All rights reserved. Use is subject to license terms.
  */
-package net.java.truecommons.key.swing;
+package net.java.truecommons.key.swing.util;
 
 import java.awt.Dialog;
 import java.awt.Window;
@@ -14,11 +14,11 @@ import org.netbeans.jemmy.operators.WindowOperator;
 /**
  * An operator for the first file chooser which is owned by the given window.
  *
- * @author  Christian Schlichtherle
+ * @author Christian Schlichtherle
  */
-final class TFileChooserOperator extends JFileChooserOperator {
+public class FileChooserOfWindowOperator extends JFileChooserOperator {
 
-    TFileChooserOperator(final WindowOperator parent) {
+    public FileChooserOfWindowOperator(final WindowOperator parent) {
 	super((JFileChooser) waitComponent(
                 waitJFileChooserDialog(parent),
                 new JFileChooserFinder(),

@@ -10,6 +10,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.io.File;
 import java.util.ResourceBundle;
+import javax.annotation.CheckForNull;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.Document;
@@ -30,23 +31,57 @@ public final class AuthenticationPanel extends JPanel {
     private static final ResourceBundle resources = ResourceBundle
             .getBundle(AuthenticationPanel.class.getName());
 
-    private static final File
-            BASE_DIR = FileSystemView.getFileSystemView().getDefaultDirectory();
-
     /** The password authentication method. */
     static final int AUTH_PASSWD = 0;
 
     /** The key file authentication method. */
     static final int AUTH_KEY_FILE = 1;
 
-    @SuppressWarnings("unchecked")
-    public AuthenticationPanel() {
-        initComponents();
+    private final FileComboBoxBrowser fcbb;
 
+    public AuthenticationPanel() {
         // Order is important here: The file combo box browser installs its
         // own editor, so we have to adjust the columns last.
-        new FileComboBoxBrowser(keyFile).setDirectory(BASE_DIR);
+        fcbb = new FileComboBoxBrowser(keyFile);
+        initComponents();
         ((JTextField) keyFile.getEditor().getEditorComponent()).setColumns(30);
+    }
+
+    /**
+     * Returns the file system view which is used for the key file combo box
+     * and its associated file chooser.
+     * If this property has never been initialized or has been explicitly set
+     * to {@code null}, then a call to this method reinitializes it by calling
+     * {@link FileSystemView#getFileSystemView}.
+     */
+    public FileSystemView getFileSystemView() {
+        return fcbb.getFileSystemView();
+    }
+
+    /**
+     * Sets the file system view which is used for the key file combo box
+     * and its associated file chooser.
+     */
+    public void setFileSystemView(@CheckForNull FileSystemView fsv) {
+        fcbb.setFileSystemView(fsv);
+    }
+
+    /**
+     * Returns the directory which is used for the key file combo box
+     * and its associated file chooser.
+     * If this property has never been initialized or has been explicitly set
+     * to {@code null}, then a call to this method reinitializes it by calling
+     * {@link FileSystemView#getDefaultDirectory} on the
+     * {@linkplain #getFileSystemView file system view}.
+     */
+    public File getDirectory() { return fcbb.getDirectory(); }
+
+    /**
+     * Sets the directory which is used for the key file combo box and its
+     * associated file chooser.
+     */
+    public void setDirectory(@CheckForNull File dir) {
+        fcbb.setDirectory(dir);
     }
 
     /**
@@ -78,15 +113,15 @@ public final class AuthenticationPanel extends JPanel {
     File getKeyFile() {
         String path = (String) keyFile.getSelectedItem();
         File file = new File(path);
-        return file.isAbsolute() ? file : new File(BASE_DIR.getPath(), path);
+        return file.isAbsolute() ? file : new File(getDirectory(), path);
     }
 
     private void setKeyFile(final File file) {
         String newPath = file.getPath();
         {
-            final String baseDirPath = BASE_DIR.getPath();
-            if (newPath.startsWith(baseDirPath))
-                newPath = newPath.substring(baseDirPath.length() + 1); // cut off file separator, too.
+            final String dir = getDirectory().getPath();
+            if (newPath.startsWith(dir))
+                newPath = newPath.substring(dir.length() + 1); // cut off file separator, too.
         }
         final String oldPath = (String) keyFile.getSelectedItem();
         if (newPath.equals(oldPath)) return;
@@ -183,8 +218,8 @@ public final class AuthenticationPanel extends JPanel {
             setKeyFile(fc.getSelectedFile());
     }//GEN-LAST:event_keyFileChooserActionPerformed
 
-    private static JFileChooser newFileChooser() {
-        final JFileChooser fc = new JFileChooser(BASE_DIR);
+    private JFileChooser newFileChooser() {
+        final JFileChooser fc = new JFileChooser(getDirectory());
         fc.setDialogTitle(resources.getString("fileChooser.title"));
         fc.setFileHidingEnabled(false);
         return fc;
@@ -192,7 +227,7 @@ public final class AuthenticationPanel extends JPanel {
 
     private void keyFilePanelAncestorWindowShown(net.java.truecommons.key.swing.util.PanelEvent evt) {//GEN-FIRST:event_keyFilePanelAncestorWindowShown
         // These are the things I hate Swing for: All I want to do here is to
-        // set the focus to the passwd field in this panel when it shows.
+        // set the focus to the keyFile field in this panel when it shows.
         // However, this can't be done in the constructor since the panel is
         // not yet placed in a window which is actually showing.
         // Right, then I use this event listener to do it. This listener
@@ -217,7 +252,7 @@ public final class AuthenticationPanel extends JPanel {
         // only if I can really transfer the focus to it.
         // Otherwise, users could get easily confused.
         // If you carefully read the documentation for requestFocusInWindow()
-        // however, then you know that even if it returns true, there is still
+        // however, then you learn that even if it returns true, there is still
         // no guarantee that the focus gets actually transferred...
         // This mess is insane!
         final Window window = evt.getSource().getAncestorWindow();

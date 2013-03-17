@@ -4,9 +4,6 @@
  */
 package net.java.truecommons.key.swing.util;
 
-import net.java.truecommons.key.swing.util.PanelEvent;
-import net.java.truecommons.key.swing.util.PanelListener;
-import net.java.truecommons.key.swing.util.EnhancedPanel;
 import java.awt.EventQueue;
 import java.awt.Window;
 import java.util.EventListener;
@@ -21,13 +18,12 @@ import org.netbeans.jemmy.operators.JDialogOperator;
 import org.netbeans.jemmy.operators.JFrameOperator;
 
 /**
- * @author  Christian Schlichtherle
+ * @author Christian Schlichtherle
  */
 public final class EnhancedPanelIT extends JemmyUtils {
     private EnhancedPanel instance;
 
-    @Before
-    public void setUp() {
+    @Before public void setUp() {
         instance = new EnhancedPanel();
         instance.add(new JLabel("Hello world!"));
     }
@@ -293,7 +289,7 @@ public final class EnhancedPanelIT extends JemmyUtils {
 
             final JButtonOperator button = new JButtonOperator(dialog);
             button.push();
-            button.getQueueTool().waitEmpty(WAIT_EMPTY);
+            button.getQueueTool().waitEmpty(WAIT_EMPTY_MILLIS);
             assertEquals(i, l.shown);
             assertEquals(i, l.hidden);
         }

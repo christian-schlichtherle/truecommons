@@ -4,40 +4,40 @@
  */
 package net.java.truecommons.key.swing;
 
+import net.java.truecommons.key.swing.io.JemmyUtilsWithFile;
+import net.java.truecommons.key.swing.util.FileChooserOfWindowOperator;
 import java.awt.EventQueue;
-import java.io.File;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import net.java.truecommons.key.spec.prompting.PromptingPbeParameters;
-import net.java.truecommons.key.swing.util.JemmyUtils;
 import org.junit.After;
 import static org.junit.Assert.*;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.netbeans.jemmy.ComponentChooser;
 import org.netbeans.jemmy.operators.*;
 import org.netbeans.jemmy.util.NameComponentChooser;
 
 /**
- * @param   <P> The type of the key panel.
- * @author  Christian Schlichtherle
+ * @param  <P> The type of the key panel.
+ * @author Christian Schlichtherle
  */
-public abstract class KeyPanelTestSuite<P extends KeyPanel> extends JemmyUtils {
+public abstract class KeyPanelTestSuite<P extends KeyPanel>
+extends JemmyUtilsWithFile {
+
     private static final ComponentChooser
             KEY_FILE_CHOOSER = new NameComponentChooser("keyFileChooser");
-
-    private static final String NON_EXISTING_FILE
-            = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     protected P panel;
     protected JFrameOperator frame;
     protected JLabelOperator error;
 
-    @Before
-    public void setUp() throws InterruptedException {
+    public KeyPanelTestSuite() throws IOException, InterruptedException {
         panel = newKeyPanel();
         frame = showFrameWith(panel);
         final String text = "error";
@@ -51,9 +51,7 @@ public abstract class KeyPanelTestSuite<P extends KeyPanel> extends JemmyUtils {
     protected abstract PromptingPbeParameters<?, ?> newPbeParameters();
 
     @After
-    public void tearDown() {
-        frame.dispose();
-    }
+    public void disposeFrame() { frame.dispose(); }
 
     @Test
     @SuppressWarnings("ResultOfObjectAllocationIgnored")
@@ -66,43 +64,45 @@ public abstract class KeyPanelTestSuite<P extends KeyPanel> extends JemmyUtils {
     }
 
     @Test
+    @Ignore(/* FIXME */ "JFileChooserOperator does not work with JDK 1.7.0_17.")
     public void testUpdateErrorLabel() {
         panel.setError("This is a test error message!");
         assertFalse(isBlank(error.getText()));
         final JTextFieldOperator tf = new JTextFieldOperator(frame);
         tf.setText("top secret");
-        //tf.getQueueTool().waitEmpty(WAIT_EMPTY);
+        //tf.getQueueTool().waitEmpty(WAIT_EMPTY_MILLIS);
         assertTrue(isBlank(error.getText()));
 
         panel.setError("This is a test error message!");
         assertFalse(isBlank(error.getText()));
         new JTabbedPaneOperator(frame).selectPage(AuthenticationPanel.AUTH_KEY_FILE); // select tab for key files
         new JButtonOperator(frame, KEY_FILE_CHOOSER).push(); // open file chooser
-        final JFileChooserOperator fc = new TFileChooserOperator(frame);
-        fc.chooseFile(NON_EXISTING_FILE);
-        fc.getQueueTool().waitEmpty(WAIT_EMPTY);
+        final JFileChooserOperator fc = new FileChooserOfWindowOperator(frame);
+        fc.chooseFile(file.getName());
+        fc.getQueueTool().waitEmpty(WAIT_EMPTY_MILLIS);
         assertTrue(isBlank(error.getText()));
     }
 
     protected static boolean isBlank(String s) {
-        return null == s || s.trim().length() <= 0;
+        return 0 == Objects.toString(s, "").trim().length();
     }
 
     @Test
+    @Ignore(/* FIXME */ "JFileChooserOperator does not work with JDK 1.7.0_17.")
     public void testKeyFile() throws InterruptedException {
         final PromptingPbeParameters<?, ?> param = newPbeParameters();
 
         new JTabbedPaneOperator(frame).selectPage(AuthenticationPanel.AUTH_KEY_FILE); // select tab for key files
         new JButtonOperator(frame, KEY_FILE_CHOOSER).push(); // open file chooser
-        JFileChooserOperator fc = new TFileChooserOperator(frame);
-        fc.chooseFile(NON_EXISTING_FILE);
-        fc.getQueueTool().waitEmpty(WAIT_EMPTY);
+        JFileChooserOperator fc = new FileChooserOfWindowOperator(frame);
+        fc.chooseFile(file.getName());
+        fc.getQueueTool().waitEmpty(WAIT_EMPTY_MILLIS);
         assertTrue(isBlank(error.getText()));
         assertFalse(updateParam(param));
         assertFalse(isBlank(error.getText()));
 
         new JButtonOperator(frame, KEY_FILE_CHOOSER).push(); // open file chooser
-        fc = new TFileChooserOperator(frame);
+        fc = new FileChooserOfWindowOperator(frame);
         final List<File> files = Arrays.asList(fc.getFiles());
         Collections.shuffle(files);
         for (final File file : files) {

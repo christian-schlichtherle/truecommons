@@ -29,11 +29,11 @@ import org.netbeans.jemmy.operators.JTextComponentOperator;
  * In particular, the current properties are modified to output nothing and
  * some composite drivers get installed.
  *
- * @author  Christian Schlichtherle
+ * @author Christian Schlichtherle
  */
 public class JemmyUtils {
 
-    protected static final long WAIT_EMPTY = 100;
+    public static final long WAIT_EMPTY_MILLIS = 100;
 
     static {
         // TODO: Make pushJemmyProperties() work and remove this static
@@ -46,16 +46,15 @@ public class JemmyUtils {
         // TODO: This causes Operator.getDefaultVerification() to throw an NPE
         // because the property "Operator.Verification" somehow hasn't been
         // copied.
-        // Therefore, the JUnit annotation is currently commented out.
+        // Therefore the @BeforeClass annotation is currently commented out.
         try {
             invokeAndWait(new Runnable() {
-                @Override
-                public void run() {
+                @Override public void run() {
                     JemmyProperties.push();
                     setUpJemmyProperties();
                 }
             });
-        } catch (InvocationTargetException ex) {
+        } catch (final InvocationTargetException ex) {
             throw new AssertionError(ex);
         }
     }
@@ -65,15 +64,14 @@ public class JemmyUtils {
         // TODO: This causes Operator.getDefaultVerification() to throw an NPE
         // because the property "Operator.Verification" somehow hasn't been
         // copied.
-        // Therefore, the JUnit annotation is currently commented out.
+        // Therefore the @AfterClass annotation is currently commented out.
         try {
             invokeAndWait(new Runnable() {
-                @Override
-                public void run() {
+                @Override public void run() {
                     JemmyProperties.pop();
                 }
             });
-        } catch (InvocationTargetException ex) {
+        } catch (final InvocationTargetException ex) {
             throw new AssertionError(ex);
         }
     }
@@ -128,7 +126,7 @@ public class JemmyUtils {
         } else {
             try {
                 invokeAndWait(task);
-            } catch (InvocationTargetException ex) {
+            } catch (final InvocationTargetException ex) {
                 throw new UndeclaredThrowableException(ex);
             }
         }
