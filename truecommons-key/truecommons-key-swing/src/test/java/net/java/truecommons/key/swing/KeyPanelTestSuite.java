@@ -68,16 +68,15 @@ extends JemmyUtilsWithFile {
         assertFalse(isBlank(error.getText()));
         final JTextFieldOperator tf = new JTextFieldOperator(frame);
         tf.setText("top secret");
-        //tf.getQueueTool().waitEmpty(WAIT_EMPTY_MILLIS);
         assertTrue(isBlank(error.getText()));
 
         panel.setError("This is a test error message!");
         assertFalse(isBlank(error.getText()));
         new JTabbedPaneOperator(frame).selectPage(AuthenticationPanel.AUTH_KEY_FILE); // select tab for key files
-        new JButtonOperator(frame, KEY_FILE_CHOOSER).push(); // open file chooser
+        new JButtonOperator(frame, KEY_FILE_CHOOSER).pushNoBlock(); // open file chooser
         final JFileChooserOperator fc = new FileChooserOfWindowOperator(frame);
         fc.chooseFile(file.getName());
-        fc.getQueueTool().waitEmpty(WAIT_EMPTY_MILLIS);
+        fc.getQueueTool().waitEmpty();
         assertTrue(isBlank(error.getText()));
     }
 
@@ -90,23 +89,22 @@ extends JemmyUtilsWithFile {
         final PromptingPbeParameters<?, ?> param = newPbeParameters();
 
         new JTabbedPaneOperator(frame).selectPage(AuthenticationPanel.AUTH_KEY_FILE); // select tab for key files
-        new JButtonOperator(frame, KEY_FILE_CHOOSER).push(); // open file chooser
+        new JButtonOperator(frame, KEY_FILE_CHOOSER).pushNoBlock(); // open file chooser
         JFileChooserOperator fc = new FileChooserOfWindowOperator(frame);
         fc.chooseFile(file.getName());
-        fc.getQueueTool().waitEmpty(WAIT_EMPTY_MILLIS);
+        fc.getQueueTool().waitEmpty();
         assertTrue(isBlank(error.getText()));
         assertFalse(updateParam(param));
         assertFalse(isBlank(error.getText()));
 
-        new JButtonOperator(frame, KEY_FILE_CHOOSER).push(); // open file chooser
+        new JButtonOperator(frame, KEY_FILE_CHOOSER).pushNoBlock(); // open file chooser
         fc = new FileChooserOfWindowOperator(frame);
         final List<File> files = Arrays.asList(fc.getFiles());
         Collections.shuffle(files);
         for (final File file : files) {
-            if (!file.isFile())
-                continue;
-            fc.setSelectedFile(file);
-            fc.approve(); // close file chooser
+            if (!file.isFile()) continue;
+            fc.chooseFile(file.getName());
+            fc.getQueueTool().waitEmpty();
             if (updateParam(param)) {
                 assertNotNull(param.getPassword());
                 assertTrue(isBlank(error.getText()));

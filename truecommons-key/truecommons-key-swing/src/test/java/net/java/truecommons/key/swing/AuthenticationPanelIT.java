@@ -42,18 +42,18 @@ public class AuthenticationPanelIT extends JemmyUtilsWithFile {
         final ComponentChooser
                 keyFileChooser = new NameComponentChooser("keyFileChooser");
         new JTabbedPaneOperator(frame).selectPage(AuthenticationPanel.AUTH_KEY_FILE); // select tab for key files
-        new JButtonOperator(frame, keyFileChooser).push(); // open file chooser
+        new JButtonOperator(frame, keyFileChooser).pushNoBlock(); // open file chooser
         JFileChooserOperator fc = new FileChooserOfWindowOperator(frame);
         fc.cancel();
-        fc.getQueueTool().waitEmpty(WAIT_EMPTY_MILLIS);
+        fc.getQueueTool().waitEmpty();
         new JTabbedPaneOperator(frame).selectPage(AuthenticationPanel.AUTH_PASSWD); // select tab for passwords
         new JLabelOperator(frame, LABEL_TEXT);
 
         new JTabbedPaneOperator(frame).selectPage(AuthenticationPanel.AUTH_KEY_FILE); // select tab for key files
-        new JButtonOperator(frame, keyFileChooser).push(); // open file chooser
+        new JButtonOperator(frame, keyFileChooser).pushNoBlock(); // open file chooser
         fc = new FileChooserOfWindowOperator(frame);
         fc.chooseFile(file.getName());
-        fc.getQueueTool().waitEmpty(WAIT_EMPTY_MILLIS);
+        fc.getQueueTool().waitEmpty();
         JTextFieldOperator tf = new JTextFieldOperator(frame);
         assertEquals(file.getName(), tf.getText());
 
