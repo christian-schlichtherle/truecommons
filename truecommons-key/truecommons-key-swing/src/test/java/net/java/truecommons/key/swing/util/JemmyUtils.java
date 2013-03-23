@@ -6,21 +6,13 @@ package net.java.truecommons.key.swing.util;
 
 import java.awt.Component;
 import static java.awt.EventQueue.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.UndeclaredThrowableException;
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
-import org.netbeans.jemmy.JemmyProperties;
-import org.netbeans.jemmy.TestOut;
-import org.netbeans.jemmy.drivers.ButtonDriver;
-import org.netbeans.jemmy.drivers.DriverManager;
-import org.netbeans.jemmy.drivers.LightSupportiveDriver;
-import org.netbeans.jemmy.drivers.TextDriver;
+import java.lang.reflect.*;
+import javax.swing.*;
+import org.netbeans.jemmy.*;
+import org.netbeans.jemmy.drivers.*;
 import org.netbeans.jemmy.drivers.buttons.ButtonMouseDriver;
 import org.netbeans.jemmy.drivers.text.SwingTextKeyboardDriver;
-import org.netbeans.jemmy.operators.ComponentOperator;
-import org.netbeans.jemmy.operators.JFrameOperator;
-import org.netbeans.jemmy.operators.JTextComponentOperator;
+import org.netbeans.jemmy.operators.*;
 
 /**
  * A helper class for JUnit tests with JemmyUtils.
@@ -47,16 +39,12 @@ public class JemmyUtils {
         // because the property "Operator.Verification" somehow hasn't been
         // copied.
         // Therefore the @BeforeClass annotation is currently commented out.
-        try {
-            invokeAndWait(new Runnable() {
-                @Override public void run() {
-                    JemmyProperties.push();
-                    setUpJemmyProperties();
-                }
-            });
-        } catch (final InvocationTargetException ex) {
-            throw new AssertionError(ex);
-        }
+        runOnEdtNow(new Runnable() {
+            @Override public void run() {
+                JemmyProperties.push();
+                setUpJemmyProperties();
+            }
+        });
     }
 
     //@AfterClass
@@ -65,15 +53,11 @@ public class JemmyUtils {
         // because the property "Operator.Verification" somehow hasn't been
         // copied.
         // Therefore the @AfterClass annotation is currently commented out.
-        try {
-            invokeAndWait(new Runnable() {
-                @Override public void run() {
-                    JemmyProperties.pop();
-                }
-            });
-        } catch (final InvocationTargetException ex) {
-            throw new AssertionError(ex);
-        }
+        runOnEdtNow(new Runnable() {
+            @Override public void run() {
+                JemmyProperties.pop();
+            }
+        });
     }
 
     public static void setUpJemmyProperties() {
@@ -154,8 +138,7 @@ public class JemmyUtils {
         @Override
         public void press(final ComponentOperator op) {
             op.getQueueTool().invoke(new Runnable() {
-                @Override
-                public void run() {
+                @Override public void run() {
                     driver.press(op);
                 }
             });
@@ -164,8 +147,7 @@ public class JemmyUtils {
         @Override
         public void release(final ComponentOperator op) {
             op.getQueueTool().invoke(new Runnable() {
-                @Override
-                public void run() {
+                @Override public void run() {
                     driver.release(op);
                 }
             });
@@ -174,8 +156,7 @@ public class JemmyUtils {
         @Override
         public void push(final ComponentOperator op) {
             op.getQueueTool().invoke(new Runnable() {
-                @Override
-                public void run() {
+                @Override public void run() {
                     driver.push(op);
                 }
             });
@@ -202,8 +183,7 @@ public class JemmyUtils {
                 final ComponentOperator op,
                 final int position) {
             op.getQueueTool().invoke(new Runnable() {
-                @Override
-                public void run() {
+                @Override public void run() {
                     driver.changeCaretPosition(op, position);
                 }
             });
@@ -215,8 +195,7 @@ public class JemmyUtils {
                 final int startPosition,
                 final int finalPosition) {
             op.getQueueTool().invoke(new Runnable() {
-                @Override
-                public void run() {
+                @Override public void run() {
                     driver.selectText(op, startPosition, finalPosition);
                 }
             });
@@ -225,8 +204,7 @@ public class JemmyUtils {
         @Override
         public void clearText(final ComponentOperator op) {
             op.getQueueTool().invoke(new Runnable() {
-                @Override
-                public void run() {
+                @Override public void run() {
                     driver.clearText(op);
                 }
             });
@@ -238,8 +216,7 @@ public class JemmyUtils {
                 final String text,
                 final int caretPosition) {
             op.getQueueTool().invoke(new Runnable() {
-                @Override
-                public void run() {
+                @Override public void run() {
                     driver.typeText(op, text, caretPosition);
                 }
             });
@@ -250,8 +227,7 @@ public class JemmyUtils {
                 final ComponentOperator op,
                 final String text) {
             op.getQueueTool().invoke(new Runnable() {
-                @Override
-                public void run() {
+                @Override public void run() {
                     driver.changeText(op, text);
                 }
             });
@@ -262,8 +238,7 @@ public class JemmyUtils {
                 final ComponentOperator op,
                 final String text) {
             op.getQueueTool().invoke(new Runnable() {
-                @Override
-                public void run() {
+                @Override public void run() {
                     driver.enterText(op, text);
                 }
             });
