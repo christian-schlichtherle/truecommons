@@ -1,7 +1,7 @@
 package net.java.truecommons.key.macosx.keychain;
 
 /*
- * Copyright (C) 2012 Schlichtherle IT Services.
+ * Copyright (C) 2012-2013 Schlichtherle IT Services.
  * All rights reserved. Use is subject to license terms.
  */
 import net.java.truecommons.key.macosx.keychain.Keychain;

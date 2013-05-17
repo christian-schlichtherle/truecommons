@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Schlichtherle IT Services.
+ * Copyright (C) 2012-2013 Schlichtherle IT Services.
  * All rights reserved. Use is subject to license terms.
  */
 package net.java.truecommons.logging;
