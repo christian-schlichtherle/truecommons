@@ -20,6 +20,7 @@ import javax.annotation.CheckForNull;
  * @param  <E> the type of the {@linkplain #target() target entry} for I/O
  *         operations.
  * @see    OutputSocket
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface InputSocket<E extends Entry> extends IoSocket<E> {

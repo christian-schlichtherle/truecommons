@@ -3,12 +3,12 @@
  * All rights reserved. Use is subject to license terms.
  */
 /**
- * Provides generic services for reading and writing
- * {@linkplain net.java.truecommons.cio.Entry entries} in
- * {@linkplain net.java.truecommons.cio.Container containers},
- * e.g.&#160;file systems, archive files or I/O buffer pools.
+ * Defines abstractions for modelling containers, pools and entries which
+ * provide I/O services.
+ * Implementations may represent (virtual) file systems with nodes,
+ * archive files with entries, pools of I/O buffers etc.
  *
- * @since  TrueCommons 2.1 (spin-off from TrueVFS Kernel Specification 0.9.3)
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 @javax.annotation.Nonnull @javax.annotation.ParametersAreNonnullByDefault

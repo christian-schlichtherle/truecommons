@@ -16,6 +16,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * operation successfully as soon as the entity or container is not busy
  * anymore and no other exceptional conditions apply.
  *
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 @ThreadSafe

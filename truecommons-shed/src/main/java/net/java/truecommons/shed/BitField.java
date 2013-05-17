@@ -82,6 +82,7 @@ implements Iterable<E>, Serializable {
      * }</pre>
      * where {@code Option.ONE} and {@code Option.TWO} are arbitrary enums.
      */
+    @SafeVarargs
     public static <E extends Enum<E>> BitField<E>
     of(E bit, E... bits) {
         return new BitField<>(bit, bits);
@@ -126,6 +127,7 @@ implements Iterable<E>, Serializable {
     }
 
     /** Constructs a new bit field which contains the given bits. */
+    @SafeVarargs
     private BitField(E bit, E... bits) {
         this.bits = EnumSet.of(bit, bits);
     }
@@ -208,11 +210,13 @@ implements Iterable<E>, Serializable {
         return new BitField<>(EnumSet.complementOf(bits));
     }
 
+    @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
     public BitField<E> and(BitField<E> that) {
         final EnumSet<E> bits = this.bits.clone();
         return bits.retainAll(that.bits) ? new BitField<>(bits) : this;
     }
 
+    @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
     public BitField<E> or(BitField<E> that) {
         final EnumSet<E> bits = this.bits.clone();
         return bits.addAll(that.bits) ? new BitField<>(bits) : this;
@@ -241,6 +245,7 @@ implements Iterable<E>, Serializable {
      * {@code BitField} and contains the same bits.
      */
     @Override
+    @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
     public boolean equals(@CheckForNull Object that) {
         return this == that
                 || that instanceof BitField<?>

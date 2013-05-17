@@ -5,6 +5,7 @@
 package net.java.truecommons.cio;
 
 import edu.umd.cs.findbugs.annotations.DischargesObligation;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Objects;
 import javax.annotation.CheckForNull;
@@ -16,6 +17,7 @@ import net.java.truecommons.shed.UniqueObject;
  *
  * @param  <E> the type of the entries in the decorated container.
  * @param  <C> the type of the decorated entry container.
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public abstract class DecoratingContainer<
@@ -39,7 +41,9 @@ extends UniqueObject implements Container<E> {
     public Iterator<E> iterator() { return container.iterator(); }
 
     @Override
-    public @CheckForNull E entry(String name) { return container.entry(name); }
+    public @CheckForNull E entry(EntryName name) {
+        return container.entry(name);
+    }
 
     @Override
     @DischargesObligation

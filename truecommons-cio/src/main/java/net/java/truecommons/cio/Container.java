@@ -9,9 +9,10 @@ import javax.annotation.CheckForNull;
 import net.java.truecommons.shed.*;
 
 /**
- * An iterable container for entries.
+ * A stream of entries with an additional size and lookup method.
  *
  * @param  <E> the type of the entries in this container.
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
 public interface Container<E extends Entry> extends Stream<E> {
@@ -24,7 +25,7 @@ public interface Container<E extends Entry> extends Stream<E> {
     int size();
 
     /**
-     * Returns a new iterator for all entries in this container.
+     * Returns a new iterator over all entries in this container.
      * <p>
      * First, the iteration <em>must</em> be consistent: Multiple iterators
      * must iterate the same entries in the same order again unless the set
@@ -35,7 +36,7 @@ public interface Container<E extends Entry> extends Stream<E> {
      * For example, if this container represents an archive file, the iteration
      * should reflect the natural order of the entries in the archive file.
      *
-     * @return A new iterator for all entries in this container.
+     * @return A new iterator over all entries in this container.
      */
     @Override
     Iterator<E> iterator();
@@ -48,5 +49,5 @@ public interface Container<E extends Entry> extends Stream<E> {
      * @return The entry for the given {@code name} or {@code null} if no entry
      *         with this name exists in this container.
      */
-    @CheckForNull E entry(String name);
+    @CheckForNull E entry(EntryName name);
 }
