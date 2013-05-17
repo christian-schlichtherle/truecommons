@@ -9,18 +9,21 @@ import java.io.IOException;
 import javax.annotation.WillCloseWhenClosed;
 
 /**
- * An abstract decorator for an output service.
+ * An abstract decorator for an output container.
  *
- * @param  <E> the type of the entries in the decorated output service.
- * @see    DecoratingInputService
+ * @param  <E> the type of the entries in the decorated container.
+ * @see    DecoratingInputContainer
+ * @since  TrueCommons 3.0
  * @author Christian Schlichtherle
  */
-public abstract class DecoratingOutputService<E extends Entry>
-extends DecoratingContainer<E, OutputService<E>> implements OutputService<E> {
+public abstract class DecoratingOutputContainer<E extends Entry>
+extends DecoratingContainer<E, OutputContainer<E>>
+implements OutputContainer<E> {
 
-    protected DecoratingOutputService() { }
+    protected DecoratingOutputContainer() { }
 
-    protected DecoratingOutputService(@WillCloseWhenClosed OutputService<E> output) {
+    protected DecoratingOutputContainer(
+            @WillCloseWhenClosed OutputContainer<E> output) {
         super(output);
     }
 
