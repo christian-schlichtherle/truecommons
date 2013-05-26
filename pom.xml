@@ -11,7 +11,7 @@
     <parent>
         <groupId>net.java.truecommons</groupId>
         <artifactId>truecommons-parent</artifactId>
-        <version>43</version>
+        <version>44</version>
     </parent>
 
     <artifactId>truecommons</artifactId>
@@ -193,14 +193,12 @@
                 <plugin>
                     <groupId>net.alchim31.maven</groupId>
                     <artifactId>scala-maven-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>compile</goal>
-                                <goal>testCompile</goal>
-                            </goals>
-                        </execution>
-                    </executions>
+                    <configuration>
+                        <args>
+                            <arg>-deprecation</arg>
+                            <arg>-feature</arg>
+                        </args>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
