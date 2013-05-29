@@ -8,11 +8,11 @@ import java.util._
 import org.junit.runner._
 import org.scalatest._
 import org.scalatest.junit._
-import org.scalatest.matchers._
+import org.scalatest.matchers.ShouldMatchers._
 
 /** @author Christian Schlichtherle */
 @RunWith(classOf[JUnitRunner])
-class LocatorSpec extends WordSpec with ShouldMatchers {
+class LocatorSpec extends WordSpec {
 
   import LocatorSpec._
 
@@ -75,18 +75,18 @@ object LocatorSpec {
     private[this] val l = new Locator(classOf[LocatorSpec])
 
     def container[P, F <: LocatableFactory[P] : Manifest] =
-      l container (implicitly[Manifest[F]].erasure.asInstanceOf[Class[F]])
+      l container (implicitly[Manifest[F]].runtimeClass.asInstanceOf[Class[F]])
 
     def container[P, F <: LocatableFactory[P] : Manifest, D <: LocatableDecorator[P] : Manifest] =
-      l container (implicitly[Manifest[F]].erasure.asInstanceOf[Class[F]],
-                   implicitly[Manifest[D]].erasure.asInstanceOf[Class[D]])
+      l container (implicitly[Manifest[F]].runtimeClass.asInstanceOf[Class[F]],
+                   implicitly[Manifest[D]].runtimeClass.asInstanceOf[Class[D]])
 
     def factory[P, F <: LocatableFactory[P] : Manifest] =
-      l factory (implicitly[Manifest[F]].erasure.asInstanceOf[Class[F]])
+      l factory (implicitly[Manifest[F]].runtimeClass.asInstanceOf[Class[F]])
 
     def factory[P, F <: LocatableFactory[P] : Manifest, D <: LocatableDecorator[P] : Manifest] =
-      l factory (implicitly[Manifest[F]].erasure.asInstanceOf[Class[F]],
-                 implicitly[Manifest[D]].erasure.asInstanceOf[Class[D]])
+      l factory (implicitly[Manifest[F]].runtimeClass.asInstanceOf[Class[F]],
+                 implicitly[Manifest[D]].runtimeClass.asInstanceOf[Class[D]])
   }
 }
 
