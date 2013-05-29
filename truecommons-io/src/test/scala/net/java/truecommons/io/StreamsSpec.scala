@@ -16,6 +16,24 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import scala.util._
 
+private object StreamsSpec {
+  val bufferSize = 2 * Streams.FIFO_SIZE * Streams.BUFFER_SIZE
+
+  private def any[A: Manifest] =
+    Matchers.any(implicitly[Manifest[A]].runtimeClass.asInstanceOf[Class[A]])
+
+  private def in = {
+    val b = new Array[Byte](bufferSize)
+    Random.nextBytes(b)
+    new ByteArrayInputStreamWithBuffer(b)
+  }
+
+  private def out = new ByteArrayOutputStream(bufferSize)
+
+  private class ByteArrayInputStreamWithBuffer(val bytes: Array[Byte])
+  extends ByteArrayInputStream(bytes)
+}
+
 /**
   * @author Christian Schlichtherle
   */
@@ -23,20 +41,7 @@ import scala.util._
 class StreamsSpec extends WordSpec with ShouldMatchers with MockitoSugar {
   import StreamsSpec._
 
-  def givenA = afterWord("given a")
-
-  def any[A: ClassManifest] =
-    Matchers.any(implicitly[ClassManifest[A]].erasure.asInstanceOf[Class[A]])
-
-  def in = { 
-    val b = new Array[Byte](bufferSize)
-    Random.nextBytes(b)
-    new ByteArrayInputStream(b) {
-      def bytes = b
-    }
-  }
-
-  def out = new ByteArrayOutputStream(bufferSize)
+  private def givenA = afterWord("given a")
 
   "Streams.cat(InputStream, OutputStream)" should {
     "fail with a NullPointerException " when givenA {
@@ -85,8 +90,8 @@ class StreamsSpec extends WordSpec with ShouldMatchers with MockitoSugar {
 
     "produce a copy of the data" when {
       "returning" in {
-        val in = this.in
-        val out = this.out
+        val in = StreamsSpec.in
+        val out = StreamsSpec.out
         for (_ <- 0 to 1) {
           cat(in, out)
           in.available should be (0)
@@ -209,8 +214,8 @@ class StreamsSpec extends WordSpec with ShouldMatchers with MockitoSugar {
 
     "produce a copy of the data" when {
       "returning" in {
-        val in = this.in
-        val out = this.out
+        val in = StreamsSpec.in
+        val out = StreamsSpec.out
         copy(in, out)
         in.available should be (0)
         in.bytes should equal (out.toByteArray)
@@ -350,16 +355,12 @@ class StreamsSpec extends WordSpec with ShouldMatchers with MockitoSugar {
 
     "produce a copy of the data" when {
       "returning" in {
-        val in = this.in
-        val out = this.out
+        val in = StreamsSpec.in
+        val out = StreamsSpec.out
         copy(new OneTimeSource(in), new OneTimeSink(out))
         in.available should be (0)
         in.bytes should equal (out.toByteArray)
       }
     }
   }
-}
-
-object StreamsSpec {
-  val bufferSize = 2 * Streams.FIFO_SIZE * Streams.BUFFER_SIZE
 }

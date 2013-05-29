@@ -10,16 +10,20 @@ import java.nio.channels._
 import org.junit.runner._
 import org.scalatest._
 import org.scalatest.junit._
-import org.scalatest.matchers._
+import org.scalatest.matchers.ShouldMatchers._
 import org.scalatest.mock._
 import scala.util._
+
+object ByteBufferChannelSpec {
+  val bufferSize = 128
+}
 
 /**
   * @author Christian Schlichtherle
   */
 @RunWith(classOf[JUnitRunner])
 class ByteBufferChannelSpec
-extends WordSpec with ShouldMatchers with BeforeAndAfter with MockitoSugar {
+extends WordSpec with BeforeAndAfter with MockitoSugar {
   import ByteBufferChannelSpec._
 
   var array: Array[Byte] = _
@@ -67,7 +71,7 @@ extends WordSpec with ShouldMatchers with BeforeAndAfter with MockitoSugar {
       }
 
       "position()" in {
-        intercept[ClosedChannelException] (newClosedByteBufferChannel position)
+        intercept[ClosedChannelException] (newClosedByteBufferChannel.position)
       }
 
       "position(long)" in {
@@ -75,7 +79,7 @@ extends WordSpec with ShouldMatchers with BeforeAndAfter with MockitoSugar {
       }
 
       "size()" in {
-        intercept[ClosedChannelException] (newClosedByteBufferChannel size)
+        intercept[ClosedChannelException] (newClosedByteBufferChannel.size)
       }
 
       "truncate(long)" in {
@@ -167,8 +171,4 @@ extends WordSpec with ShouldMatchers with BeforeAndAfter with MockitoSugar {
       }
     }
   }
-}
-
-object ByteBufferChannelSpec {
-  val bufferSize = 128
 }

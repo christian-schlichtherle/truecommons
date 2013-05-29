@@ -175,7 +175,7 @@ extends AbstractKeyManager<P> {
                         public void visit(Item item) throws KeychainException {
                             item.delete();
                         }
-                    } // Update
+                    } // Delete
 
                     keychain.visitItems(GENERIC_PASSWORD, attributes, new Delete());
                 }
