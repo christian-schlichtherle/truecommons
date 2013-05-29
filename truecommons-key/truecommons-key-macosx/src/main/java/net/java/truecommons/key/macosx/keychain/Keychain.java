@@ -14,7 +14,6 @@ import static net.java.truecommons.key.macosx.keychain.Keychain.AttributeClass.*
 import net.java.truecommons.key.macosx.keychain.Keychain.Item;
 import net.java.truecommons.key.macosx.keychain.Keychain.ItemClass;
 import static net.java.truecommons.key.macosx.keychain.Keychain.ItemClass.*;
-import net.java.truecommons.key.macosx.keychain.Keychain.Visitor;
 import static net.java.truecommons.key.macosx.keychain.Security.*;
 
 /**
