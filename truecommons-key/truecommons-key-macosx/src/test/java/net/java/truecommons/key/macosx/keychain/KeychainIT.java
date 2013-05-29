@@ -4,8 +4,6 @@
  */
 package net.java.truecommons.key.macosx.keychain;
 
-import net.java.truecommons.key.macosx.keychain.Keychain;
-import net.java.truecommons.key.macosx.keychain.KeychainException;
 import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Map;
@@ -202,7 +200,7 @@ public class KeychainIT {
             item.setSecret(byteBuffer(data));
             modified = true;
         }
-    } // ModifyDate
+    } // ModifyData
 
     private static class Delete implements Visitor {
 

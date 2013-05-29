@@ -1,11 +1,9 @@
-package net.java.truecommons.key.macosx.keychain;
-
 /*
  * Copyright (C) 2012-2013 Schlichtherle IT Services.
  * All rights reserved. Use is subject to license terms.
  */
-import net.java.truecommons.key.macosx.keychain.Keychain;
-import net.java.truecommons.key.macosx.keychain.KeychainException;
+package net.java.truecommons.key.macosx.keychain;
+
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.util.Map.Entry;
