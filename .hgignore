@@ -1,11 +1,3 @@
-\.chg\..*$
-\.conflict\~$
 ^\.idea/
 \.iml$
-\.orig$
-\.orig\..*$
-\.rej$
-glob:target/
-glob:*.lck
-glob:*.log
-glob:*.log.xml
+target/
