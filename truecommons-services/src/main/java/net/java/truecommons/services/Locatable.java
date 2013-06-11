@@ -4,12 +4,15 @@
  */
 package net.java.truecommons.services;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * A locatable object.
  *
  * @see    Locator
  * @author Christian Schlichtherle
  */
+@Immutable
 public abstract class Locatable {
 
     /**

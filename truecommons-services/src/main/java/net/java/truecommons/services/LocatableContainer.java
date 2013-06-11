@@ -4,7 +4,7 @@
  */
 package net.java.truecommons.services;
 
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * A locatable provider which contains a single product.
@@ -76,7 +76,6 @@ import javax.annotation.concurrent.ThreadSafe;
  * @param  <P> the type of the product to contain.
  * @author Christian Schlichtherle
  */
-@ThreadSafe
+@Immutable
 public abstract class LocatableContainer<P>
-extends LocatableProvider<P> implements Container<P> {
-}
+extends LocatableProvider<P> implements Container<P> { }

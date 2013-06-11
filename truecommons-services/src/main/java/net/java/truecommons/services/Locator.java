@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.Immutable;
 import net.java.truecommons.logging.BundledMessage;
 import net.java.truecommons.logging.LocalizedLogger;
 import org.slf4j.Logger;
@@ -54,7 +54,7 @@ import org.slf4j.MarkerFactory;
  * @see    ServiceLoader
  * @author Christian Schlichtherle
  */
-@ThreadSafe
+@Immutable
 public final class Locator {
 
     private static final Logger logger = new LocalizedLogger(Locator.class);

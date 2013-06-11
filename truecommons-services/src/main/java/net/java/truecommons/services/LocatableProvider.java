@@ -4,7 +4,7 @@
  */
 package net.java.truecommons.services;
 
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.Immutable;
 import javax.inject.Provider;
 
 /**
@@ -20,7 +20,6 @@ import javax.inject.Provider;
  * @param  <P> the type of the products to provide.
  * @author Christian Schlichtherle
  */
-@ThreadSafe
+@Immutable
 public abstract class LocatableProvider<P>
-extends Locatable implements Provider<P> {
-}
+extends Locatable implements Provider<P> { }

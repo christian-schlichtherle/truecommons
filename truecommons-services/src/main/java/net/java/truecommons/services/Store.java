@@ -4,16 +4,16 @@
  */
 package net.java.truecommons.services;
 
+import javax.annotation.concurrent.Immutable;
 import javax.inject.Provider;
 
 /** @author Christian Schlichtherle */
+@Immutable
 final class Store<P> implements Container<P> {
-    final P product;
 
-    Store(final Provider<P> provider) {
-        this.product = provider.get();
-    }
+    private final P product;
 
-    @Override
-    public P get() { return product; }
+    Store(final Provider<P> provider) { this.product = provider.get(); }
+
+    @Override public P get() { return product; }
 }

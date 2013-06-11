@@ -4,18 +4,16 @@
  */
 package net.java.truecommons.services;
 
-import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Provider;
 
 /**
  * Creates products.
  * <p>
  * Implementations should be thread-safe.
- * 
+ *
  * @param  <P> the type of the products to create.
  * @author Christian Schlichtherle
  */
-@ThreadSafe
 public interface Factory<P> extends Provider<P> {
 
     /**

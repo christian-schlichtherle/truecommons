@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.services;
 
-import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Provider;
 
 /**
@@ -15,7 +14,6 @@ import javax.inject.Provider;
  * @param  <P> the type of the product to contain.
  * @author Christian Schlichtherle
  */
-@ThreadSafe
 public interface Container<P> extends Provider<P> {
 
     /**

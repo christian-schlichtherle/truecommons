@@ -4,7 +4,7 @@
  */
 package net.java.truecommons.services;
 
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * A locatable function for decorating products.
@@ -81,7 +81,6 @@ import javax.annotation.concurrent.ThreadSafe;
  * @param  <P> the type of the products to decorate.
  * @author Christian Schlichtherle
  */
-@ThreadSafe
+@Immutable
 public abstract class LocatableDecorator<P>
-extends LocatableFunction<P> implements Decorator<P> {
-}
+extends LocatableFunction<P> implements Decorator<P> { }
