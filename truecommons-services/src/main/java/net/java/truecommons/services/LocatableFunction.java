@@ -4,7 +4,7 @@
  */
 package net.java.truecommons.services;
 
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * A locatable function.
@@ -20,7 +20,6 @@ import javax.annotation.concurrent.ThreadSafe;
  * @param  <P> the type of the products to map.
  * @author Christian Schlichtherle
  */
-@ThreadSafe
+@Immutable
 public abstract class LocatableFunction<P>
-extends Locatable implements Function<P> {
-}
+extends Locatable implements Function<P> { }

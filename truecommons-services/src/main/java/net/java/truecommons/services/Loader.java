@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.*;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Loads resources and classes on the class path by using a given class loader
@@ -22,7 +22,7 @@ import javax.annotation.concurrent.ThreadSafe;
  *
  * @author Christian Schlichtherle
  */
-@ThreadSafe
+@Immutable
 public final class Loader {
 
     private final ClassLoader primary;
@@ -97,7 +97,7 @@ public final class Loader {
      * The implementation classes will get instantiated as if by calling
      * <code>{@link ServiceLoader#load(Class, ClassLoader) ServiceLoader.load(spec, cl)}.iterator()</code>,
      * where {@code cl} is the resolved class loader.
-     * 
+     *
      * @param  <S> the type of the services.
      * @param  spec the specification class of the services.
      * @return A new iterable collection of all services on the class path.
@@ -123,7 +123,7 @@ public final class Loader {
      * key.
      * If no such system property exists, then the given default implementation
      * class gets instantiated unless it's {@code null}.
-     * The implementation class gets loaded using {@link #classFor} and 
+     * The implementation class gets loaded using {@link #classFor} and
      * instantiated by calling its public no-arg constructor.
      * <p>
      * This method should be preferred over {@link #instancesOf(Class)} if
@@ -162,7 +162,7 @@ public final class Loader {
 
     /**
      * Loads a class according to the algorithm described in the class Javadoc.
-     * 
+     *
      * @param  name The fully qualified name of the class to classFor.
      * @return The loaded class.
      * @throws ServiceConfigurationError if loading the class fails for some
@@ -206,7 +206,7 @@ public final class Loader {
      * returned.
      * </li>
      * </ol>
-     * 
+     *
      * @param  <T> the desired type of the object.
      * @param  object the object to promote.
      * @param  type the class describing the desired type.

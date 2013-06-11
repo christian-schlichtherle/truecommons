@@ -4,7 +4,7 @@
  */
 package net.java.truecommons.services;
 
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * A locatable function for modifying products.
@@ -81,7 +81,6 @@ import javax.annotation.concurrent.ThreadSafe;
  * @param  <P> the type of the products to modify.
  * @author Christian Schlichtherle
  */
-@ThreadSafe
+@Immutable
 public abstract class LocatableModifier<P>
-extends LocatableFunction<P> implements Modifier<P> {
-}
+extends LocatableFunction<P> implements Modifier<P> { }

@@ -4,9 +4,11 @@
  */
 package net.java.truecommons.services;
 
+import javax.annotation.concurrent.Immutable;
 import javax.inject.Provider;
 
 /** @author Christian Schlichtherle */
+@Immutable
 class ProviderWithSomeFunctions<P> implements Provider<P> {
     private final Provider<P> provider;
     private final Function<P>[] functions;

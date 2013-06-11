@@ -4,7 +4,10 @@
  */
 package net.java.truecommons.services;
 
+import javax.annotation.concurrent.Immutable;
+
 /** @author Christian Schlichtherle */
+@Immutable
 final class FactoryWithSomeFunctions<P>
 extends ProviderWithSomeFunctions<P> implements Factory<P> {
     FactoryWithSomeFunctions(Factory<P> factory, Function<P>[] functions) {

@@ -4,7 +4,7 @@
  */
 package net.java.truecommons.services;
 
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * A locatable provider for creating products.
@@ -76,7 +76,6 @@ import javax.annotation.concurrent.ThreadSafe;
  * @param  <P> the type of the products to create.
  * @author Christian Schlichtherle
  */
-@ThreadSafe
+@Immutable
 public abstract class LocatableFactory<P>
-extends LocatableProvider<P> implements Factory<P> {
-}
+extends LocatableProvider<P> implements Factory<P> { }

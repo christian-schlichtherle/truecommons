@@ -9,9 +9,13 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Enumeration;
+import javax.annotation.concurrent.Immutable;
 
 /** @author Christian Schlichtherle */
+@Immutable
 final class UnifiedClassLoader extends ClassLoader {
+
+    private final ClassLoader secondary;
 
     static ClassLoader resolve(
             final ClassLoader primary,
@@ -36,8 +40,6 @@ final class UnifiedClassLoader extends ClassLoader {
             if (p == r) return true;
         return false;
     }
-
-    private final ClassLoader secondary;
 
     private UnifiedClassLoader(
             final ClassLoader primary,
