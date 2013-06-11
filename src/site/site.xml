@@ -26,9 +26,9 @@
             <item name="Javadoc" href="apidocs/index.html"/>
         </menu>
         <menu name="External Resources">
-            <item name="Road Map" href="http://java.net/jira/browse/TRUECOMMONS#selectedTab=com.atlassian.jira.plugin.system.project:roadmap-panel"/>
-            <item name="Change Log" href="http://java.net/jira/browse/TRUECOMMONS#selectedTab=com.atlassian.jira.plugin.system.project:changelog-panel"/>
-            <item name="Developer Site" href="http://java.net/projects/truecommons"/>
+            <item name="Road Map" href="https://java.net/jira/browse/TRUECOMMONS#selectedTab=com.atlassian.jira.plugin.system.project%3Aroadmap-panel"/>
+            <item name="Change Log" href="https://java.net/jira/browse/TRUECOMMONS#selectedTab=com.atlassian.jira.plugin.system.project%3Achangelog-panel"/>
+            <item name="Developer Site" href="https://java.net/projects/truecommons"/>
         </menu>
         <menu name="Parent Module" ref="parent" inherit="bottom"/>
         <menu name="Sub-Modules" ref="modules" inherit="bottom"/>

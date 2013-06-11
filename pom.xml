@@ -53,7 +53,7 @@
     </mailingLists-->
     <issueManagement>
         <system>JIRA</system>
-        <url>http://java.net/jira/browse/TRUECOMMONS</url>
+        <url>https://java.net/jira/browse/TRUECOMMONS</url>
     </issueManagement>
     <scm>
         <connection>scm:hg:https://hg.java.net/hg/truecommons~v1</connection>
