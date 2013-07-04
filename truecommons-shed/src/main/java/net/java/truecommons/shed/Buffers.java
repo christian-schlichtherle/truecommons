@@ -16,7 +16,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
 /**
- * Provides utility methods for encoding and decoding
+ * Provides utility functions for encoding and decoding
  * {@linkplain String strings}, {@linkplain CharBuffer char buffers} and char
  * arrays to and from {@linkplain ByteBuffer byte buffers} using the
  * {@linkplain java.nio.charset.StandardCharsets#UTF_8 UTF-8} character set.
