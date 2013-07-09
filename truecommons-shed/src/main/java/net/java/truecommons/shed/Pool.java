@@ -27,21 +27,19 @@ public interface Pool<R, X extends Exception> {
      * allocated resources because this could cause a memory leak.
      *
      * @return A resource.
-     * @throws X if allocating the resource failed for any reason.
+     * @throws X if allocating the resource fails for any reason.
      */
     @CreatesObligation
     R allocate() throws X;
 
     /**
      * Releases a previously allocated resource to this pool.
-     * Implementations may throw an {@link IllegalArgumentException} or an
-     * {@link IllegalStateException} upon the conditions explained below.
      *
      * @param  resource a resource.
-     * @throws RuntimeException if the given resource has not been allocated
-     *         by this pool or has already been released to this pool and the
-     *         implementation cannot tolerate this.
-     * @throws X if releasing the resource failed for any other reason.
+     * @throws IllegalArgumentException if the given resource has not been
+     *         allocated by this pool and the implementation cannot tolerate
+     *         this.
+     * @throws X if releasing the resource fails for any other reason.
      */
     @DischargesObligation
     void release(R resource) throws X;

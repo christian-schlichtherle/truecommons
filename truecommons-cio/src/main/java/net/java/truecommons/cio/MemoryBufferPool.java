@@ -57,6 +57,7 @@ public final class MemoryBufferPool extends IoBufferPool {
 
     @NotThreadSafe
     private final class Buffer extends MemoryBuffer {
+
         private boolean released;
 
         Buffer(int i) {
@@ -65,8 +66,7 @@ public final class MemoryBufferPool extends IoBufferPool {
 
         @Override
         public void release() throws IOException {
-            if (released)
-                throw new IllegalStateException("I/O buffer has already been released!");
+            if (released) return;
             active.getAndDecrement();
             super.release();
             released = true;

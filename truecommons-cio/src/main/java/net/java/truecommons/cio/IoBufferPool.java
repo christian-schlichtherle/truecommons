@@ -23,8 +23,7 @@ import net.java.truecommons.shed.UniqueObject;
 public abstract class IoBufferPool
 extends UniqueObject implements Pool<IoBuffer, IOException> {
 
-    @Override
-    public final void release(IoBuffer buffer) throws IOException {
+    @Override public final void release(IoBuffer buffer) throws IOException {
         buffer.release();
     }
 }
