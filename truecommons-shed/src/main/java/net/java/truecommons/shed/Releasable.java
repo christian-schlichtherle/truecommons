@@ -19,10 +19,7 @@ public interface Releasable<X extends Exception> {
     /**
      * Releases this resource to its pool.
      *
-     * @throws IllegalStateException if this resource has already been
-     *         released to its pool and the implementation cannot tolerate
-     *         this.
-     * @throws X if releasing the resource failed for any other reason.
+     * @throws X if releasing the resource fails for any reason.
      */
     @DischargesObligation
     void release() throws X;
