@@ -9,11 +9,11 @@ import javax.management.MBeanServer;
 import net.java.truecommons.jmx.spi.MBeanServerDecorator;
 import net.java.truecommons.jmx.spi.MBeanServerProvider;
 import net.java.truecommons.services.Container;
-import net.java.truecommons.services.Locator;
+import net.java.truecommons.services.ServiceLocator;
 
 /**
  * A container of the singleton MBean server.
- * The MBean server is created by using a {@link Locator} to search for
+ * The MBean server is created by using a {@link ServiceLocator} to search for
  * advertised implementations of the factory service specification class
  * {@link MBeanServerProvider}
  * and the decorator service specification class
@@ -36,7 +36,7 @@ public final class MBeanServerLocator implements Container<MBeanServer> {
     /** A static data utility class used for lazy initialization. */
     private static final class Lazy {
         static final MBeanServer mbs
-                = new Locator(MBeanServerLocator.class)
+                = new ServiceLocator(MBeanServerLocator.class)
                 .container(MBeanServerProvider.class, MBeanServerDecorator.class)
                 .get();
     }

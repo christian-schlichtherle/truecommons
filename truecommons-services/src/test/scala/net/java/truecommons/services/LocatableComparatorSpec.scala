@@ -33,10 +33,10 @@ extends WordSpec with ShouldMatchers with PropertyChecks {
 }
 
 private object LocatableComparatorSpec {
-  private class Test extends Locatable {
+  private class Test extends LocatableService {
     override val getPriority = Random.nextInt
   }
 
   private object LocatableOrdering
-  extends LocatableComparator with Ordering[Locatable]
+  extends LocatableComparator with Ordering[LocatableService]
 }

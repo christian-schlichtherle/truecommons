@@ -8,12 +8,12 @@ import net.java.truecommons.key.swing.feedback.Feedback;
 import net.java.truecommons.key.swing.spi.FeedbackFactory;
 import net.java.truecommons.key.swing.spi.InvalidKeyFeedbackDecorator;
 import net.java.truecommons.services.Container;
-import net.java.truecommons.services.Locator;
+import net.java.truecommons.services.ServiceLocator;
 
 /**
  * A container of the singleton visual and/or audible feedback to the user
  * when prompting for a key again after an invalid key has been provided before.
- * The feedback is created by using a {@link Locator} to search for advertised
+ * The feedback is created by using a {@link ServiceLocator} to search for advertised
  * implementations of the factory service specification class
  * {@link FeedbackFactory}
  * and the decorator service specification class
@@ -38,7 +38,7 @@ public final class InvalidKeyFeedbackLocator implements Container<Feedback> {
     /** A static data utility class used for lazy initialization. */
     private static final class Lazy {
         static final Feedback feedback =
-                new Locator(InvalidKeyFeedbackLocator.class)
+                new ServiceLocator(InvalidKeyFeedbackLocator.class)
                 .factory(FeedbackFactory.class, InvalidKeyFeedbackDecorator.class)
                 .get();
     }

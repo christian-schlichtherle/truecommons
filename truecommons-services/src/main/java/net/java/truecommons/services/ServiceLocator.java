@@ -55,9 +55,9 @@ import org.slf4j.MarkerFactory;
  * @author Christian Schlichtherle
  */
 @Immutable
-public final class Locator {
+public final class ServiceLocator {
 
-    private static final Logger logger = new LocalizedLogger(Locator.class);
+    private static final Logger logger = new LocalizedLogger(ServiceLocator.class);
     private static final Marker CONFIG = MarkerFactory.getMarker("CONFIG");
 
     private final Loader loader;
@@ -69,7 +69,7 @@ public final class Locator {
      *
      * @param client the class which identifies the calling client.
      */
-    public Locator(final Class<?> client) {
+    public ServiceLocator(final Class<?> client) {
         this(client.getClassLoader());
     }
 
@@ -83,12 +83,12 @@ public final class Locator {
      *        former.
      * @since TrueCommons 1.0.13
      */
-    public Locator(final ClassLoader loader) {
+    public ServiceLocator(final ClassLoader loader) {
         this.loader = new Loader(loader);
     }
 
     /**
-     * Creates a new factory of products.
+     * Creates a new factory for products.
      *
      * @param  <P> the type of the products to create.
      * @param  factory the class of the locatable factory for the products.
@@ -102,7 +102,7 @@ public final class Locator {
     }
 
     /**
-     * Creates a new factory of products.
+     * Creates a new factory for products.
      *
      * @param  <P> the type of the products to create.
      * @param  factory the class of the locatable factory for the products.
@@ -123,11 +123,11 @@ public final class Locator {
     }
 
     /**
-     * Creates a new container of a single product.
+     * Creates a new container with a single product.
      *
      * @param  <P> the type of the product to contain.
      * @param  provider the class of the locatable provider for the product.
-     * @return A new container of a single product.
+     * @return A new container with a single product.
      * @throws ServiceConfigurationError if loading or instantiating
      *         a located class fails for some reason.
      */
@@ -137,12 +137,12 @@ public final class Locator {
     }
 
     /**
-     * Creates a new container of a single product.
+     * Creates a new container with a single product.
      *
      * @param  <P> the type of the product to contain.
      * @param  provider the class of the locatable provider for the product.
      * @param  decorator the class of the locatable decoractors for the product.
-     * @return A new container of a single product.
+     * @return A new container with a single product.
      * @throws ServiceConfigurationError if loading or instantiating
      *         a located class fails for some reason.
      */
@@ -184,7 +184,7 @@ public final class Locator {
         }
         if (null == service)
             throw new ServiceConfigurationError(
-                    new BundledMessage(Locator.class, "null", spec).toString());
+                    new BundledMessage(ServiceLocator.class, "null", spec).toString());
         logger.debug(CONFIG, "selecting", service);
         return service;
     }
