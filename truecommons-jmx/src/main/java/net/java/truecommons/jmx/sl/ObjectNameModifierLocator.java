@@ -8,11 +8,11 @@ import net.java.truecommons.jmx.ObjectNameModifier;
 import net.java.truecommons.jmx.spi.ObjectNameModifierDecorator;
 import net.java.truecommons.jmx.spi.ObjectNameModifierFactory;
 import net.java.truecommons.services.Container;
-import net.java.truecommons.services.Locator;
+import net.java.truecommons.services.ServiceLocator;
 
 /**
  * A container of the singleton object name codec.
- * The codec is created by using a {@link Locator} to search for advertised
+ * The codec is created by using a {@link ServiceLocator} to search for advertised
  * implementations of the factory service specification class
  * {@link ObjectNameModifierFactory}
  * and the decorator service specification class
@@ -36,7 +36,7 @@ implements Container<ObjectNameModifier> {
     /** A static data utility class used for lazy initialization. */
     private static final class Lazy {
         static final ObjectNameModifier codec =
-                new Locator(ObjectNameModifierLocator.class)
+                new ServiceLocator(ObjectNameModifierLocator.class)
                 .factory(ObjectNameModifierFactory.class, ObjectNameModifierDecorator.class)
                 .get();
     }

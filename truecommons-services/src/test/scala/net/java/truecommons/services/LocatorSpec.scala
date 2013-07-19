@@ -72,7 +72,7 @@ object LocatorSpec {
   val expected  = "Hello Christian! How do you do?"
 
   final class LocatorSugar {
-    private[this] val l = new Locator(classOf[LocatorSpec])
+    private[this] val l = new ServiceLocator(classOf[LocatorSpec])
 
     def container[P, F <: LocatableFactory[P] : Manifest] =
       l container (implicitly[Manifest[F]].runtimeClass.asInstanceOf[Class[F]])

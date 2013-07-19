@@ -22,4 +22,4 @@ import javax.inject.Provider;
  */
 @Immutable
 public abstract class LocatableProvider<P>
-extends Locatable implements Provider<P> { }
+extends LocatableService implements Provider<P> { }

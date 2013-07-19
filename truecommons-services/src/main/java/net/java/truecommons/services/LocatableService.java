@@ -7,18 +7,18 @@ package net.java.truecommons.services;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * A locatable object.
+ * A locatable service.
  *
  * @see    Locator
  * @author Christian Schlichtherle
  */
 @Immutable
-public abstract class Locatable {
+public abstract class LocatableService {
 
     /**
      * Returns a priority to help {@link Locator}s to prioritize this object.
      * <p>
-     * The implementation in the class {@link Locatable} returns zero.
+     * The implementation in the class {@link LocatableService} returns zero.
      *
      * @return A priority to help {@link Locator}s to prioritize this object.
      */

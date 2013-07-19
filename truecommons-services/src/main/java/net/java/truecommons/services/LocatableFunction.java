@@ -22,4 +22,4 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 public abstract class LocatableFunction<P>
-extends Locatable implements Function<P> { }
+extends LocatableService implements Function<P> { }
