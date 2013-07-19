@@ -4,6 +4,7 @@
  */
 package net.java.truecommons.shed;
 
+import static java.util.Objects.requireNonNull;
 import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -24,32 +25,6 @@ implements ExceptionBuilder<I, O> {
     private @CheckForNull O assembly;
 
     /**
-     * This funcion gets called to update the given {@code previous} result of
-     * the assembly with the given input exception.
-     * 
-     * @param  input the input exception to handle.
-     * @param  assembly the current assembled (output) exception or {@code null}
-     *         if this is the first call to this method or the last assembly
-     *         has already been checked out.
-     * @return The next assembled (output) exception.
-     */
-    protected abstract O update(I input, @CheckForNull O assembly);
-
-    /**
-     * This function gets called to post-process the given result of the
-     * assembly after it has been checked out.
-     * <p>
-     * The implementation in the class {@link AbstractExceptionBuilder} simply
-     * returns the given parameter.
-     *
-     * @param  assembly the assembled (output) exception.
-     * @return The result of the optional post-processing.
-     */
-    protected O post(O assembly) {
-        return assembly;
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @see #update(Throwable, Throwable)
@@ -57,8 +32,7 @@ implements ExceptionBuilder<I, O> {
      */
     @Override
     public final O fail(I input) {
-        if (null == input) throw new NullPointerException();
-        final O assembly = update(input, this.assembly);
+        final O assembly = update(input);
         this.assembly = null;
         return post(assembly);
     }
@@ -66,16 +40,14 @@ implements ExceptionBuilder<I, O> {
     /**
      * {@inheritDoc}
      * <p>
-     * Note that the implementation in the class
-     * {@link AbstractExceptionBuilder} does <em>not</em> throw an exception.
+     * The implementation in the class {@link AbstractExceptionBuilder} adds
+     * the given exception to the assembly for subsequent rethrowing upon a
+     * call to {@link #check()}.
      *
      * @see #update(Throwable, Throwable)
      */
     @Override
-    public final void warn(I input) {
-        if (null == input) throw new NullPointerException();
-        this.assembly = update(input, this.assembly);
-    }
+    public final void warn(I input) { this.assembly = update(input); }
 
     /**
      * {@inheritDoc}
@@ -90,4 +62,32 @@ implements ExceptionBuilder<I, O> {
             throw post(assembly);
         }
     }
+
+    private O update(I input) {
+        return update(requireNonNull(input), this.assembly);
+    }
+
+    /**
+     * This function gets called to update the given {@code previous} result of
+     * the assembly with the given input exception.
+     *
+     * @param  input the input exception to handle.
+     * @param  assembly the current assembled (output) exception or {@code null}
+     *         if this is the first call to this method or the last assembly
+     *         has already been checked out.
+     * @return The next assembled (output) exception, never {@code null}.
+     */
+    protected abstract O update(I input, @CheckForNull O assembly);
+
+    /**
+     * This function gets called to post-process the given result of the
+     * assembly after it has been checked out.
+     * <p>
+     * The implementation in the class {@link AbstractExceptionBuilder} simply
+     * returns {@code assembly}.
+     *
+     * @param  assembly the assembled (output) exception.
+     * @return The result of the optional post-processing.
+     */
+    protected O post(O assembly) { return assembly; }
 }
