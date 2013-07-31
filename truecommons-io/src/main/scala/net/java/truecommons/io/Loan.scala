@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.io
 
-import java.io._
 import javax.annotation.concurrent._
 
 /** Simulates Java's basic `try`-with-resources statement to implement the loan
