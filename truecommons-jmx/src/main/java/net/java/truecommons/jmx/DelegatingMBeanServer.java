@@ -11,7 +11,7 @@ import javax.management.*;
 import javax.management.loading.ClassLoaderRepository;
 
 /**
- * A decorator for an MBean server.
+ * An MBean server which delegates all methods to another MBean server.
  *
  * @since  TrueCommons 2.3
  * @author Christian Schlichtherle
