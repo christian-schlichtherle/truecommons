@@ -12,9 +12,8 @@ import org.scalatest.matchers.ShouldMatchers._
 
 /** @author Christian Schlichtherle */
 @RunWith(classOf[JUnitRunner])
-class LocatorSpec extends WordSpec {
-
-  import LocatorSpec._
+class LocatorTest extends WordSpec {
+  import LocatorTest._
 
   def locator[P] = new LocatorSugar
 
@@ -67,12 +66,12 @@ class LocatorSpec extends WordSpec {
   }
 }
 
-object LocatorSpec {
+object LocatorTest {
 
   val expected  = "Hello Christian! How do you do?"
 
   final class LocatorSugar {
-    private[this] val l = new ServiceLocator(classOf[LocatorSpec])
+    private[this] val l = new ServiceLocator(classOf[LocatorTest])
 
     def container[P, F <: LocatableFactory[P] : Manifest] =
       l container (implicitly[Manifest[F]].runtimeClass.asInstanceOf[Class[F]])

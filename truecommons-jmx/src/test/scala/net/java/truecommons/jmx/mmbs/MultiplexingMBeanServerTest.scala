@@ -11,13 +11,13 @@ import org.junit.runner._
 import org.scalatest._
 import org.scalatest.junit._
 import org.scalatest.matchers._
-import MultiplexingMBeanServerSpec._
+import MultiplexingMBeanServerTest._
 
 /**
  * @since  TrueCommons 2.3
  * @author Christian Schlichtherle
  */
-private object MultiplexingMBeanServerSpec {
+private object MultiplexingMBeanServerTest {
 
   private trait MessengerMBean {
     def getMessage: String
@@ -37,7 +37,7 @@ private object MultiplexingMBeanServerSpec {
  * @author Christian Schlichtherle
  */
 @RunWith(classOf[JUnitRunner])
-class MultiplexingMBeanServerSpec extends WordSpec with ShouldMatchers {
+class MultiplexingMBeanServerTest extends WordSpec with ShouldMatchers {
 
   "A multiplexing MBean server" should {
     val ombs = MBeanServerFactory.newMBeanServer

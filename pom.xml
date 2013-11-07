@@ -9,7 +9,7 @@
     <parent>
         <groupId>net.java.truecommons</groupId>
         <artifactId>truecommons-parent</artifactId>
-        <version>55</version>
+        <version>68</version>
     </parent>
 
     <artifactId>truecommons</artifactId>
@@ -184,7 +184,7 @@
             <dependency>
                 <groupId>net.java.dev.jna</groupId>
                 <artifactId>jna</artifactId>
-                <version>3.5.1</version>
+                <version>4.0.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -192,54 +192,6 @@
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <configuration>
-                        <includes>
-                            <include>**/*Test.class</include>
-                            <include>**/*Spec.class</include>
-                        </includes>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <configuration>
-                        <reportPlugins combine.children="append">
-                            <plugin>
-                                <artifactId>maven-project-info-reports-plugin</artifactId>
-                            </plugin>
-                            <plugin>
-                                <artifactId>maven-javadoc-plugin</artifactId>
-                                <reports>
-                                    <report>aggregate</report>
-                                </reports>
-                                <configuration>
-                                    <links>
-                                        <link>http://findbugs.sourceforge.net/api/</link>
-                                    </links>
-                                </configuration>
-                            </plugin>
-                            <plugin>
-                                <artifactId>maven-jxr-plugin</artifactId>
-                                <reports>
-                                    <report>aggregate</report>
-                                </reports>
-                            </plugin>
-                            <plugin>
-                                <groupId>org.codehaus.mojo</groupId>
-                                <artifactId>clirr-maven-plugin</artifactId>
-                            </plugin>
-                            <plugin>
-                                <groupId>org.codehaus.mojo</groupId>
-                                <artifactId>jdepend-maven-plugin</artifactId>
-                            </plugin>
-                            <plugin>
-                                <groupId>org.codehaus.mojo</groupId>
-                                <artifactId>findbugs-maven-plugin</artifactId>
-                            </plugin>
-                        </reportPlugins>
-                    </configuration>
-                </plugin>
                 <plugin>
                     <groupId>net.alchim31.maven</groupId>
                     <artifactId>scala-maven-plugin</artifactId>
@@ -253,6 +205,63 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <links>
+                        <link>http://findbugs.sourceforge.net/api/</link>
+                    </links>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <id>default</id>
+                    </reportSet>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
+                <reportSets>
+                    <reportSet>
+                        <id>default</id>
+                    </reportSet>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>clirr-maven-plugin</artifactId>
+                <version>2.6</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>2.5.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+                <version>2.0-beta-2</version>
+            </plugin>
+        </plugins>
+    </reporting>
 
     <profiles>
         <profile>

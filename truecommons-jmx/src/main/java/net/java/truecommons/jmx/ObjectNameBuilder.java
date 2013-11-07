@@ -36,8 +36,7 @@ public final class ObjectNameBuilder implements Provider<ObjectName> {
         return this;
     }
 
-    @Override
-    public ObjectName get() {
+    @Override public ObjectName get() {
         try {
             return new ObjectName(domain, table);
         } catch (MalformedObjectNameException ex) {

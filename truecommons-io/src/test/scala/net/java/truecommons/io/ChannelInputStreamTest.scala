@@ -12,11 +12,11 @@ import org.scalatest.prop._
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import scala.util._
-import ChannelInputStreamSpec._
+import ChannelInputStreamTest._
 
 @RunWith(classOf[JUnitRunner])
 /** @author Christian Schlichtherle */
-class ChannelInputStreamSpec
+class ChannelInputStreamTest
 extends WordSpec
    with ShouldMatchers
    with MockitoSugar
@@ -86,7 +86,7 @@ extends WordSpec
   }
 }
 
-object ChannelInputStreamSpec {
+object ChannelInputStreamTest {
   private def stream =
     new ChannelInputStream(MockitoSugar.mock[SeekableByteChannel])
 }

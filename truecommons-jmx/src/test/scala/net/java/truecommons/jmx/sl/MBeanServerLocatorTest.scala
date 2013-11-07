@@ -16,7 +16,7 @@ import org.scalatest._
   * @author Christian Schlichtherle
   */
 @RunWith(classOf[JUnitRunner])
-class MBeanServerLocatorSpec extends WordSpec with ShouldMatchers {
+class MBeanServerLocatorTest extends WordSpec with ShouldMatchers {
 
   "The MBean server locator singleton" should {
     "provide an MBean server" in {

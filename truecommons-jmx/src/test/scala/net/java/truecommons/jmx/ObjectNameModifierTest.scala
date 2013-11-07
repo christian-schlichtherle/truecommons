@@ -16,7 +16,7 @@ import org.scalatest.matchers._
  * @author Christian Schlichtherle
  */
 @RunWith(classOf[JUnitRunner])
-class ObjectNameModifierSpec extends WordSpec with ShouldMatchers {
+class ObjectNameModifierTest extends WordSpec with ShouldMatchers {
 
   def modifier = ObjectNameModifierLocator.SINGLETON.get
 

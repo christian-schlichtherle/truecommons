@@ -13,7 +13,7 @@ import org.scalatest.junit._
 
 /** @author Christian Schlichtherle */
 @RunWith(classOf[JUnitRunner])
-class PowerBufferSpec
+class PowerBufferTest
 extends WordSpec with ShouldMatchers with ParallelTestExecution {
 
   "A power buffer" when {

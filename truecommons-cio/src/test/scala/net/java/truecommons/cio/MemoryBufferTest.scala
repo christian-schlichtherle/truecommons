@@ -16,7 +16,7 @@ import scala.util._
 import Entry._
 
 @RunWith(classOf[JUnitRunner])
-class MemoryBufferSpec
+class MemoryBufferTest
 extends WordSpec with ShouldMatchers with PropertyChecks {
 
   "A memory buffer" should {

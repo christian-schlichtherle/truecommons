@@ -17,18 +17,20 @@ import org.scalatest.prop.PropertyChecks
   * @author Christian Schlichtherle
   */
 @RunWith(classOf[JUnitRunner])
-class UnifiedClassLoaderSpec
+class UnifiedClassLoaderTest
 extends WordSpec with ShouldMatchers with PropertyChecks {
 
   abstract class TestClassLoader extends ClassLoader {
     final override def getResources(name: String) =
       Collections.enumeration(Collections.singleton(getResource(name)))
   }
+
   val file = new TestClassLoader {
     override def getResource(name: String) = new URL("file:/" + name)
     override def loadClass(name: String, resolve: Boolean) = classOf[java.lang.Integer]
     override def toString = "class loader for file scheme"
   }
+
   val http = new TestClassLoader {
     override def getResource(name: String) = new URL("http:/" + name)
     override def loadClass(name: String, resolve: Boolean) = classOf[java.lang.String]

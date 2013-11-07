@@ -19,9 +19,9 @@ import Disambiguate._
   * @author Christian Schlichtherle
   */
 @RunWith(classOf[JUnitRunner])
-class LocalizedLoggerSpec extends WordSpec with ShouldMatchers with MockitoSugar {
+class LocalizedLoggerTest extends WordSpec with ShouldMatchers with MockitoSugar {
 
-  import LocalizedLoggerSpec._
+  import LocalizedLoggerTest._
 
   def create(delegate: Logger) = new LocalizedLogger(delegate, bundle)
 
@@ -221,7 +221,7 @@ class LocalizedLoggerSpec extends WordSpec with ShouldMatchers with MockitoSugar
   }
 }
 
-object LocalizedLoggerSpec {
+object LocalizedLoggerTest {
   val bundle = new ListResourceBundle {
     override def getContents = Array(
       Array("0", ""),
