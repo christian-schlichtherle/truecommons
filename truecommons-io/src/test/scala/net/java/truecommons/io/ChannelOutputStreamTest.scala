@@ -7,7 +7,7 @@ import org.scalatest.matchers._
 
 @RunWith(classOf[JUnitRunner])
 /** @author Christian Schlichtherle */
-class ChannelOutputStreamSpec
+class ChannelOutputStreamTest
 extends WordSpec
    with ShouldMatchers
    with ParallelTestExecution {

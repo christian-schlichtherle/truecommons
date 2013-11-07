@@ -11,10 +11,10 @@ import org.scalatest._
 import org.scalatest.matchers._
 import org.scalatest.prop._
 import scala.util._
-import LocatableComparatorSpec._
+import LocatableComparatorTest._
 
 @RunWith(classOf[JUnitRunner])
-class LocatableComparatorSpec
+class LocatableComparatorTest
 extends WordSpec with ShouldMatchers with PropertyChecks {
 
   "A service comparator" when {
@@ -32,7 +32,7 @@ extends WordSpec with ShouldMatchers with PropertyChecks {
   }
 }
 
-private object LocatableComparatorSpec {
+private object LocatableComparatorTest {
   private class Test extends LocatableService {
     override val getPriority = Random.nextInt
   }

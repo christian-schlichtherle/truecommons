@@ -14,7 +14,7 @@ import org.scalatest.matchers.ShouldMatchers._
 import org.scalatest.mock._
 import scala.util._
 
-object ByteBufferChannelSpec {
+object ByteBufferChannelTest {
   val bufferSize = 128
 }
 
@@ -22,9 +22,9 @@ object ByteBufferChannelSpec {
   * @author Christian Schlichtherle
   */
 @RunWith(classOf[JUnitRunner])
-class ByteBufferChannelSpec
+class ByteBufferChannelTest
 extends WordSpec with BeforeAndAfter with MockitoSugar {
-  import ByteBufferChannelSpec._
+  import ByteBufferChannelTest._
 
   var array: Array[Byte] = _
 

@@ -17,7 +17,7 @@ import org.slf4j._
   * @author Christian Schlichtherle
   */
 @RunWith(classOf[JUnitRunner])
-class InheritableThreadLocalStackSpec
+class InheritableThreadLocalStackTest
 extends WordSpec with ShouldMatchers with PropertyChecks {
 
   private def create = new InheritableThreadLocalStack[String]

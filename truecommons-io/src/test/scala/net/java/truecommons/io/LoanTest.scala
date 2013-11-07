@@ -14,7 +14,7 @@ import org.mockito.Mockito._
 
 /** @author Christian Schlichtherle */
 @RunWith(classOf[JUnitRunner])
-class LoanSpec extends WordSpec with ShouldMatchers with MockitoSugar {
+class LoanTest extends WordSpec with ShouldMatchers with MockitoSugar {
   import Loan._
 
   "A Loan" should {
