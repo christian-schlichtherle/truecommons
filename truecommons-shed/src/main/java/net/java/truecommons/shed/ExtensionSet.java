@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.regex.Pattern;
-import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
@@ -19,8 +18,8 @@ import javax.annotation.concurrent.NotThreadSafe;
  * <p>
  * An <i>extension</i> is the part of a file name string after the last dot.
  * It must not contain the character {@code '|'}.
- * An extension in canonical form (or <i>canonical extension</i> for short) is
- * a lowercase string which is not empty and does <em>not</em> start with a
+ * An extension in canonical form (or <i>canonicalized extension</i> for short)
+ * is a lowercase string which is not empty and does <em>not</em> start with a
  * dot ({@code '.'}).
  * <p>
  * For example, the extension {@code "zip"} is in canonical form,
@@ -61,17 +60,11 @@ public final class ExtensionSet extends CanonicalStringSet {
 
     /** A canonicalizer for file extensions. */
     private static class ExtensionMapper implements Canonicalizer {
-        /**
-         * Returns the canonical form of {@code extension} or {@code null}
-         * if the given extension does not have a canonical form.
-         * An example of the latter case is the empty string.
-         */
-        @Override
-        public @CheckForNull String map(Object o) {
+        @Override public String map(final Object o) {
             String extension = o.toString();
             while (0 < extension.length() && extension.charAt(0) == PREFIX)
                 extension = extension.substring(1);
-            return extension.isEmpty() ? null : extension.toLowerCase(Locale.ROOT);
+            return extension.toLowerCase(Locale.ROOT);
         }
     } // ExtensionMapper
 

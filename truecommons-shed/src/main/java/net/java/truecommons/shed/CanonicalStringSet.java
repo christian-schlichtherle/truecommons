@@ -4,10 +4,14 @@
  */
 package net.java.truecommons.shed;
 
-import java.util.*;
+import java.util.AbstractSet;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
 import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * An abstract set of the canonical string representation of objects in
@@ -36,7 +40,6 @@ import javax.annotation.concurrent.NotThreadSafe;
  *
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public class CanonicalStringSet extends AbstractSet<String> {
 
     /** The canonicalizer for strings. */
@@ -101,8 +104,7 @@ public class CanonicalStringSet extends AbstractSet<String> {
      * The implementation in the class {@link CanonicalStringSet} first
      * canonicalizes the given parameter before the operation is continued.
      */
-    @Override
-    public boolean contains(@Nullable Object o) {
+    @Override public boolean contains(Object o) {
         return set.contains(canonicalizer.map(o));
     }
 
@@ -113,9 +115,7 @@ public class CanonicalStringSet extends AbstractSet<String> {
      * canonicalizes the given parameter before the operation is continued.
      */
     @Override
-    public boolean add(@Nullable String e) {
-        return set.add(canonicalizer.map(e));
-    }
+    public boolean add(String e) { return set.add(canonicalizer.map(e)); }
 
     /**
      * {@inheritDoc}
@@ -124,21 +124,16 @@ public class CanonicalStringSet extends AbstractSet<String> {
      * canonicalizes the given parameter before the operation is continued.
      */
     @Override
-    public boolean remove(@Nullable Object o) {
-        return set.remove(canonicalizer.map(o));
-    }
+    public boolean remove(Object o) { return set.remove(canonicalizer.map(o)); }
 
-    @Override
-    public void clear() {
-        set.clear();
-    }
+    @Override public void clear() { set.clear(); }
 
     /**
      * Tests if all canonical strings in the given set are contained in this
      * set.
      * An empty set is considered to be a true subset of this set.
      *
-     * @param set A non-null set of canonical strings.
+     * @param set A set of canonical strings.
      * @return {@code true} Iff all strings in the given set are contained
      *         in this set.
      */
@@ -155,7 +150,7 @@ public class CanonicalStringSet extends AbstractSet<String> {
      * In other words, an empty set is considered to be a true subset of this
      * set.
      *
-     * @param  list a non-null string list.
+     * @param  list a string list.
      * @return {@code true} Iff the canonical form of all strings in the
      *         given string list is contained in this set.
      */
@@ -171,7 +166,7 @@ public class CanonicalStringSet extends AbstractSet<String> {
      * Adds all canonical strings in the given set to this set after they have
      * been canonicalized by this set again.
      *
-     * @param  set a non-null set of canonical strings.
+     * @param  set a set of canonical strings.
      * @return {@code true} Iff this set of canonicalized strings has
      *         changed as a result of the call.
      */
@@ -186,7 +181,7 @@ public class CanonicalStringSet extends AbstractSet<String> {
      * Adds the canonical form of all strings in the given list to this set.
      * If a string in the list does not have a canonical form, it's skipped.
      *
-     * @param  list a non-null string list.
+     * @param  list a string list.
      * @return {@code true} Iff this set of canonicalized strings has
      *         changed as a result of the call.
      */
@@ -201,7 +196,7 @@ public class CanonicalStringSet extends AbstractSet<String> {
     /**
      * Retains all canonical strings in the given set in this set.
      *
-     * @param  set a non-null set of canonical strings.
+     * @param  set a set of canonical strings.
      * @return {@code true} Iff this set changed as a result of the call.
      */
     public boolean retainAll(CanonicalStringSet set) {
@@ -212,7 +207,7 @@ public class CanonicalStringSet extends AbstractSet<String> {
      * Retains the canonical form of all strings in the given list in this set.
      * If a string in the list does not have a canonical form, it's skipped.
      *
-     * @param  list a non-null string list.
+     * @param  list a string list.
      * @return {@code true} Iff this set changed as a result of the call.
      */
     public boolean retainAll(final String list) {
@@ -225,7 +220,7 @@ public class CanonicalStringSet extends AbstractSet<String> {
     /**
      * Removes all canonical strings in the given set from this set.
      *
-     * @param  set a non-null set of strings.
+     * @param  set a set of strings.
      * @return {@code true} Iff this set changed as a result of the call.
      */
     public boolean removeAll(CanonicalStringSet set) {
@@ -236,7 +231,7 @@ public class CanonicalStringSet extends AbstractSet<String> {
      * Removes the canonical form of all strings in the given list from this set.
      * If a string in the list does not have a canonical form, it's skipped.
      *
-     * @param  list a non-null string list.
+     * @param  list a string list.
      * @return {@code true} Iff this set changed as a result of the call.
      */
     public boolean removeAll(final String list) {
@@ -253,12 +248,9 @@ public class CanonicalStringSet extends AbstractSet<String> {
      *
      * @see <a href="http://en.wikipedia.org/wiki/Idempotence>Idempotence</a>
      */
-    @SuppressWarnings("PublicInnerClass")
     public interface Canonicalizer {
-
         /**
-         * Returns the canonical string representation of {@code o} or
-         * {@code null} if the canonical string representation is undefined.
+         * Returns the canonical string representation of {@code o}.
          * This method is expected to be an idempotent function, i.e. it shall
          * have no side effects and the result of calling the function for its
          * result again at least compares {@link Object#equals} to its initial
@@ -269,11 +261,9 @@ public class CanonicalStringSet extends AbstractSet<String> {
          * return the same string again.
          *
          * @param  o The Object to map to its canonical string representation.
-         * @return The canonical string representation of {@code o} or
-         *         {@code null} if the canonical string representation is
-         *         undefined.
+         * @return The canonical string representation of {@code o}.
          */
-        @CheckForNull String map(@Nullable Object o);
+        String map(Object o);
     } // Canonicalizer
 
     private class CanonicalStringIterator implements Iterator<String> {
