@@ -7,11 +7,11 @@ package net.java.truecommons.io
 import java.io._
 import net.java.truecommons.io.Streams._
 import org.junit.runner._
-import org.scalatest._
-import org.scalatest.junit._
-import org.scalatest.matchers._
-import org.scalatest.mock._
-import org.mockito._
+import org.scalatest.Matchers._
+import org.scalatest.WordSpec
+import org.scalatest.junit.JUnitRunner
+import org.scalatest.mock.MockitoSugar.mock
+import org.mockito.Matchers
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import scala.util._
@@ -38,7 +38,7 @@ private object StreamsTest {
   * @author Christian Schlichtherle
   */
 @RunWith(classOf[JUnitRunner])
-class StreamsTest extends WordSpec with ShouldMatchers with MockitoSugar {
+class StreamsTest extends WordSpec {
   import StreamsTest._
 
   private def givenA = afterWord("given a")
