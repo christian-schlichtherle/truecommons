@@ -2,24 +2,22 @@ package net.java.truecommons.io
 
 import java.io._
 import java.nio.channels._
-import org.junit.runner._
-import org.scalacheck._
-import org.scalatest._
-import org.scalatest.junit._
-import org.scalatest.matchers._
-import org.scalatest.mock._
-import org.scalatest.prop._
+import org.junit.runner.RunWith
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import scala.util._
+import org.scalacheck.Gen
+import org.scalatest.{ParallelTestExecution, WordSpec}
+import org.scalatest.Matchers._
+import org.scalatest.junit.JUnitRunner
+import org.scalatest.mock.MockitoSugar.mock
+import org.scalatest.prop.PropertyChecks
+import scala.util.Random
 import ChannelInputStreamTest._
 
 @RunWith(classOf[JUnitRunner])
 /** @author Christian Schlichtherle */
 class ChannelInputStreamTest
 extends WordSpec
-   with ShouldMatchers
-   with MockitoSugar
    with PropertyChecks
    with ParallelTestExecution {
 
@@ -87,6 +85,5 @@ extends WordSpec
 }
 
 object ChannelInputStreamTest {
-  private def stream =
-    new ChannelInputStream(MockitoSugar.mock[SeekableByteChannel])
+  private def stream = new ChannelInputStream(mock[SeekableByteChannel])
 }

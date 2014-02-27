@@ -6,15 +6,15 @@ package net.java.truecommons.io
 
 import java.nio._
 import java.nio.ByteOrder._
-import org.junit.runner._
-import org.scalatest._
-import org.scalatest.matchers._
-import org.scalatest.junit._
+import org.junit.runner.RunWith
+import org.scalatest.{ParallelTestExecution, WordSpec}
+import org.scalatest.Matchers._
+import org.scalatest.junit.JUnitRunner
 
 /** @author Christian Schlichtherle */
 @RunWith(classOf[JUnitRunner])
 class PowerBufferTest
-extends WordSpec with ShouldMatchers with ParallelTestExecution {
+extends WordSpec with ParallelTestExecution {
 
   "A power buffer" when {
     "allocated on the heap" should {

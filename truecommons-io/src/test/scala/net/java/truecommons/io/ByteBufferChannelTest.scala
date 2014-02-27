@@ -7,11 +7,11 @@ package net.java.truecommons.io
 import java.io._
 import java.nio._
 import java.nio.channels._
-import org.junit.runner._
-import org.scalatest._
-import org.scalatest.junit._
-import org.scalatest.matchers.ShouldMatchers._
-import org.scalatest.mock._
+import org.junit.runner.RunWith
+import org.scalatest.{BeforeAndAfter, WordSpec}
+import org.scalatest.junit.JUnitRunner
+import org.scalatest.Matchers._
+import org.scalatest.mock.MockitoSugar.mock
 import scala.util._
 
 object ByteBufferChannelTest {
@@ -23,7 +23,7 @@ object ByteBufferChannelTest {
   */
 @RunWith(classOf[JUnitRunner])
 class ByteBufferChannelTest
-extends WordSpec with BeforeAndAfter with MockitoSugar {
+extends WordSpec with BeforeAndAfter {
   import ByteBufferChannelTest._
 
   var array: Array[Byte] = _

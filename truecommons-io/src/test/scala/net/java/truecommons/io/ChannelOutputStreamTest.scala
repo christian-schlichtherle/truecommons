@@ -1,15 +1,14 @@
 package net.java.truecommons.io
 
-import org.junit.runner._
-import org.scalatest._
-import org.scalatest.junit._
-import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.{ParallelTestExecution, WordSpec}
+import org.scalatest.Matchers._
+import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 /** @author Christian Schlichtherle */
 class ChannelOutputStreamTest
 extends WordSpec
-   with ShouldMatchers
    with ParallelTestExecution {
 
   "A channel output stream" when {
