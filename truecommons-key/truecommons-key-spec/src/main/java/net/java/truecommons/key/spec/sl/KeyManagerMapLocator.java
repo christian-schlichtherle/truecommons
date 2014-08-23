@@ -43,7 +43,7 @@ public final class KeyManagerMapLocator extends AbstractKeyManagerMap {
     private static final class Lazy {
         static final Map<Class<?>, KeyManager<?>> managers
                 = Collections.unmodifiableMap(
-                    new ServiceLocator(KeyManagerMapLocator.class)
+                    new ServiceLocator(Lazy.class)
                     .factory(KeyManagerMapFactory.class, KeyManagerMapModifier.class)
                     .get());
     }

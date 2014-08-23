@@ -36,7 +36,7 @@ implements Container<ObjectNameModifier> {
     /** A static data utility class used for lazy initialization. */
     private static final class Lazy {
         static final ObjectNameModifier codec =
-                new ServiceLocator(ObjectNameModifierLocator.class)
+                new ServiceLocator(Lazy.class)
                 .factory(ObjectNameModifierFactory.class, ObjectNameModifierDecorator.class)
                 .get();
     }
