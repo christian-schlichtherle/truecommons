@@ -36,7 +36,7 @@ public final class MBeanServerLocator implements Container<MBeanServer> {
     /** A static data utility class used for lazy initialization. */
     private static final class Lazy {
         static final MBeanServer mbs
-                = new ServiceLocator(MBeanServerLocator.class)
+                = new ServiceLocator(Lazy.class)
                 .container(MBeanServerProvider.class, MBeanServerDecorator.class)
                 .get();
     }
