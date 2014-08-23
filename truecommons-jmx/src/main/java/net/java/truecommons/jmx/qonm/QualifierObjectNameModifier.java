@@ -6,8 +6,6 @@ package net.java.truecommons.jmx.qonm;
 
 import java.util.Hashtable;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.CheckForNull;
 import javax.annotation.concurrent.Immutable;
 import javax.management.MalformedObjectNameException;
