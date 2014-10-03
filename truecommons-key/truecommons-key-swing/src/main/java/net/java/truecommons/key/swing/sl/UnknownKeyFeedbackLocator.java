@@ -38,7 +38,7 @@ public final class UnknownKeyFeedbackLocator implements Container<Feedback> {
     /** A static data utility class used for lazy initialization. */
     private static final class Lazy {
         static final Feedback feedback =
-                new ServiceLocator(Lazy.class)
+                new ServiceLocator(UnknownKeyFeedbackLocator.class)
                 .factory(FeedbackFactory.class, UnknownKeyFeedbackDecorator.class)
                 .get();
     }
