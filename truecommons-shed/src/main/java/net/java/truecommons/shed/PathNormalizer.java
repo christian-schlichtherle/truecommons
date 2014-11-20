@@ -15,12 +15,11 @@ import javax.annotation.concurrent.NotThreadSafe;
 public class PathNormalizer {
 
     private final char separatorChar;
+    private final StringBuilder builder = new StringBuilder();
     private String path;
-    private final StringBuilder buffer;
 
     public PathNormalizer(final char separatorChar) {
         this.separatorChar = separatorChar;
-        buffer = new StringBuilder();
     }
 
     /**
@@ -46,21 +45,21 @@ public class PathNormalizer {
         final int prefixLen = Paths.prefixLength(path, separatorChar, false);
         final int pathLen = path.length();
         this.path = path.substring(prefixLen, pathLen);
-        buffer.setLength(0);
-        buffer.ensureCapacity(pathLen);
+        builder.setLength(0);
+        builder.ensureCapacity(pathLen);
         normalize(0, pathLen - prefixLen);
-        buffer.insert(0, path.substring(0, prefixLen));
-        int bufferLen = buffer.length();
+        builder.insert(0, path.substring(0, prefixLen));
+        int bufferLen = builder.length();
         String result;
         if (pathLen > 0 && path.charAt(pathLen - 1) == separatorChar || pathLen > 1 && path.charAt(pathLen - 2) == separatorChar && path.charAt(pathLen - 1) == '.') {
             slashify();
-            bufferLen = buffer.length();
+            bufferLen = builder.length();
         }
         if (bufferLen == path.length()) {
-            assert path.equals(buffer.toString());
+            assert path.equals(builder.toString());
             result = path;
         } else {
-            result = buffer.toString();
+            result = builder.toString();
             if (path.startsWith(result)) {
                 result = path.substring(0, bufferLen);
             }
@@ -71,9 +70,8 @@ public class PathNormalizer {
 
     /**
      * This is a recursive call: The top level call should provide
-     * {@code 0} as the {@code skip} parameter, the length
-     * of the path as the {@code end} parameter and an empty string
-     * buffer as the {@code result} parameter.
+     * {@code 0} as the {@code skip} parameter and the length
+     * of the path as the {@code end} parameter.
      *
      * @param  collapse the number of adjacent <i>dir/..</i> segments in
      *         the path to collapse.
@@ -86,9 +84,8 @@ public class PathNormalizer {
      */
     private int normalize(final int collapse, final int end) {
         assert collapse >= 0;
-        if (0 >= end) {
+        if (0 >= end)
             return collapse;
-        }
         final int next = path.lastIndexOf(separatorChar, end - 1);
         final String base = path.substring(next + 1, end);
         int notCollapsed;
@@ -109,14 +106,14 @@ public class PathNormalizer {
             assert 0 == notCollapsed;
         }
         slashify();
-        buffer.append(base);
+        builder.append(base);
         return notCollapsed;
     }
 
     private void slashify() {
-        final int bufferLen = buffer.length();
-        if (bufferLen > 0 && buffer.charAt(bufferLen - 1) != separatorChar) {
-            buffer.append(separatorChar);
+        final int bufferLen = builder.length();
+        if (bufferLen > 0 && builder.charAt(bufferLen - 1) != separatorChar) {
+            builder.append(separatorChar);
         }
     }
     
