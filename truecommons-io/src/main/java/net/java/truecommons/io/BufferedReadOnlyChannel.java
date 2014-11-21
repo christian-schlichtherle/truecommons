@@ -97,8 +97,8 @@ public class BufferedReadOnlyChannel extends ReadOnlyChannel {
 
     @Override
     public SeekableByteChannel position(final long pos) throws IOException {
-        if (0 > pos) throw new IllegalArgumentException();
         checkOpen();
+        if (0 > pos) throw new IllegalArgumentException();
         this.pos = pos;
         return this;
     }
