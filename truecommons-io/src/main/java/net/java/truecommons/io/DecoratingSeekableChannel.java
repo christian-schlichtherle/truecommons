@@ -15,7 +15,7 @@ import javax.annotation.WillCloseWhenClosed;
 /**
  * An abstract decorator for a seekable byte channel.
  * <p>
- * Note that sub-classes of this class may implement their own virtual file
+ * Note that sub-classes of this class may maintain their own virtual file
  * pointer.
  * Thus, if you would like to use the decorated seekable byte channel again
  * after you have finished using this seekable byte channel, then you should
