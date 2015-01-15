@@ -15,7 +15,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 /**
  * Provides read-only access to an interval of its decorated seekable byte
  * channel.
- * Note that this class implements its own virtual file pointer.
+ * Note that this class maintains its own virtual file pointer.
  *
  * @author Christian Schlichtherle
  */

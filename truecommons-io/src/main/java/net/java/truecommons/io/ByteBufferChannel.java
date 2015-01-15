@@ -30,10 +30,10 @@ import javax.annotation.concurrent.NotThreadSafe;
  * When writing past the backing buffer's capacity, a new backing buffer is
  * allocated with a larger capacity and filled with the contents of the
  * old backing buffer.
- * Therefore, in order to avoid excessive buffer copy operations, the client
- * should provide this channel with a byte buffer with a capacity which is
+ * Therefore, in order to avoid excessive buffer copy operations, clients
+ * should configure this channel with a byte buffer with a capacity which is
  * large enough to host any data to write.
- * Furthermore, when closing this channel, the client should call
+ * Furthermore, when closing this channel, clients should call
  * {@link #bufferDuplicate()} to obtain a duplicate of the current backing
  * buffer.
  *

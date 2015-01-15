@@ -15,7 +15,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 /**
  * Provides buffered random read-only access to its decorated seekable byte
  * channel.
- * Note that this channel implements its own virtual position.
+ * Note that this channel maintains its own virtual position.
  *
  * @author Christian Schlichtherle
  */
