@@ -22,7 +22,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 @NotThreadSafe
 public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
 
-    /** The start position of this channel in the decorated channel. */
+    /** The start position in the decorated channel. */
     private final long start;
 
     /** The size of this channel. */
@@ -39,7 +39,7 @@ public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
     private final boolean exclusive;
 
     /**
-     * The virtual file pointer for this channel.
+     * The virtual file pointer.
      * This is relative to {@link #start}.
      */
     private long pos;
