@@ -15,7 +15,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 /**
  * Provides buffered random read-only access to its decorated seekable byte
  * channel.
- * Note that this channel maintains its own virtual position.
+ * Note that this channel maintains its own virtual file pointer.
  *
  * @author Christian Schlichtherle
  */
@@ -24,7 +24,7 @@ public class BufferedReadOnlyChannel extends ReadOnlyChannel {
 
     private static final long INVALID = Long.MIN_VALUE;
 
-    /** The virtual channel position. */
+    /** The virtual file pointer. */
     private long pos;
 
     /**
