@@ -4,16 +4,17 @@
  */
 package net.java.truecommons.shed;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.concurrent.NotThreadSafe;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
+
 import static java.nio.charset.CoderResult.OVERFLOW;
 import static java.nio.charset.CoderResult.UNDERFLOW;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * Escapes illegal characters in URI components according to
@@ -27,7 +28,6 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @see <a href="http://www.ietf.org/rfc/rfc2732.txt">
  *      RFC&nbsp;2732: Format for Literal IPv6 Addresses in URL's</a>
  * @see UriBuilder
- * @see UriDecoder
  * @author Christian Schlichtherle
  */
 @NotThreadSafe

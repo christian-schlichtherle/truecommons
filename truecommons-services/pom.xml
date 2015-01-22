@@ -9,7 +9,7 @@
     <parent>
         <groupId>net.java.truecommons</groupId>
         <artifactId>truecommons</artifactId>
-        <version>2.3.5</version>
+        <version>2.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>truecommons-services</artifactId>
@@ -20,10 +20,6 @@
         and OSGi environments and perfectly fits the dependency injection idiom
         with support for JSR 330.
     </description>
-
-    <properties>
-        <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
-    </properties>
 
     <dependencies>
         <dependency>

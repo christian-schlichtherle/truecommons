@@ -4,11 +4,11 @@
  */
 package net.java.truecommons.shed;
 
+import javax.annotation.CheckForNull;
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
-import javax.annotation.CheckForNull;
 
 /**
  * A link has a nullable {@link #get() target} property.
@@ -90,6 +90,7 @@ public interface Link<T> {
 
         /** A strong reference. */
         private static final class Strong<T> implements Link<T> {
+
             private final @CheckForNull T target;
 
             Strong(final @CheckForNull T target) {
@@ -112,6 +113,7 @@ public interface Link<T> {
         /** Adapts its subclass to the {@link Link} interface. */
         private static final class Soft<T> extends SoftReference<T>
         implements Link<T> {
+
             Soft(T target, ReferenceQueue<? super T> queue) {
                 super(target, queue);
             }
@@ -127,6 +129,7 @@ public interface Link<T> {
         /** Adapts its subclass to the {@link Link} interface. */
         private static final class Weak<T> extends WeakReference<T>
         implements Link<T> {
+
             Weak(T target, ReferenceQueue<? super T> queue) {
                 super(target, queue);
             }
@@ -142,6 +145,7 @@ public interface Link<T> {
         /** Adapts its subclass to the {@link Link} interface. */
         private static final class Phantom<T> extends PhantomReference<T>
         implements Link<T> {
+
             Phantom(T target, ReferenceQueue<? super T> queue) {
                 super(target, queue);
             }
