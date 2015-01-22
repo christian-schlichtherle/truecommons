@@ -55,12 +55,8 @@ public final class Streams {
      * the current thread.
      * It performs best when used with <em>unbuffered</em> streams.
      *
-     * @param  in the input stream.
-     * @param  out the output stream.
-     * @throws InputException if copying the data fails because of an
-     *         {@code IOException} thrown by the <em>input stream</em>.
-     * @throws IOException if copying the data fails because of an
-     *         {@code IOException} thrown by the <em>output stream</em>.
+     * @param in the input stream.
+     * @param out the output stream.
      */
     public static void copy(@WillClose InputStream in,
                             @WillClose OutputStream out)
@@ -76,22 +72,13 @@ public final class Streams {
      * the current thread.
      * It performs best when used with <em>unbuffered</em> streams.
      *
-     * @param  source the source for reading the data from.
-     * @param  sink the sink for writing the data to.
-     * @throws InputException if copying the data fails because of an
-     *         {@code IOException} thrown by the <em>input stream</em>.
-     * @throws IOException if copying the data fails because of an
-     *         {@code IOException} thrown by the <em>output stream</em>.
+     * @param source the source for reading the data from.
+     * @param sink the sink for writing the data to.
      */
     @SuppressWarnings("ThrowFromFinallyBlock")
     public static void copy(final Source source, final Sink sink)
     throws IOException {
-        final InputStream in;
-        try {
-            in = source.stream();
-        } catch (final IOException ex) {
-            throw new InputException(ex);
-        }
+        final InputStream in = source.stream();
         Throwable t1 = null;
         try {
             try (OutputStream out = sink.stream()) {
@@ -102,11 +89,7 @@ public final class Streams {
             throw t2;
         } finally {
             try {
-                try {
-                    in.close();
-                } catch (final IOException e2) {
-                    throw new InputException(e2);
-                }
+                in.close();
             } catch (final Throwable t2) {
                 if (null == t1) throw t2;
                 t1.addSuppressed(t2);
@@ -131,12 +114,8 @@ public final class Streams {
      * {@code cat} because you could use it to con<i>cat</i>enate the contents
      * of multiple streams.
      *
-     * @param  in the input stream.
-     * @param  out the output stream.
-     * @throws InputException if copying the data fails because of an
-     *         {@code IOException} thrown by the <em>input stream</em>.
-     * @throws IOException if copying the data fails because of an
-     *         {@code IOException} thrown by the <em>output stream</em>.
+     * @param in the input stream.
+     * @param out the output stream.
      */
     public static void cat(final @WillNotClose InputStream in,
                            final @WillNotClose OutputStream out)
@@ -278,15 +257,13 @@ public final class Streams {
             }
             out.flush();
 
-            final Throwable ex = reader.exception;
-            if (null != ex) {
-                if (ex instanceof InputException)
-                    throw (InputException) ex;
-                else if (ex instanceof IOException)
-                    throw new InputException((IOException) ex);
-                else if (ex instanceof RuntimeException)
-                    throw (RuntimeException) ex;
-                throw (Error) ex;
+            final Throwable t = reader.exception;
+            if (null != t) {
+                if (t instanceof IOException)
+                    throw (IOException) t;
+                else if (t instanceof RuntimeException)
+                    throw (RuntimeException) t;
+                throw (Error) t;
             }
         } finally {
             if (interrupted)

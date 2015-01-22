@@ -74,18 +74,18 @@ class StreamsTest extends WordSpec {
       verifyNoMoreInteractions(out)
     }
 
-    "fail with an InputException which wraps the original IOException from InputStream.read(byte[], int, int)" in {
+    "fail with the original IOException from InputStream.read(byte[], int, int)" in {
       val in = mock[InputStream]
-      val ex = new IOException
-      doThrow(ex) when in read (any, any, any)
-      intercept[InputException](cat(in, out)).getCause should be theSameInstanceAs ex
+      val e = new IOException
+      doThrow(e) when in read (any, any, any)
+      intercept[IOException](cat(in, out)) should be theSameInstanceAs e
     }
 
     "fail with the original IOException from OutputStream.write(byte[], int, int)" in {
       val out = mock[OutputStream]
-      val ex = new IOException
-      doThrow(ex) when out write (any, any, any)
-      intercept[IOException](cat(in, out)) should be theSameInstanceAs ex
+      val e = new IOException
+      doThrow(e) when out write (any, any, any)
+      intercept[IOException](cat(in, out)) should be theSameInstanceAs e
     }
 
     "produce a copy of the data" when {
@@ -197,19 +197,19 @@ class StreamsTest extends WordSpec {
       }
     }
 
-    "fail with an InputException which wraps the original IOException from InputStream.close()" in {
+    "fail with the original IOException from InputStream.close()" in {
       val in = mock[InputStream]
-      val ex = new IOException
+      val e = new IOException
       when(in read (any, any, any)) thenReturn -1
-      doThrow(ex) when in close ()
-      intercept[InputException](copy(in, out)).getCause should be theSameInstanceAs ex
+      doThrow(e) when in close ()
+      intercept[IOException](copy(in, out)) should be theSameInstanceAs e
     }
 
     "fail with the original IOException from OutputStream.close()" in {
       val out = mock[OutputStream]
-      val ex = new IOException
-      doThrow(ex) when out close ()
-      intercept[IOException](copy(in, out)) should be theSameInstanceAs ex
+      val e = new IOException
+      doThrow(e) when out close ()
+      intercept[IOException](copy(in, out)) should be theSameInstanceAs e
     }
 
     "produce a copy of the data" when {
@@ -339,18 +339,18 @@ class StreamsTest extends WordSpec {
       }
     }
 
-    "fail with an InputException which wraps the original IOException from Source.stream()" in {
+    "fail with the original IOException from Source.stream()" in {
       val source = mock[Source]
-      val ex = new IOException
-      doThrow(ex) when source stream ()
-      intercept[InputException](copy(source, new OneTimeSink(out))).getCause should be theSameInstanceAs ex
+      val e = new IOException
+      doThrow(e) when source stream ()
+      intercept[IOException](copy(source, new OneTimeSink(out))) should be theSameInstanceAs e
     }
 
     "fail with the original IOException from Sink.stream()" in {
       val sink = mock[Sink]
-      val ex = new IOException
-      doThrow(ex) when sink stream ()
-      intercept[IOException](copy(new OneTimeSource(in), sink)) should be theSameInstanceAs ex
+      val e = new IOException
+      doThrow(e) when sink stream ()
+      intercept[IOException](copy(new OneTimeSource(in), sink)) should be theSameInstanceAs e
     }
 
     "produce a copy of the data" when {
