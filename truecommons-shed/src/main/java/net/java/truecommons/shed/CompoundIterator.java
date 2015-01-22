@@ -4,9 +4,11 @@
  */
 package net.java.truecommons.shed;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import javax.annotation.concurrent.NotThreadSafe;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Concatenates two iterators.
@@ -18,11 +20,9 @@ import javax.annotation.concurrent.NotThreadSafe;
 public final class CompoundIterator<E> implements Iterator<E> {
     private Iterator<? extends E> first, second;
 
-    public CompoundIterator(
-            final Iterator<? extends E> first,
-            final Iterator<? extends E> second) {
-        if (null == (this.first = first)) throw new NullPointerException();
-        if (null == (this.second = second)) throw new NullPointerException();
+    public CompoundIterator(final Iterator<? extends E> first, final Iterator<? extends E> second) {
+        this.first = requireNonNull(first);
+        this.second = requireNonNull(second);
     }
 
     @Override
