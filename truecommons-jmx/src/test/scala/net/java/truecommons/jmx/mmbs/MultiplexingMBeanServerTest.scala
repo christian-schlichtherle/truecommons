@@ -5,39 +5,20 @@
 package net.java.truecommons.jmx.mmbs
 
 import javax.management._
-import net.java.truecommons.jmx._
+
+import net.java.truecommons.jmx.mmbs.MultiplexingMBeanServerTest._
 import net.java.truecommons.jmx.qonm._
 import org.junit.runner._
+import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatest.junit._
-import org.scalatest.matchers._
-import MultiplexingMBeanServerTest._
-
-/**
- * @since  TrueCommons 2.3
- * @author Christian Schlichtherle
- */
-private object MultiplexingMBeanServerTest {
-
-  private trait MessengerMBean {
-    def getMessage: String
-  }
-
-  private class Messenger extends MessengerMBean {
-    def getMessage = "Hello world!"
-  }
-
-  private val on = new ObjectName("Test:type=Test") // original name
-  private val mn = new ObjectName("Test:type=Test,key=value") // modified name
-  private val mbean = new Messenger
-}
 
 /**
  * @since  TrueCommons 2.3
  * @author Christian Schlichtherle
  */
 @RunWith(classOf[JUnitRunner])
-class MultiplexingMBeanServerTest extends WordSpec with ShouldMatchers {
+class MultiplexingMBeanServerTest extends WordSpec {
 
   "A multiplexing MBean server" should {
     val ombs = MBeanServerFactory.newMBeanServer
@@ -80,4 +61,19 @@ class MultiplexingMBeanServerTest extends WordSpec with ShouldMatchers {
       set should have size (0)
     }
   }
+}
+
+private object MultiplexingMBeanServerTest {
+
+  private trait MessengerMBean {
+    def getMessage: String
+  }
+
+  private class Messenger extends MessengerMBean {
+    def getMessage = "Hello world!"
+  }
+
+  private val on = new ObjectName("Test:type=Test") // original name
+  private val mn = new ObjectName("Test:type=Test,key=value") // modified name
+  private val mbean = new Messenger
 }

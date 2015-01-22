@@ -4,21 +4,20 @@
  */
 package net.java.truecommons.services
 
-import collection.JavaConverters._
 import java.net.URL
 import java.util.Collections
+
 import org.junit.runner._
+import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatest.junit._
-import org.scalatest.matchers._
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.PropertyChecks._
 
-/**
-  * @author Christian Schlichtherle
-  */
+import scala.collection.JavaConverters._
+
+/** @author Christian Schlichtherle */
 @RunWith(classOf[JUnitRunner])
-class UnifiedClassLoaderTest
-extends WordSpec with ShouldMatchers with PropertyChecks {
+class UnifiedClassLoaderTest extends WordSpec {
 
   abstract class TestClassLoader extends ClassLoader {
     final override def getResources(name: String) =

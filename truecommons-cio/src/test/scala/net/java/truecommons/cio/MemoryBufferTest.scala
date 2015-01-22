@@ -4,20 +4,20 @@
  */
 package net.java.truecommons.cio
 
-import java.nio._
+import net.java.truecommons.cio.Entry._
 import net.java.truecommons.io.Loan._
 import org.junit.runner._
 import org.scalacheck._
+import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatest.junit._
-import org.scalatest.matchers._
-import org.scalatest.prop._
-import scala.util._
-import Entry._
+import org.scalatest.prop.PropertyChecks._
 
+import scala.util._
+
+/** @author Christian Schlichtherle */
 @RunWith(classOf[JUnitRunner])
-class MemoryBufferTest
-extends WordSpec with ShouldMatchers with PropertyChecks {
+class MemoryBufferTest extends WordSpec {
 
   "A memory buffer" should {
     "work as designed" when {

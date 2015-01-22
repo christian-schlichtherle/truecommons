@@ -5,18 +5,19 @@
 package net.java.truecommons.jmx
 
 import javax.management._
+
 import net.java.truecommons.jmx.sl._
 import org.junit.runner._
+import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatest.junit._
-import org.scalatest.matchers._
 
 /**
  * @since  TrueCommons 2.3
  * @author Christian Schlichtherle
  */
 @RunWith(classOf[JUnitRunner])
-class ObjectNameModifierTest extends WordSpec with ShouldMatchers {
+class ObjectNameModifierTest extends WordSpec {
 
   def modifier = ObjectNameModifierLocator.SINGLETON.get
 
