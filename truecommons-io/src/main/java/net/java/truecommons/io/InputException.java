@@ -4,11 +4,11 @@
  */
 package net.java.truecommons.io;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.Immutable;
 
 /**
  * Thrown if an error happened on the input side rather than the output side
@@ -19,6 +19,7 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 public class InputException extends IOException {
+
     private static final long serialVersionUID = 1287654325546872424L;
 
     /**
