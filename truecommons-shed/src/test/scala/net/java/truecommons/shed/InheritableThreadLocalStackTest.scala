@@ -6,19 +6,16 @@ package net.java.truecommons.shed
 
 import java.util._
 import java.util.concurrent._
+
 import org.junit.runner._
+import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatest.junit._
-import org.scalatest.matchers._
-import org.scalatest.prop._
-import org.slf4j._
+import org.scalatest.prop.PropertyChecks._
 
-/**
-  * @author Christian Schlichtherle
-  */
+/** @author Christian Schlichtherle */
 @RunWith(classOf[JUnitRunner])
-class InheritableThreadLocalStackTest
-extends WordSpec with ShouldMatchers with PropertyChecks {
+class InheritableThreadLocalStackTest extends WordSpec {
 
   private def create = new InheritableThreadLocalStack[String]
 

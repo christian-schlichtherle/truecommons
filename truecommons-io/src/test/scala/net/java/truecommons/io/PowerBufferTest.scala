@@ -4,21 +4,21 @@
  */
 package net.java.truecommons.io
 
-import java.nio._
 import java.nio.ByteOrder._
+import java.nio._
+
 import org.junit.runner.RunWith
-import org.scalatest.{ParallelTestExecution, WordSpec}
 import org.scalatest.Matchers._
 import org.scalatest.junit.JUnitRunner
+import org.scalatest.{ParallelTestExecution, WordSpec}
 
 /** @author Christian Schlichtherle */
 @RunWith(classOf[JUnitRunner])
-class PowerBufferTest
-extends WordSpec with ParallelTestExecution {
+class PowerBufferTest extends WordSpec with ParallelTestExecution {
 
   "A power buffer" when {
     "allocated on the heap" should {
-      val pb = PowerBuffer allocate 1
+      val pb: PowerBuffer[_] = PowerBuffer allocate 1
 
       "provide access to its adapted byte buffer" in {
         pb.buffer should not be (null)
@@ -42,7 +42,7 @@ extends WordSpec with ParallelTestExecution {
     }
 
     "not allocated on the heap" should {
-      val pb = PowerBuffer allocateDirect 1
+      val pb: PowerBuffer[_] = PowerBuffer allocateDirect 1
 
       "provide access to its adapted byte buffer" in {
         pb.buffer should not be (null)
@@ -67,7 +67,7 @@ extends WordSpec with ParallelTestExecution {
 
     "wrapping an array" should {
       val array = new Array[Byte](1)
-      val pb = PowerBuffer wrap array
+      val pb: PowerBuffer[_] = PowerBuffer wrap array
 
       "provide access to its adapted byte buffer" in {
         pb.buffer should not be (null)
@@ -92,7 +92,7 @@ extends WordSpec with ParallelTestExecution {
 
     "wrapping a part of an array" should {
       val array = new Array[Byte](3)
-      val pb = PowerBuffer wrap (array, 1, 1)
+      val pb: PowerBuffer[_] = PowerBuffer wrap (array, 1, 1)
 
       "provide access to its adapted byte buffer" in {
         pb.buffer should not be (null)
@@ -117,7 +117,7 @@ extends WordSpec with ParallelTestExecution {
 
     "wrapping a byte buffer" should {
       val buf = ByteBuffer allocate 1
-      val pb = PowerBuffer wrap buf
+      val pb: PowerBuffer[_] = PowerBuffer wrap buf
 
       "provide access to its adapted byte buffer" in {
         pb.buffer should be theSameInstanceAs (buf)
@@ -141,7 +141,7 @@ extends WordSpec with ParallelTestExecution {
     }
 
     "viewed as mutable and read-only" should {
-      val pb = PowerBuffer allocate 1
+      val pb: PowerBuffer[_] = PowerBuffer allocate 1
       val rob = pb.asMutableBuffer.asReadOnlyBuffer
 
       "not support write access" in {
@@ -154,7 +154,7 @@ extends WordSpec with ParallelTestExecution {
     }
 
     "viewed as immutable and read-only" should {
-      val pb = PowerBuffer allocate 1
+      val pb: PowerBuffer[_] = PowerBuffer allocate 1
       val rob = pb.asImmutableBuffer.asReadOnlyBuffer
 
       "not support write access" in {

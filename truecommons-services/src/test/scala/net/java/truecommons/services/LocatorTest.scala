@@ -5,15 +5,16 @@
 package net.java.truecommons.services
 
 import java.util._
+
 import org.junit.runner._
+import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatest.junit._
-import org.scalatest.matchers.ShouldMatchers._
 
 /** @author Christian Schlichtherle */
 @RunWith(classOf[JUnitRunner])
 class LocatorTest extends WordSpec {
-  import LocatorTest._
+  import net.java.truecommons.services.LocatorTest._
 
   def locator[P] = new LocatorSugar
 

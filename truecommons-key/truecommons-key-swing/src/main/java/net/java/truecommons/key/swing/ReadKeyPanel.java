@@ -4,19 +4,19 @@
  */
 package net.java.truecommons.key.swing;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Window;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.java.truecommons.key.spec.prompting.PromptingPbeParameters;
+
+import javax.annotation.CheckForNull;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.io.File;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.ResourceBundle;
-import javax.annotation.CheckForNull;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import net.java.truecommons.key.spec.prompting.PromptingPbeParameters;
 
 /**
  * This panel prompts the user for a key to open an existing protected
@@ -73,7 +73,7 @@ final class ReadKeyPanel extends KeyPanel {
     }
 
     @Override
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
+    @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
     public void setResource(final URI resource) {
         final @CheckForNull URI lastResource = view.getLastResource();
         if (null != lastResource && !resource.equals(lastResource)) {

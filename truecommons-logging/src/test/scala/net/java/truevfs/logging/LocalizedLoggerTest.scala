@@ -5,23 +5,21 @@
 package net.java.truecommons.logging
 
 import java.util._
+
+import net.java.truecommons.logging.Disambiguate._
 import org.junit.runner._
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest._
 import org.scalatest.junit._
-import org.scalatest.matchers._
-import org.scalatest.mock._
+import org.scalatest.mock.MockitoSugar.mock
 import org.slf4j._
-import Disambiguate._
 
-/**
-  * @author Christian Schlichtherle
-  */
+/** @author Christian Schlichtherle */
 @RunWith(classOf[JUnitRunner])
-class LocalizedLoggerTest extends WordSpec with ShouldMatchers with MockitoSugar {
+class LocalizedLoggerTest extends WordSpec {
 
-  import LocalizedLoggerTest._
+  import net.java.truecommons.logging.LocalizedLoggerTest._
 
   def create(delegate: Logger) = new LocalizedLogger(delegate, bundle)
 
