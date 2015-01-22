@@ -20,10 +20,6 @@
     You should use the scope "provided" when adding this module as a dependency.
     </description>
 
-    <properties>
-        <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>

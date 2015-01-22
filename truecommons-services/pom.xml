@@ -21,10 +21,6 @@
         with support for JSR 330.
     </description>
 
-    <properties>
-        <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>

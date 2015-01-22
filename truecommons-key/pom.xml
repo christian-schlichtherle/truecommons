@@ -18,11 +18,6 @@
     <name>TrueCommons KeyManager</name>
     <description>KeyManager modules provide secret key management.</description>
 
-    <properties>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-    </properties>
-
     <modules>
         <module>truecommons-key-console</module>
         <module>truecommons-key-hurlfb</module>

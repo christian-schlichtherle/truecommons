@@ -51,8 +51,6 @@
     <properties>
         <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
         <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
 
         <!-- clirr-maven-plugin -->
         <comparisonVersion>2.0</comparisonVersion>
