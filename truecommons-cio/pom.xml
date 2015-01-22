@@ -9,18 +9,13 @@
     <parent>
         <groupId>net.java.truecommons</groupId>
         <artifactId>truecommons</artifactId>
-        <version>2.3.5</version>
+        <version>2.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>truecommons-cio</artifactId>
 
     <name>TrueCommons Container I/O</name>
     <description>Provides container I/O components.</description>
-
-    <properties>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-    </properties>
 
     <dependencies>
         <dependency>

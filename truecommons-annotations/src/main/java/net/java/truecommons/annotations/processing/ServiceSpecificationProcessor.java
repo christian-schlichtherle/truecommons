@@ -18,7 +18,7 @@ import net.java.truecommons.annotations.ServiceSpecification;
  * @since  TrueCommons 2.1
  * @author Christian Schlichtherle
  */
-@SupportedSourceVersion(SourceVersion.RELEASE_6)
+@SupportedSourceVersion(SourceVersion.RELEASE_7)
 @SupportedAnnotationTypes("*")
 public final class ServiceSpecificationProcessor extends ServiceProcessor {
 

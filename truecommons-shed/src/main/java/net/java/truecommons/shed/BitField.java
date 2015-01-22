@@ -82,6 +82,7 @@ implements Iterable<E>, Serializable {
      * }</pre>
      * where {@code Option.ONE} and {@code Option.TWO} are arbitrary enums.
      */
+    @SafeVarargs
     public static <E extends Enum<E>> BitField<E>
     of(E bit, E... bits) {
         return new BitField<>(bit, bits);
@@ -126,6 +127,7 @@ implements Iterable<E>, Serializable {
     }
 
     /** Constructs a new bit field which contains the given bits. */
+    @SafeVarargs
     private BitField(E bit, E... bits) {
         this.bits = EnumSet.of(bit, bits);
     }
