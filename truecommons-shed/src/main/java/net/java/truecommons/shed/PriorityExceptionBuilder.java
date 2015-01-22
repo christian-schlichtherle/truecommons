@@ -22,8 +22,9 @@ import javax.annotation.concurrent.NotThreadSafe;
 public class PriorityExceptionBuilder<X extends Throwable>
 extends AbstractExceptionBuilder<X, X> {
 
+    private final List<X> exceptions = new LinkedList<>();
+
     private final Comparator<? super X> comparator;
-    private final List<X> exceptions;
 
     /**
      * Constructs a new priority exception builder.
@@ -41,9 +42,7 @@ extends AbstractExceptionBuilder<X, X> {
      *        the assembly.
      */
     public PriorityExceptionBuilder(final Comparator<? super X> comparator) {
-        if (null == (this.comparator = comparator))
-            throw new NullPointerException();
-        exceptions = new LinkedList<>();
+        this.comparator = Objects.requireNonNull(comparator);
     }
 
     @Override
