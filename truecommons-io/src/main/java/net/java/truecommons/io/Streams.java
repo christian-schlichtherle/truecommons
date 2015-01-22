@@ -4,6 +4,9 @@
  */
 package net.java.truecommons.io;
 
+import javax.annotation.WillClose;
+import javax.annotation.WillNotClose;
+import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -16,9 +19,6 @@ import java.util.concurrent.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.annotation.WillClose;
-import javax.annotation.WillNotClose;
-import javax.annotation.concurrent.Immutable;
 
 /**
  * Static utility methods for {@link InputStream}s and {@link OutputStream}s.
@@ -43,7 +43,6 @@ public final class Streams {
     private static final ExecutorService executor
             = Executors.newCachedThreadPool(new ReaderThreadFactory());
 
-    /* Can't touch this - hammer time! */
     private Streams() { }
 
     /**
@@ -63,9 +62,9 @@ public final class Streams {
      * @throws IOException if copying the data fails because of an
      *         {@code IOException} thrown by the <em>output stream</em>.
      */
-    public static void copy(final @WillClose InputStream in,
-                            final @WillClose OutputStream out)
-    throws InputException, IOException {
+    public static void copy(@WillClose InputStream in,
+                            @WillClose OutputStream out)
+    throws IOException {
         copy(new OneTimeSource(in), new OneTimeSink(out));
     }
 
@@ -84,32 +83,33 @@ public final class Streams {
      * @throws IOException if copying the data fails because of an
      *         {@code IOException} thrown by the <em>output stream</em>.
      */
+    @SuppressWarnings("ThrowFromFinallyBlock")
     public static void copy(final Source source, final Sink sink)
-    throws InputException, IOException {
+    throws IOException {
         final InputStream in;
         try {
             in = source.stream();
         } catch (final IOException ex) {
             throw new InputException(ex);
         }
-        Throwable ex = null;
+        Throwable t1 = null;
         try {
-            try (final OutputStream out = sink.stream()) {
+            try (OutputStream out = sink.stream()) {
                 cat(in, out);
             }
-        } catch (final Throwable ex2) {
-            ex = ex2;
-            throw ex2;
+        } catch (final Throwable t2) {
+            t1 = t2;
+            throw t2;
         } finally {
             try {
                 try {
                     in.close();
-                } catch (final IOException ex2) {
-                    throw new InputException(ex2);
+                } catch (final IOException e2) {
+                    throw new InputException(e2);
                 }
-            } catch (final Throwable ex2) {
-                if (null == ex) throw ex2;
-                ex.addSuppressed(ex2);
+            } catch (final Throwable t2) {
+                if (null == t1) throw t2;
+                t1.addSuppressed(t2);
             }
         }
     }
@@ -138,9 +138,9 @@ public final class Streams {
      * @throws IOException if copying the data fails because of an
      *         {@code IOException} thrown by the <em>output stream</em>.
      */
-    public static void cat( final @WillNotClose InputStream in,
-                            final @WillNotClose OutputStream out)
-    throws InputException, IOException {
+    public static void cat(final @WillNotClose InputStream in,
+                           final @WillNotClose OutputStream out)
+    throws IOException {
         Objects.requireNonNull(in);
         Objects.requireNonNull(out);
 
@@ -172,10 +172,7 @@ public final class Streams {
 
             @Override
             public void run() {
-                // Cache some fields for better performance.
-                final InputStream in2 = in;
-                final Buffer[] buffers2 = buffers;
-                final int buffers2Length = buffers2.length;
+                final int buffersLength = buffers.length;
 
                 // The writer executor interrupts this executor to signal
                 // that it cannot handle more input because there has been
@@ -187,14 +184,14 @@ public final class Streams {
                     final Buffer buffer;
                     lock.lock();
                     try {
-                        while (size >= buffers2Length) {
+                        while (size >= buffersLength) {
                             try {
                                 signal.await();
                             } catch (InterruptedException cancel) {
                                 return;
                             }
                         }
-                        buffer = buffers2[(off + size) % buffers2Length];
+                        buffer = buffers[(off + size) % buffersLength];
                     } finally {
                         lock.unlock();
                     }
@@ -205,7 +202,7 @@ public final class Streams {
                     // of InputStream's contract.
                     try {
                         final byte[] buf = buffer.buf;
-                        read = in2.read(buf, 0, buf.length);
+                        read = in.read(buf, 0, buf.length);
                     } catch (final Throwable ex) {
                         exception = ex;
                         read = -1;
