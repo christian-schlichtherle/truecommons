@@ -4,15 +4,15 @@
  */
 package net.java.truecommons.cio;
 
+import net.java.truecommons.io.Sink;
+import net.java.truecommons.io.Source;
+import net.java.truecommons.io.Streams;
+
+import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.SeekableByteChannel;
-import javax.annotation.concurrent.Immutable;
-import net.java.truecommons.io.InputException;
-import net.java.truecommons.io.Sink;
-import net.java.truecommons.io.Source;
-import net.java.truecommons.io.Streams;
 
 /**
  * Provides utility methods for {@link IoSocket}s.
@@ -35,20 +35,17 @@ public final class IoSockets {
      * thread to fill a FIFO of pooled buffers which is concurrently flushed by
      * the current thread.
      *
-     * @param  input an input socket for the input target.
-     * @param  output an output socket for the output target.
-     * @throws InputException if copying the data fails because of an
-     *         {@code IOException} thrown by the <em>input socket</em>.
-     * @throws IOException if copying the data fails because of an
-     *         {@code IOException} thrown by the <em>output socket</em>.
+     * @param input an input socket for the input target.
+     * @param output an output socket for the output target.
      */
     public static void copy(InputSocket<?> input, OutputSocket<?> output)
-    throws InputException, IOException {
+    throws IOException {
         Streams.copy(   new InputAdapter(input, output),
                         new OutputAdapter(output, input));
     }
 
     private static class InputAdapter implements Source {
+
         final InputSocket<? extends Entry> input;
         final OutputSocket<? extends Entry> output;
 
@@ -71,6 +68,7 @@ public final class IoSockets {
     } // InputAdapter
 
     private static class OutputAdapter implements Sink {
+
         final OutputSocket<? extends Entry> output;
         final InputSocket<? extends Entry> input;
 
