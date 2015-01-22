@@ -100,7 +100,7 @@ class UnifiedClassLoaderTest extends WordSpec {
         forAll (table) { (primary, secondary, clazz) =>
           val loader = UnifiedClassLoader resolve (primary, secondary)
           loader loadClass "this.is.an.unknown.ClassName" should
-          be theSameInstanceAs(clazz)
+          be theSameInstanceAs clazz
         }
       }
     }

@@ -25,10 +25,10 @@ class ObjectNameModifierTest extends WordSpec {
     "do a proper round trip conversion" in{
       val original = new ObjectName(":key=value")
       val modified = modifier apply original
-      modified should not equal (original)
+      modified should not be original
       val clone = modifier unapply modified
       clone should not be theSameInstanceAs (original)
-      clone should equal (original)
+      clone should be (original)
     }
   }
 }

@@ -30,7 +30,7 @@ class LocatorTest extends WordSpec {
 
       "not report a service configuration error if it can't locate a decorator" in {
         val c = l.container[String, LocatableFactory[String], UnlocatableDecorator]
-        c.get should not be (null)
+        c.get should not be null
       }
     }
 
@@ -45,7 +45,7 @@ class LocatorTest extends WordSpec {
       "provide the same product" in {
         val p1 = c.get
         val p2 = c.get
-        p1 should be theSameInstanceAs(p2)
+        p1 should be theSameInstanceAs p2
       }
     }
 
@@ -75,14 +75,14 @@ object LocatorTest {
     private[this] val l = new ServiceLocator(classOf[LocatorTest])
 
     def container[P, F <: LocatableFactory[P] : Manifest] =
-      l container (implicitly[Manifest[F]].runtimeClass.asInstanceOf[Class[F]])
+      l container implicitly[Manifest[F]].runtimeClass.asInstanceOf[Class[F]]
 
     def container[P, F <: LocatableFactory[P] : Manifest, D <: LocatableDecorator[P] : Manifest] =
       l container (implicitly[Manifest[F]].runtimeClass.asInstanceOf[Class[F]],
                    implicitly[Manifest[D]].runtimeClass.asInstanceOf[Class[D]])
 
     def factory[P, F <: LocatableFactory[P] : Manifest] =
-      l factory (implicitly[Manifest[F]].runtimeClass.asInstanceOf[Class[F]])
+      l factory implicitly[Manifest[F]].runtimeClass.asInstanceOf[Class[F]]
 
     def factory[P, F <: LocatableFactory[P] : Manifest, D <: LocatableDecorator[P] : Manifest] =
       l factory (implicitly[Manifest[F]].runtimeClass.asInstanceOf[Class[F]],

@@ -21,15 +21,15 @@ class PowerBufferTest extends WordSpec with ParallelTestExecution {
       val pb: PowerBuffer[_] = PowerBuffer allocate 1
 
       "provide access to its adapted byte buffer" in {
-        pb.buffer should not be (null)
+        pb.buffer should not be null
       }
 
       "not be direct" in {
-        pb.isDirect should be (false)
+        pb.isDirect should equal (false)
       }
 
       "provide access to its underlying array" in {
-        pb.array should not be (null)
+        pb.array should not be null
       }
 
       "be a mutable adapter of its byte buffer" in {
@@ -45,11 +45,11 @@ class PowerBufferTest extends WordSpec with ParallelTestExecution {
       val pb: PowerBuffer[_] = PowerBuffer allocateDirect 1
 
       "provide access to its adapted byte buffer" in {
-        pb.buffer should not be (null)
+        pb.buffer should not be null
       }
 
       "be direct" in {
-        pb.isDirect should be (true)
+        pb.isDirect should equal (true)
       }
 
       "not provide access to its underlying array" in {
@@ -70,15 +70,15 @@ class PowerBufferTest extends WordSpec with ParallelTestExecution {
       val pb: PowerBuffer[_] = PowerBuffer wrap array
 
       "provide access to its adapted byte buffer" in {
-        pb.buffer should not be (null)
+        pb.buffer should not be null
       }
 
       "not be direct" in {
-        pb.isDirect should be (false)
+        pb.isDirect should equal (false)
       }
 
       "provide access to its underlying array" in {
-        pb.array should (be theSameInstanceAs (array))
+        pb.array should (be theSameInstanceAs array)
       }
 
       "be a mutable adapter of its byte buffer" in {
@@ -95,15 +95,15 @@ class PowerBufferTest extends WordSpec with ParallelTestExecution {
       val pb: PowerBuffer[_] = PowerBuffer wrap (array, 1, 1)
 
       "provide access to its adapted byte buffer" in {
-        pb.buffer should not be (null)
+        pb.buffer should not be null
       }
 
       "not be direct" in {
-        pb.isDirect should be (false)
+        pb.isDirect should equal (false)
       }
 
       "provide access to its underlying array" in {
-        pb.array should (be theSameInstanceAs (array))
+        pb.array should (be theSameInstanceAs array)
       }
 
       "be a mutable adapter of its byte buffer" in {
@@ -120,15 +120,15 @@ class PowerBufferTest extends WordSpec with ParallelTestExecution {
       val pb: PowerBuffer[_] = PowerBuffer wrap buf
 
       "provide access to its adapted byte buffer" in {
-        pb.buffer should be theSameInstanceAs (buf)
+        pb.buffer should be theSameInstanceAs buf
       }
 
       "not be direct" in {
-        pb.isDirect should be (false)
+        pb.isDirect should equal (false)
       }
 
       "provide access to its underlying array" in {
-        pb.array should not be (null)
+        pb.array should not equal null
       }
 
       "be a mutable adapter of its byte buffer" in {
@@ -239,13 +239,13 @@ class PowerBufferTest extends WordSpec with ParallelTestExecution {
     pb position 0
 
     val mb = pb.asMutableBuffer
-    mb should be theSameInstanceAs (pb)
+    mb should be theSameInstanceAs pb
 
     val ib = pb.asImmutableBuffer
     ib should not be theSameInstanceAs (pb)
 
-    mb.asMutableBuffer should be theSameInstanceAs (mb)
-    ib.asImmutableBuffer should be theSameInstanceAs (ib)
+    mb.asMutableBuffer should be theSameInstanceAs mb
+    ib.asImmutableBuffer should be theSameInstanceAs ib
     mb.asImmutableBuffer should not be theSameInstanceAs (mb)
     ib.asMutableBuffer should not be theSameInstanceAs (ib)
 

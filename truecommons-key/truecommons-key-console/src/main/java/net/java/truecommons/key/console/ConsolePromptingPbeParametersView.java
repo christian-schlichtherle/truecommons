@@ -135,7 +135,7 @@ implements PromptingKey.View<P> {
                         param.setKeyStrength(strength);
                         break;
                     }
-                } catch (NumberFormatException ex) {
+                } catch (NumberFormatException ignored) {
                 }
             }
 
