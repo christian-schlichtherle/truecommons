@@ -4,11 +4,12 @@
  */
 package net.java.truecommons.shed;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
  * An iterator which filters another iterator by means of its
@@ -38,7 +39,7 @@ public abstract class FilteringIterator<T> implements Iterator<T> {
      * @param iterator the iterator to filter.
      */
     protected FilteringIterator(final Iterator<T> iterator) {
-        if (null == (this.it = iterator)) throw new NullPointerException();
+        this.it = Objects.requireNonNull(iterator);
     }
 
     /**
