@@ -31,19 +31,19 @@ class MultiplexingMBeanServerTest extends WordSpec {
 
     "have its qualifier added to the MBean's object name in the original MBean server" in {
       val set = ombs queryNames (mn, null)
-      set should have size (1)
+      set should have size 1
       set.iterator.next should equal (mn)
     }
 
     "find the registered MBean when quering object names" in {
       val set = mmbs queryNames(on, null)
-      set should have size (1)
+      set should have size 1
       set.iterator.next should equal (on)
     }
 
     "find the registered MBean when quering object instances" in {
       val set = mmbs queryMBeans(on, null)
-      set should have size (1)
+      set should have size 1
       set.iterator.next.getObjectName should equal (on)
     }
 
@@ -58,7 +58,7 @@ class MultiplexingMBeanServerTest extends WordSpec {
 
     "have unregistered the MBean in the original MBean server" in {
       val set = ombs queryNames (mn, null)
-      set should have size (0)
+      set should have size 0
     }
   }
 }
