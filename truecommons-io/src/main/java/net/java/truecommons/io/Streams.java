@@ -91,7 +91,7 @@ public final class Streams {
                 // stream first.
                 // Note that closing an already closed input stream must have
                 // no side effect, so this should be safe even though close()
-                // will get called once again at the end of the
+                // will get called once again at the end of the enclosing
                 // try-with-resources statement.
                 try {
                     in.close();
