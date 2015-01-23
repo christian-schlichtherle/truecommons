@@ -29,7 +29,7 @@ extends UniqueObject {
     /**
      * {@inheritDoc}
      * <p>
-     * The implementation in {@link SafeKeyProvider} forwards the call to
+     * The implementation in {@link SharedKeyProvider} forwards the call to
      * {@link #setupKeyForWriting}.
      *
      * @throws UnknownKeyException If {@code setupKeyForWriting} throws
@@ -62,7 +62,7 @@ extends UniqueObject {
     /**
      * {@inheritDoc}
      * <p>
-     * The implementation in {@link SafeKeyProvider} forwards the call to
+     * The implementation in {@link SharedKeyProvider} forwards the call to
      * {@link #setupKeyForReading} and enforces a three seconds suspension penalty
      * if {@code invalid} is {@code true} before returning.
      * Because this method is final, this qualifies the implementation in
