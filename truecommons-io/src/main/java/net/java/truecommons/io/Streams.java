@@ -78,21 +78,27 @@ public final class Streams {
     @SuppressWarnings("ThrowFromFinallyBlock")
     public static void copy(final Source source, final Sink sink)
     throws IOException {
-        final InputStream in = source.stream();
-        Throwable t1 = null;
-        try {
-            try (OutputStream out = sink.stream()) {
-                cat(in, out);
-            }
-        } catch (final Throwable t2) {
-            t1 = t2;
-            throw t2;
-        } finally {
+        try (InputStream in = source.stream();
+             OutputStream out = sink.stream()) {
+            Throwable t1 = null;
             try {
-                in.close();
+                cat(in, out);
             } catch (final Throwable t2) {
-                if (null == t1) throw t2;
-                t1.addSuppressed(t2);
+                t1 = t2;
+                throw t2;
+            } finally {
+                // Help the resource management in TrueVFS by closing the input
+                // stream first.
+                // Note that closing an already closed input stream must have
+                // no side effect, so this should be safe even though close()
+                // will get called once again at the end of the
+                // try-with-resources statement.
+                try {
+                    in.close();
+                } catch (final Throwable t2) {
+                    if (null == t1) throw t2;
+                    t1.addSuppressed(t2);
+                }
             }
         }
     }
