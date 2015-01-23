@@ -5,43 +5,22 @@
 package net.java.truecommons.io
 
 import java.io._
+
 import net.java.truecommons.io.Streams._
+import net.java.truecommons.io.StreamsTest._
 import org.junit.runner.RunWith
 import org.mockito.Matchers
-import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.Matchers._
 import org.scalatest.WordSpec
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.mock.MockitoSugar.mock
+
 import scala.util._
 
-private object StreamsTest {
-  val bufferSize = 2 * Streams.FIFO_SIZE * Streams.BUFFER_SIZE
-
-  private def any[A: Manifest] =
-    Matchers.any(implicitly[Manifest[A]].runtimeClass.asInstanceOf[Class[A]])
-
-  private def in = {
-    val b = new Array[Byte](bufferSize)
-    Random.nextBytes(b)
-    new ByteArrayInputStreamWithBuffer(b)
-  }
-
-  private def out = new ByteArrayOutputStream(bufferSize)
-
-  private class ByteArrayInputStreamWithBuffer(val bytes: Array[Byte])
-  extends ByteArrayInputStream(bytes)
-}
-
-/**
-  * @author Christian Schlichtherle
-  */
+/** @author Christian Schlichtherle */
 @RunWith(classOf[JUnitRunner])
 class StreamsTest extends WordSpec {
-  import StreamsTest._
-
-  private def givenA = afterWord("given a")
 
   "Streams.cat(InputStream, OutputStream)" should {
     "fail with a NullPointerException " when givenA {
@@ -121,40 +100,42 @@ class StreamsTest extends WordSpec {
         val in = mock[InputStream]
         when(in read (any, any, any)) thenReturn -1
         copy(in, out)
-        verify(in) close ()
+        verify(in, times(2)) close ()
       }
 
       "throwing an IOException from InputStream.read(byte[], int, int)" in {
         val in = mock[InputStream]
-        doThrow(new IOException) when in read (any, any, any)
+        doThrow(classOf[IOException]) when in read (any, any, any)
         intercept[IOException](copy(in, out))
-        verify(in) close ()
+        verify(in, times(2)) close ()
       }
 
       "throwing an IOException from InputStream.close()" in {
         val in = mock[InputStream]
         when(in read (any, any, any)) thenReturn -1
-        doThrow(new IOException) when in close ()
+        doThrow(classOf[IOException]) when in close ()
         intercept[IOException](copy(in, out))
-        verify(in) close ()
+        verify(in, times(2)) close ()
       }
 
       "throwing an IOException from OutputStream.write(byte[], int, int)" in {
         val in = mock[InputStream]
         val out = mock[OutputStream]
         when(in read (any, any, any)) thenReturn 1
-        doThrow(new IOException) when out write (any, any, any)
+        doThrow(classOf[IOException]) when out write (any, any, any)
         intercept[IOException](copy(in, out))
-        verify(in) close ()
+        verify(in, times(2)) close ()
+        verify(out) close ()
       }
 
       "throwing an IOException from OutputStream.close()" in {
         val in = mock[InputStream]
         val out = mock[OutputStream]
         when(in read (any, any, any)) thenReturn -1
-        doThrow(new IOException) when out close ()
+        doThrow(classOf[IOException]) when out close ()
         intercept[IOException](copy(in, out))
-        verify(in) close ()
+        verify(in, times(2)) close ()
+        verify(out) close ()
       }
     }
 
@@ -168,8 +149,9 @@ class StreamsTest extends WordSpec {
       "throwing an IOException from InputStream.read(byte[], int, int)" in {
         val in = mock[InputStream]
         val out = mock[OutputStream]
-        doThrow(new IOException) when(in) read (any, any, any)
+        doThrow(classOf[IOException]) when in read (any, any, any)
         intercept[IOException](copy(in, out))
+        verify(in, times(2)) close ()
         verify(out) close ()
       }
 
@@ -177,39 +159,40 @@ class StreamsTest extends WordSpec {
         val in = mock[InputStream]
         val out = mock[OutputStream]
         when(in read (any, any, any)) thenReturn -1
-        doThrow(new IOException) when(in) close ()
+        doThrow(classOf[IOException]) when in close ()
         intercept[IOException](copy(in, out))
+        verify(in, times(2)) close ()
         verify(out) close ()
       }
 
       "throwing an IOException from OutputStream.write(byte[], int, int)" in {
         val out = mock[OutputStream]
-        doThrow(new IOException) when(out) write (any, any, any)
+        doThrow(classOf[IOException]) when out write (any, any, any)
         intercept[IOException](copy(in, out))
         verify(out) close ()
       }
 
       "throwing an IOException from OutputStream.close()" in {
         val out = mock[OutputStream]
-        doThrow(new IOException) when(out) close ()
+        doThrow(classOf[IOException]) when out close ()
         intercept[IOException](copy(in, out))
         verify(out) close ()
       }
     }
 
-    "fail with the original IOException from InputStream.close()" in {
+    "fail with some IOException from InputStream.close()" in {
       val in = mock[InputStream]
-      val e = new IOException
       when(in read (any, any, any)) thenReturn -1
-      doThrow(e) when in close ()
-      intercept[IOException](copy(in, out)) should be theSameInstanceAs e
+      doThrow(classOf[IOException]) when in close ()
+      intercept[IOException](copy(in, out))
+      verify(in, times(2)) close ()
     }
 
-    "fail with the original IOException from OutputStream.close()" in {
+    "fail with some IOException from OutputStream.close()" in {
       val out = mock[OutputStream]
-      val e = new IOException
-      doThrow(e) when out close ()
-      intercept[IOException](copy(in, out)) should be theSameInstanceAs e
+      doThrow(classOf[IOException]) when out close ()
+      intercept[IOException](copy(in, out))
+      verify(out) close ()
     }
 
     "produce a copy of the data" when {
@@ -242,56 +225,58 @@ class StreamsTest extends WordSpec {
       "returning" in {
         val in = mock[InputStream]
         when(in read (any, any, any)) thenReturn -1
-        copy(new OneTimeSource(in), new OneTimeSink(out))
-        verify(in) close ()
+        copy(source(in), sink(out))
+        verify(in, times(2)) close ()
       }
 
       "throwing an IOException from InputStream.read(byte[], int, int)" in {
         val in = mock[InputStream]
-        doThrow(new IOException) when(in) read (any, any, any)
-        intercept[IOException](copy(new OneTimeSource(in), new OneTimeSink(out)))
-        verify(in) close ()
+        doThrow(classOf[IOException]) when in read (any, any, any)
+        intercept[IOException](copy(source(in), sink(out)))
+        verify(in, times(2)) close ()
       }
 
       "throwing an IOException from InputStream.close()" in {
         val in = mock[InputStream]
         when(in read (any, any, any)) thenReturn -1
-        doThrow(new IOException) when(in) close ()
-        intercept[IOException](copy(new OneTimeSource(in), new OneTimeSink(out)))
-        verify(in) close ()
+        doThrow(classOf[IOException]) when in close ()
+        intercept[IOException](copy(source(in), sink(out)))
+        verify(in, times(2)) close ()
       }
 
       "throwing an IOException from OutputStream.write(byte[], int, int)" in {
         val in = mock[InputStream]
         val out = mock[OutputStream]
         when(in read (any, any, any)) thenReturn 1
-        doThrow(new IOException) when(out) write (any, any, any)
-        intercept[IOException](copy(new OneTimeSource(in), new OneTimeSink(out)))
-        verify(in) close ()
+        doThrow(classOf[IOException]) when out write (any, any, any)
+        intercept[IOException](copy(source(in), sink(out)))
+        verify(in, times(2)) close ()
       }
 
       "throwing an IOException from OutputStream.close()" in {
         val in = mock[InputStream]
         val out = mock[OutputStream]
         when(in read (any, any, any)) thenReturn -1
-        doThrow(new IOException) when(out) close ()
-        intercept[IOException](copy(new OneTimeSource(in), new OneTimeSink(out)))
-        verify(in) close ()
+        doThrow(classOf[IOException]) when out close ()
+        intercept[IOException](copy(source(in), sink(out)))
+        verify(in, times(2)) close ()
+        verify(out) close ()
       }
     }
 
     "call OutputStream.close()" when {
       "returning" in {
         val out = mock[OutputStream]
-        copy(new OneTimeSource(in), new OneTimeSink(out))
+        copy(source(in), sink(out))
         verify(out) close ()
       }
 
       "throwing an IOException from InputStream.read(byte[], int, int)" in {
         val in = mock[InputStream]
         val out = mock[OutputStream]
-        doThrow(new IOException) when(in) read (any, any, any)
-        intercept[IOException](copy(new OneTimeSource(in), new OneTimeSink(out)))
+        doThrow(classOf[IOException]) when in read (any, any, any)
+        intercept[IOException](copy(source(in), sink(out)))
+        verify(in, times(2)) close ()
         verify(out) close ()
       }
 
@@ -299,22 +284,23 @@ class StreamsTest extends WordSpec {
         val in = mock[InputStream]
         val out = mock[OutputStream]
         when(in read (any, any, any)) thenReturn -1
-        doThrow(new IOException) when(in) close ()
-        intercept[IOException](copy(new OneTimeSource(in), new OneTimeSink(out)))
+        doThrow(classOf[IOException]) when in close ()
+        intercept[IOException](copy(source(in), sink(out)))
+        verify(in, times(2)) close ()
         verify(out) close ()
       }
 
       "throwing an IOException from OutputStream.write(byte[], int, int)" in {
         val out = mock[OutputStream]
-        doThrow(new IOException) when(out) write (any, any, any)
-        intercept[IOException](copy(new OneTimeSource(in), new OneTimeSink(out)))
+        doThrow(classOf[IOException]) when out write (any, any, any)
+        intercept[IOException](copy(source(in), sink(out)))
         verify(out) close ()
       }
 
       "throwing an IOException from OutputStream.close()" in {
         val out = mock[OutputStream]
-        doThrow(new IOException) when(out) close ()
-        intercept[IOException](copy(new OneTimeSource(in), new OneTimeSink(out)))
+        doThrow(classOf[IOException]) when out close ()
+        intercept[IOException](copy(source(in), sink(out)))
         verify(out) close ()
       }
     }
@@ -323,7 +309,7 @@ class StreamsTest extends WordSpec {
       "throwing an IOException from Source.stream()" in {
         val source = mock[Source]
         val sink = mock[Sink]
-        doThrow(new IOException) when source stream ()
+        doThrow(classOf[IOException]) when source stream ()
         intercept[IOException](copy(source, sink))
         verify(sink, never) stream ()
       }
@@ -333,34 +319,57 @@ class StreamsTest extends WordSpec {
       "throwing an IOException from Sink.stream()" in {
         val in = mock[InputStream]
         val sink = mock[Sink]
-        doThrow(new IOException) when sink stream ()
-        intercept[IOException](copy(new OneTimeSource(in), sink))
+        doThrow(classOf[IOException]) when sink stream ()
+        intercept[IOException](copy(source(in), sink))
         verify(in) close ()
       }
     }
 
-    "fail with the original IOException from Source.stream()" in {
+    "fail with some IOException from Source.stream()" in {
       val source = mock[Source]
-      val e = new IOException
-      doThrow(e) when source stream ()
-      intercept[IOException](copy(source, new OneTimeSink(out))) should be theSameInstanceAs e
+      doThrow(classOf[IOException]) when source stream ()
+      intercept[IOException](copy(source, sink(out)))
     }
 
-    "fail with the original IOException from Sink.stream()" in {
+    "fail with some IOException from Sink.stream()" in {
       val sink = mock[Sink]
-      val e = new IOException
-      doThrow(e) when sink stream ()
-      intercept[IOException](copy(new OneTimeSource(in), sink)) should be theSameInstanceAs e
+      doThrow(classOf[IOException]) when sink stream ()
+      intercept[IOException](copy(source(in), sink))
     }
 
     "produce a copy of the data" when {
       "returning" in {
         val in = StreamsTest.in
         val out = StreamsTest.out
-        copy(new OneTimeSource(in), new OneTimeSink(out))
+        copy(source(in), sink(out))
         in.available should be (0)
         in.bytes should equal (out.toByteArray)
       }
     }
   }
+
+  private def givenA = afterWord("given a")
+
+  private def any[A: Manifest] =
+    Matchers.any(implicitly[Manifest[A]].runtimeClass.asInstanceOf[Class[A]])
+}
+
+private object StreamsTest {
+
+  val bufferSize = 2 * Streams.FIFO_SIZE * Streams.BUFFER_SIZE
+
+  private def source(in: InputStream) = new OneTimeSource(in)
+
+  private def in = {
+    val b = new Array[Byte](bufferSize)
+    Random.nextBytes(b)
+    new ByteArrayInputStreamWithBuffer(b)
+  }
+
+  private def sink(out: OutputStream) = new OneTimeSink(out)
+
+  private def out = new ByteArrayOutputStream(bufferSize)
+
+  private class ByteArrayInputStreamWithBuffer(val bytes: Array[Byte])
+    extends ByteArrayInputStream(bytes)
 }
