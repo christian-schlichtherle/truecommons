@@ -26,7 +26,7 @@ import net.java.truecommons.key.macosx.keychain.CoreFoundation.CFTypeRef;
  * @author Christian Schlichtherle
  */
 @SuppressWarnings({ "PackageVisibleInnerClass", "PackageVisibleField" })
-final class Security implements Library {
+final class Security {
 
     static { Native.register(Security.class.getSimpleName()); }
 
@@ -36,7 +36,7 @@ final class Security implements Library {
     // Some constants.
     //
 
-    public static final int
+    static final int
             errSecSuccess           = 0,
             errSecUnimplemented     = -4,
             errSecInvalidKeychain   = -25295,
@@ -44,7 +44,7 @@ final class Security implements Library {
             errSecDuplicateItem     = -25299,
             errSecItemNotFound      = -25300;
 
-    public static final int
+    static final int
             CSSM_DL_DB_RECORD_ANY           = 0xA + 0,
             CSSM_DL_DB_RECORD_CERT          = 0xA + 1,
             CSSM_DL_DB_RECORD_CRL           = 0xA + 2,
@@ -59,7 +59,7 @@ final class Security implements Library {
             kSecAppleSharePasswordItemClass = (('a' << 8 | 's') << 8 | 'h') << 8 | 'p',
             kSecCertificateItemClass        = 0x8000_1000;
 
-    public static final int
+    static final int
             kSecKeyKeyClass         = 0,
             kSecKeyPrintName        = 1,
             kSecKeyAlias            = 2,
@@ -88,7 +88,7 @@ final class Security implements Library {
             kSecKeyWrap             = 25,
             kSecKeyUnwrap           = 26;
 
-    public static final int
+    static final int
             kSecCreationDateItemAttr       = (('c' << 8 | 'd') << 8 | 'a') << 8 | 't',
             kSecModDateItemAttr            = (('m' << 8 | 'd') << 8 | 'a') << 8 | 't',
             kSecDescriptionItemAttr        = (('d' << 8 | 'e') << 8 | 's') << 8 | 'c',
@@ -118,18 +118,18 @@ final class Security implements Library {
             kSecCrlEncoding                = (('c' << 8 | 'r') << 8 | 'n') << 8 | 'c',
             kSecAlias                      = (('a' << 8 | 'l') << 8 | 'i') << 8 | 's';
 
-    public static final int kSecFormatUnknown = 0;
+    static final int kSecFormatUnknown = 0;
 
     //
     // Some functions.
     //
 
-    public static native int // OSStatus
+    static native int // OSStatus
     SecKeychainCopyDefault(
         PointerByReference keychain // SecKeychainRef*
     );
 
-    public static native int // OSStatus
+    static native int // OSStatus
     SecKeychainCreate(
             String pathName, // const char*
             int passwordLength, // Uint32
@@ -139,12 +139,12 @@ final class Security implements Library {
             @CheckForNull PointerByReference keychain // SecKeychainRef*
     );
 
-    public static native int // OSStatus
+    static native int // OSStatus
     SecKeychainDelete(
             SecKeychainRef keychainOrArray
     );
 
-    public static native int // OSStatus
+    static native int // OSStatus
     SecKeychainItemCopyAttributesAndData(
             SecKeychainItemRef itemRef, // SecKeychainItemRef
             @CheckForNull SecKeychainAttributeInfo info, // SecKeychainAttributeInfo*
@@ -154,7 +154,7 @@ final class Security implements Library {
             @CheckForNull PointerByReference outData // void**
     );
 
-    public static native int // OSStatus
+    static native int // OSStatus
     SecKeychainItemCreateFromContent(
             int itemClass, // SecItemClass
             SecKeychainAttributeList attrList, // SecKeychainAttributeList*
@@ -165,18 +165,18 @@ final class Security implements Library {
             @CheckForNull PointerByReference itemRef // SecKeychainItemRef*
     );
 
-    public static native int // OSStatus
+    static native int // OSStatus
     SecKeychainItemDelete(
             SecKeychainItemRef itemRef
     );
 
-    public static native int // OSStatus
+    static native int // OSStatus
     SecKeychainItemFreeAttributesAndData(
             @CheckForNull SecKeychainAttributeList attrList, // SecKeychainAttributeList*
             @CheckForNull Pointer data // void*
     );
 
-    public static native int // OSStatus
+    static native int // OSStatus
     SecKeychainItemModifyAttributesAndData (
             SecKeychainItemRef itemRef,
             @CheckForNull SecKeychainAttributeList attrList, // const SecKeychainAttributeList*
@@ -184,19 +184,19 @@ final class Security implements Library {
             @CheckForNull ByteBuffer data // const void*
     );
 
-    public static native int // OSStatus
+    static native int // OSStatus
     SecKeychainOpen(
             String pathName, // const char*
             PointerByReference keychain // SecKeychainRef*
     );
 
-    public static native int // OSStatus
+    static native int // OSStatus
     SecKeychainSearchCopyNext(
             SecKeychainSearchRef searchRef,
             PointerByReference itemRef // SecKeychainItemRef*
     );
 
-    public static native int // OSStatus
+    static native int // OSStatus
     SecKeychainSearchCreateFromAttributes(
             @CheckForNull CFTypeRef keychainOrArray,
             int itemClass, // SecItemClass
@@ -204,7 +204,7 @@ final class Security implements Library {
             PointerByReference searchRef // SecKeychainSearchRef*
     );
 
-    public static native CFStringRef
+    static native CFStringRef
     SecCopyErrorMessageString(
             int status, // OSStatus
             @CheckForNull Pointer reserved // void*
@@ -226,7 +226,7 @@ final class Security implements Library {
 
     public static class SecAccessRef extends CFTypeRef {
         public SecAccessRef() { }
-        public SecAccessRef(Pointer p) { super(p); }
+        SecAccessRef(Pointer p) { super(p); }
     } // SecAccessRef
 
     public static class SecKeychainAttribute extends Structure {
@@ -235,7 +235,7 @@ final class Security implements Library {
         public Pointer data; // void*
 
         public SecKeychainAttribute() { }
-        public SecKeychainAttribute(Pointer p) { super(p); }
+        SecKeychainAttribute(Pointer p) { super(p); }
 
         @Override
         protected List<String> getFieldOrder() {
@@ -249,7 +249,7 @@ final class Security implements Library {
         public Pointer format; // UInt32*
 
         public SecKeychainAttributeInfo() { }
-        public SecKeychainAttributeInfo(Pointer p) { super(p); }
+        SecKeychainAttributeInfo(Pointer p) { super(p); }
 
         @Override
         protected List<String> getFieldOrder() {
@@ -262,7 +262,7 @@ final class Security implements Library {
         public Pointer attr; // SecKeychainAttribute*
 
         public SecKeychainAttributeList() { }
-        public SecKeychainAttributeList(Pointer p) { super(p); }
+        SecKeychainAttributeList(Pointer p) { super(p); }
 
         @Override
         protected List<String> getFieldOrder() {
@@ -272,16 +272,16 @@ final class Security implements Library {
 
     public static class SecKeychainItemRef extends CFTypeRef {
         public SecKeychainItemRef() { }
-        public SecKeychainItemRef(Pointer p) { super(p); }
+        SecKeychainItemRef(Pointer p) { super(p); }
     } // SecKeychainItemRef
 
     public static class SecKeychainRef extends CFTypeRef {
         public SecKeychainRef() { }
-        public SecKeychainRef(Pointer p) { super(p); }
+        SecKeychainRef(Pointer p) { super(p); }
     } // SecKeychainRef
 
     public static class SecKeychainSearchRef extends CFTypeRef {
         public SecKeychainSearchRef() { }
-        public SecKeychainSearchRef(Pointer p) { super(p); }
+        SecKeychainSearchRef(Pointer p) { super(p); }
     } // SecKeychainSearchRef
 } // Security

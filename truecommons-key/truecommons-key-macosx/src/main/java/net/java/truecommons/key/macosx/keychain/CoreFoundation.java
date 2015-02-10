@@ -23,7 +23,7 @@ import java.util.List;
  * @author Christian Schlichtherle
  */
 @SuppressWarnings({ "PackageVisibleInnerClass", "PackageVisibleField" })
-final class CoreFoundation implements Library {
+final class CoreFoundation {
 
     static { Native.register(CoreFoundation.class.getSimpleName()); }
 
@@ -33,9 +33,9 @@ final class CoreFoundation implements Library {
     // Some functions.
     //
 
-    public static native void CFRelease(CFTypeRef cf);
-    public static native void CFStringGetCharacters(CFStringRef theString, CFRange.ByValue range, char[] buffer);
-    public static native CFIndex CFStringGetLength(CFStringRef theString);
+    static native void CFRelease(CFTypeRef cf);
+    static native void CFStringGetCharacters(CFStringRef theString, CFRange.ByValue range, char[] buffer);
+    static native CFIndex CFStringGetLength(CFStringRef theString);
 
     //
     // Some utilities.
@@ -59,7 +59,7 @@ final class CoreFoundation implements Library {
         private static final long serialVersionUID = 0;
 
         public CFIndex() { }
-        public CFIndex(long value) { super(value); }
+        CFIndex(long value) { super(value); }
     } // CFindex
 
     @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
@@ -67,7 +67,7 @@ final class CoreFoundation implements Library {
         public CFIndex location, length;
 
         public CFRange() { }
-        public CFRange(final CFIndex location, final CFIndex length) {
+        CFRange(final CFIndex location, final CFIndex length) {
             this.location = location;
             this.length = length;
         }
@@ -80,7 +80,7 @@ final class CoreFoundation implements Library {
         public static class ByValue
         extends CFRange implements Structure.ByValue {
             public ByValue() { }
-            public ByValue(CFIndex location, CFIndex length) {
+            ByValue(CFIndex location, CFIndex length) {
                 super(location, length);
             }
         } // ByValue
@@ -88,11 +88,11 @@ final class CoreFoundation implements Library {
 
     public static class CFTypeRef extends PointerType {
         public CFTypeRef() { }
-        public CFTypeRef(Pointer p) { super(p); }
+        CFTypeRef(Pointer p) { super(p); }
     } // CFTypeRef
 
     public static class CFStringRef extends CFTypeRef {
         public CFStringRef() { }
-        public CFStringRef(Pointer p) { super(p); }
+        CFStringRef(Pointer p) { super(p); }
     } // CFStringRef
 }
