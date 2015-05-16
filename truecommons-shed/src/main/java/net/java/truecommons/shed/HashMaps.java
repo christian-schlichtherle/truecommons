@@ -36,7 +36,7 @@ public class HashMaps {
     public static int initialCapacity(int size) {
         if (size < OVERHEAD_SIZE)
             size = OVERHEAD_SIZE;
-        final long capacity = size * 4L / 3 + 1;
+        final long capacity = size * 4L / 3;
         return Integer.MAX_VALUE >= capacity
                 ? powerOfTwo((int) capacity)
                 : Integer.MAX_VALUE; // not very realistic
