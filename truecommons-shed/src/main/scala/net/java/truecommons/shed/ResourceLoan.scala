@@ -32,7 +32,7 @@ trait ResourceLoan {
    * @param resource the autocloseable resource.
    * @tparam A the type of the autocloseable resource.
    */
-  final def loan[A <: AutoCloseable](resource: A) = new LoanStatement(resource)
+  def loan[A <: AutoCloseable](resource: A) = new LoanStatement(resource)
 }
 
 /** An object which provides Java's basic "try-with-resources" statement.
@@ -56,7 +56,7 @@ trait ResourceLoan {
   */
 object ResourceLoan extends ResourceLoan {
 
-  final class LoanStatement[A <: AutoCloseable](resource: A) {
+  class LoanStatement[A <: AutoCloseable](resource: A) {
 
     /** Applies the loan pattern to the given function.
       * This is a straightforward translation of Java's
@@ -65,7 +65,7 @@ object ResourceLoan extends ResourceLoan {
       *
       * @param fun the function with the nullable resource parameter.
       */
-    def to[B](fun: A => B) = {
+    final def to[B](fun: A => B) = {
       var t1: Throwable = null
       try {
         fun(resource)
