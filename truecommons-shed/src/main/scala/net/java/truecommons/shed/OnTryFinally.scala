@@ -23,7 +23,7 @@ trait OnTryFinally {
    * @param tryBlock the code block to execute first.
    * @tparam A the return type of the code block.
    */
-  final def onTry[A](tryBlock: => A) = new OnTryStatement(tryBlock)
+  def onTry[A](tryBlock: => A) = new OnTryStatement(tryBlock)
 }
 
 /**
@@ -36,7 +36,7 @@ trait OnTryFinally {
  */
 object OnTryFinally extends OnTryFinally {
 
-  final class OnTryStatement[A](tryBlock: => A) {
+  class OnTryStatement[A](tryBlock: => A) {
 
     /**
      * Executes an `onTry { tryBlock } onFinally { finallyBlock }` statement.
@@ -51,7 +51,7 @@ object OnTryFinally extends OnTryFinally {
      *                     `tryBlock` code block.
      * @return the return value of the `tryBlock` code block.
      */
-    def onFinally(finallyBlock: => Any) = {
+    final def onFinally(finallyBlock: => Any) = {
       var t1: Throwable = null
       try {
         tryBlock
@@ -84,7 +84,7 @@ object OnTryFinally extends OnTryFinally {
      *                   code block throws some [[Throwable]].
      * @return the return value of the `tryBlock` code block.
      */
-    def onThrowable(throwBlock: => Any) = {
+    final def onThrowable(throwBlock: => Any) = {
       try {
         tryBlock
       } catch {
