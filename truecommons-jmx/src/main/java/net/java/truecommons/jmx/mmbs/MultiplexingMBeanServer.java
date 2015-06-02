@@ -76,7 +76,8 @@ public final class MultiplexingMBeanServer extends DelegatingMBeanServer {
     public Set<ObjectInstance> queryMBeans(ObjectName name, QueryExp query) {
         final Set<ObjectInstance> is = mbs().queryMBeans(modifier.apply(name), query);
         final Set<ObjectInstance> os = new LinkedHashSet<>(HashMaps.initialCapacity(is.size()));
-        for (final ObjectInstance i : is) os.add(modifier.unapply(i));
+        for (ObjectInstance i : is)
+            os.add(modifier.unapply(i));
         return os;
     }
 
@@ -84,7 +85,8 @@ public final class MultiplexingMBeanServer extends DelegatingMBeanServer {
     public Set<ObjectName> queryNames(ObjectName name, QueryExp query) {
         final Set<ObjectName> is = mbs().queryNames(modifier.apply(name), query);
         final Set<ObjectName> os = new LinkedHashSet<>(HashMaps.initialCapacity(is.size()));
-        for (final ObjectName i : is) os.add(modifier.unapply(i));
+        for (ObjectName i : is)
+            os.add(modifier.unapply(i));
         return os;
     }
 
