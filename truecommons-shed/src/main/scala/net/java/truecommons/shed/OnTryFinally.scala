@@ -21,6 +21,7 @@ trait OnTryFinally {
    * `onTry { tryBlock } onThrowable { ... }` statement.
    *
    * @param tryBlock the code block to execute first.
+   * @tparam A the return type of the code block.
    */
   final def onTry[A](tryBlock: => A) = new OnTryStatement(tryBlock)
 }
