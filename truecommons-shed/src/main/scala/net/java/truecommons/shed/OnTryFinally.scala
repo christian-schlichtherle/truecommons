@@ -4,6 +4,8 @@
  */
 package net.java.truecommons.shed
 
+import net.java.truecommons.shed.OnTryFinally.OnTryStatement
+
 /**
  * A mix-in trait which provides an `onTry { ... } onFinally { ... }` and
  * `onTry { ... } onThrowable { ... }` statement.
@@ -21,6 +23,17 @@ trait OnTryFinally {
    * @param tryBlock the code block to execute first.
    */
   final def onTry[A](tryBlock: => A) = new OnTryStatement(tryBlock)
+}
+
+/**
+ * An object which provides an `onTry { ... } onFinally { ... }` and
+ * `onTry { ... } onThrowable { ... }` statement.
+ * These statements chain exceptions from both code blocks via
+ * `Throwable.addSuppressed(Throwable)`.
+ *
+ * @author Christian Schlichtherle
+ */
+object OnTryFinally extends OnTryFinally {
 
   final class OnTryStatement[A](tryBlock: => A) {
 
@@ -86,13 +99,3 @@ trait OnTryFinally {
     }
   }
 }
-
-/**
- * An object which provides an `onTry { ... } onFinally { ... }` and
- * `onTry { ... } onThrowable { ... }` statement.
- * These statements chain exceptions from both code blocks via
- * `Throwable.addSuppressed(Throwable)`.
- *
- * @author Christian Schlichtherle
- */
-object OnTryFinally extends OnTryFinally
