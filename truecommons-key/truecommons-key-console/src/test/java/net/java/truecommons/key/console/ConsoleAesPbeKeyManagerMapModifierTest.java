@@ -17,7 +17,6 @@ public class ConsoleAesPbeKeyManagerMapModifierTest
 extends KeyManagerMapModifierTestSuite {
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Iterable<Class<?>> getClasses() {
         return Collections.<Class<?>>singleton(AesPbeParameters.class);
     }

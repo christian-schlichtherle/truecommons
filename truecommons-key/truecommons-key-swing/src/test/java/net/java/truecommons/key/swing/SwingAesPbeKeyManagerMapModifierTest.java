@@ -4,10 +4,11 @@
  */
 package net.java.truecommons.key.swing;
 
-import java.util.Arrays;
 import net.java.truecommons.key.spec.common.AesPbeParameters;
 import net.java.truecommons.key.spec.spi.KeyManagerMapModifier;
 import net.java.truecommons.key.spec.spi.KeyManagerMapModifierTestSuite;
+
+import java.util.Collections;
 
 /**
  * @author Christian Schlichtherle
@@ -16,9 +17,8 @@ public class SwingAesPbeKeyManagerMapModifierTest
 extends KeyManagerMapModifierTestSuite {
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Iterable<Class<?>> getClasses() {
-        return (Iterable<Class<?>>) Arrays.asList((Class<?>) AesPbeParameters.class);
+        return Collections.<Class<?>>singleton(AesPbeParameters.class);
     }
 
     @Override
