@@ -4,15 +4,16 @@
  */
 package net.java.truecommons.key.spec.prompting;
 
-import java.net.URI;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.NotThreadSafe;
-import javax.annotation.concurrent.ThreadSafe;
 import net.java.truecommons.key.spec.AbstractKeyProvider;
 import net.java.truecommons.key.spec.PersistentUnknownKeyException;
 import net.java.truecommons.key.spec.UnknownKeyException;
 import net.java.truecommons.key.spec.prompting.PromptingKey.Controller;
 import net.java.truecommons.key.spec.prompting.PromptingKey.View;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
+import java.net.URI;
 
 /**
  * A key provider which prompts the user for a key for its protected resource.
@@ -110,25 +111,25 @@ extends AbstractKeyProvider<K> {
         public final void setKeyClone(@CheckForNull K key) {
             provider.setKeyClone(key);
         }
-    } // BaseController
+    }
 
     /**
-     * The controller to use when promting for a key to write a protected
+     * The controller to use when prompting for a key to write a protected
      * resource.
      */
     @NotThreadSafe
     private final class WriteController extends AbstractController {
         @Override
         public K getKeyClone() { return provider.getKeyClone(); }
-    } // WriteController
+    }
 
     /**
-     * The controller to use when promting for a key to read a protected
+     * The controller to use when prompting for a key to read a protected
      * resource.
      */
     @NotThreadSafe
     private final class ReadController extends AbstractController {
         @Override
         public K getKeyClone() { throw new IllegalStateException(); }
-    } // ReadController
+    }
 }

@@ -4,11 +4,12 @@
  */
 package net.java.truecommons.key.spec.prompting;
 
-import java.net.URI;
-import java.util.Objects;
-import javax.annotation.concurrent.ThreadSafe;
 import net.java.truecommons.key.spec.AbstractKeyManager;
 import net.java.truecommons.key.spec.prompting.PromptingKey.View;
+
+import javax.annotation.concurrent.ThreadSafe;
+import java.net.URI;
+import java.util.Objects;
 
 /**
  * A key manager which prompts the user for a secret key if required.
@@ -48,9 +49,7 @@ extends AbstractKeyManager<K> {
     }
 
     @Override
-    public void unlink(URI resource) {
-        manager.unlink(resource);
-    }
+    public void unlink(URI resource) { manager.unlink(resource); }
 
     /**
      * {@inheritDoc}

@@ -4,13 +4,14 @@
  */
 package net.java.truecommons.key.spec.prompting;
 
+import net.java.truecommons.shed.UniqueObject;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.concurrent.ThreadSafe;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.ThreadSafe;
-import net.java.truecommons.shed.UniqueObject;
 
 /**
  * @param  <K> the type of the prompting keys.
@@ -29,7 +30,8 @@ extends UniqueObject {
 
     synchronized SharedKeyProvider<K> provider(final URI resource) {
         SharedKeyProvider<K> p = get(resource);
-        if (null == p) providers.put(resource, p = new SharedKeyProvider<>());
+        if (null == p)
+            providers.put(resource, p = new SharedKeyProvider<>());
         return p;
     }
 
@@ -38,21 +40,25 @@ extends UniqueObject {
             final URI newResource) {
         Objects.requireNonNull(newResource);
         final SharedKeyProvider<K> p = get(oldResource);
-        if (null != p) providers.put(newResource, p);
+        if (null != p)
+            providers.put(newResource, p);
     }
 
     synchronized void unlink(final URI resource) {
         final SharedKeyProvider<K> p = providers.remove(Objects.requireNonNull(resource));
-        if (null != p) p.setKeyClone(null);
+        if (null != p)
+            p.setKeyClone(null);
     }
 
     synchronized void resetCancelledKey(final URI resource) {
         final SharedKeyProvider<K> p = get(resource);
-        if (null != p) p.resetCancelledKey();
+        if (null != p)
+            p.resetCancelledKey();
     }
 
     synchronized void resetUnconditionally(final URI resource) {
         final SharedKeyProvider<K> p = get(resource);
-        if (null != p) p.resetUnconditionally();
+        if (null != p)
+            p.resetUnconditionally();
     }
 }
