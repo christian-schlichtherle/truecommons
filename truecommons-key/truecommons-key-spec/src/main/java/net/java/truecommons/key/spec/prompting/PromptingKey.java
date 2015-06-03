@@ -13,7 +13,7 @@ import net.java.truecommons.key.spec.UnknownKeyException;
 /**
  * A prompting key for writing and reading protected resources.
  * <p>
- * Implementations do not need to be safe for multi-threading.
+ * Implementations need to be stateful and hence do not need to be thread-safe.
  *
  * @param  <K> the type of this prompting key.
  * @see    PromptingKeyProvider
@@ -58,12 +58,12 @@ extends Key<K> {
      * Implementations of this interface are maintained by a
      * {@link PromptingKeyManager}.
      * <p>
-     * Implementations must be safe for multi-threading!
+     * Implementations must be thread-safe!
      *
      * @param  <K> the type of the safe keys.
      * @author Christian Schlichtherle
      */
-    public interface View<K extends PromptingKey<K>> {
+    interface View<K extends PromptingKey<K>> {
 
         /**
          * Prompts the user for the key for (over)writing the contents of a
@@ -122,16 +122,18 @@ extends Key<K> {
          */
         void promptKeyForReading(Controller<K> controller, boolean invalid)
         throws UnknownKeyException;
-    } // View
+    }
 
     /**
      * Proxies access to the key for {@link View} implementations.
+     * <p>
+     * Implementations need to be stateful and hence do not need to be
+     * thread-safe.
      *
      * @param  <K> the type of the safe keys.
      * @author Christian Schlichtherle
      */
-    @NotThreadSafe
-    public interface Controller<K extends PromptingKey<K>> {
+    interface Controller<K extends PromptingKey<K>> {
 
         /**
          * Returns the unique resource identifier (resource ID) of the
@@ -164,5 +166,5 @@ extends Key<K> {
          *         current state.
          */
         void setKeyClone(@CheckForNull K key);
-    } // Controller
+    }
 }
