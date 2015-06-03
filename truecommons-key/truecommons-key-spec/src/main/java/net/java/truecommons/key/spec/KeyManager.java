@@ -33,6 +33,19 @@ public interface KeyManager<K> {
     KeyProvider<K> provider(URI resource);
 
     /**
+     * Notifies this key manager that a protected resource has been released.
+     * Clients should call this method only if they wish to reset or dispose
+     * the key provider which may be associated with the protected resource.
+     * Implementations may completely ignore this call or chose to reset or
+     * dispose the associated key provider based on its state.
+     * For example, an implementation may reset the key provider only if the
+     * user had cancelled the prompting for the key.
+     *
+     * @param resource the URI of the protected resource.
+     */
+    void release(URI resource);
+
+    /**
      * Notifies this key manager that a protected resource has been linked.
      *
      * @param oldResource the old URI of the protected resource.
@@ -47,17 +60,4 @@ public interface KeyManager<K> {
      * @param resource the URI of the protected resource.
      */
     void unlink(URI resource);
-
-    /**
-     * Notifies this key manager that a protected resource has been released.
-     * Clients should call this method only if they wish to reset or dispose
-     * the key provider which may be associated with the protected resource.
-     * Implementations may completely ignore this call or chose to reset or
-     * dispose the associated key provider based on its state.
-     * For example, an implementation may reset the key provider only if the
-     * user had cancelled the prompting for the key.
-     *
-     * @param resource the URI of the protected resource.
-     */
-    void release(URI resource);
 }
