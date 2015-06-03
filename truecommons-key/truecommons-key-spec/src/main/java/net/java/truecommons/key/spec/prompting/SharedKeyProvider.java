@@ -36,7 +36,7 @@ extends UniqueObject {
      * @throws UnknownKeyException If {@code setupKeyForWriting} throws
      *         this exception or the key is still {@code null}.
      */
-    final K getKeyCloneForWriting(final PromptingKeyProvider<K> provider)
+    K getKeyCloneForWriting(final PromptingKeyProvider<K> provider)
     throws UnknownKeyException {
         setupKeyForWriting(provider);
         return getNonNullKeyClone();
@@ -73,7 +73,7 @@ extends UniqueObject {
      * @throws UnknownKeyException If {@code setupKeyForReading} throws
      *         this exception or the key is still {@code null}.
      */
-    final K getKeyCloneForReading(
+    K getKeyCloneForReading(
             final PromptingKeyProvider<K> provider,
             final boolean invalid)
     throws UnknownKeyException {
