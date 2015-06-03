@@ -44,21 +44,13 @@ extends UniqueObject {
             providers.put(newResource, p);
     }
 
-    synchronized void unlink(final URI resource) {
-        final SharedKeyProvider<K> p = providers.remove(Objects.requireNonNull(resource));
-        if (null != p)
-            p.setKeyClone(null);
+    synchronized void unlink(URI resource) {
+        providers.remove(Objects.requireNonNull(resource));
     }
 
-    synchronized void resetCancelledKey(final URI resource) {
+    synchronized void release(final URI resource) {
         final SharedKeyProvider<K> p = get(resource);
         if (null != p)
             p.resetCancelledKey();
-    }
-
-    synchronized void resetUnconditionally(final URI resource) {
-        final SharedKeyProvider<K> p = get(resource);
-        if (null != p)
-            p.resetUnconditionally();
     }
 }

@@ -27,8 +27,7 @@ import java.net.URI;
  * @author Christian Schlichtherle
  */
 @ThreadSafe
-@SuppressWarnings("PackageVisibleInnerClass")
-public final class PromptingKeyProvider<K extends PromptingKey<K>>
+final class PromptingKeyProvider<K extends PromptingKey<K>>
 extends AbstractKeyProvider<K> {
 
     private final PromptingKeyManager<K> manager;
@@ -78,13 +77,13 @@ extends AbstractKeyProvider<K> {
      * Resets the state of this key provider
      * if and only if prompting for the key has been cancelled.
      */
-    public void resetCancelledKey() { provider.resetCancelledKey(); }
+    void resetCancelledKey() { provider.resetCancelledKey(); }
 
     /**
      * Resets the state of this key provider
      * unconditionally.
      */
-    public void resetUnconditionally() { provider.resetUnconditionally(); }
+    void resetUnconditionally() { provider.resetUnconditionally(); }
 
     private View<K> getView() { return manager.getView(); }
 
@@ -119,6 +118,7 @@ extends AbstractKeyProvider<K> {
      */
     @NotThreadSafe
     private final class WriteController extends AbstractController {
+
         @Override
         public K getKeyClone() { return provider.getKeyClone(); }
     }
@@ -129,6 +129,7 @@ extends AbstractKeyProvider<K> {
      */
     @NotThreadSafe
     private final class ReadController extends AbstractController {
+
         @Override
         public K getKeyClone() { throw new IllegalStateException(); }
     }
