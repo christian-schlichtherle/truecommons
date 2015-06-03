@@ -4,11 +4,13 @@
  */
 package net.java.truecommons.key.disable;
 
-import java.util.Arrays;
 import net.java.truecommons.key.spec.common.AesPbeParameters;
 import net.java.truecommons.key.spec.spi.KeyManagerMapModifier;
 import net.java.truecommons.key.spec.spi.KeyManagerMapModifierTestSuite;
-import static org.junit.Assert.*;
+
+import java.util.Collections;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @since  TrueCommons 2.2
@@ -18,9 +20,8 @@ public class DisableAesPbeKeyManagerMapModifierTest
 extends KeyManagerMapModifierTestSuite {
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Iterable<Class<?>> getClasses() {
-        return (Iterable<Class<?>>) Arrays.asList((Class<?>) AesPbeParameters.class);
+        return Collections.<Class<?>>singleton(AesPbeParameters.class);
     }
 
     @Override
