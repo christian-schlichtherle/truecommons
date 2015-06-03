@@ -30,11 +30,11 @@ public final class UnknownKeyManager extends AbstractKeyManager<Object> {
     }
 
     @Override
+    public void release(URI resource) { }
+
+    @Override
     public void link(URI oldResource, URI newResource) { }
 
     @Override
     public void unlink(URI resource) { }
-
-    @Override
-    public void release(URI resource) { }
 }

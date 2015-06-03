@@ -62,6 +62,12 @@ extends AbstractKeyManager<P> {
     }
 
     @Override
+    public void release(URI resource) {
+        skip = false;
+        manager.release(resource);
+    }
+
+    @Override
     public void link(final URI oldResource, final URI newResource) {
         final P param = getKey(oldResource);
         manager.link(oldResource, newResource);
@@ -72,12 +78,6 @@ extends AbstractKeyManager<P> {
     public void unlink(final URI resource) {
         manager.unlink(resource);
         setKey(resource, null);
-    }
-
-    @Override
-    public void release(URI resource) {
-        skip = false;
-        manager.release(resource);
     }
 
     @CheckForNull P getKey(final URI resource) {
