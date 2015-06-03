@@ -64,33 +64,37 @@ implements PromptingKey.View<P> {
     public final void promptKeyForWriting(final Controller<P> controller)
     throws KeyPromptingDisabledException {
         final Console con = System.console();
-        if (null == con) throw new KeyPromptingDisabledException();
+        if (null == con)
+            throw new KeyPromptingDisabledException();
 
         synchronized (lock) {
             final URI resource = controller.getResource();
             assert null != resource;
             if (!lastResource.equals(resource))
-                con.printf(resources.getString("writeKey.banner"), resource);
+                con.format(resources.getString("writeKey.banner"), resource);
             lastResource = resource;
 
             P param = controller.getKeyClone();
-            if (null == param) param = newPbeParameters();
+            if (null == param)
+                param = newPbeParameters();
 
             while (true) {
                 char[] input1 = con.readPassword(
                         resources.getString("writeKey.newPasswd1"));
-                if (null == input1 || 0 >= input1.length) return;
+                if (null == input1 || 0 >= input1.length)
+                    return;
                 if (MIN_PASSWD_LEN > input1.length) {
-                    con.printf(resources.getString("writeKey.passwd.tooShort"), MIN_PASSWD_LEN);
+                    con.format(resources.getString("writeKey.passwd.tooShort"), MIN_PASSWD_LEN);
                     continue;
                 }
                 try {
                     char[] input2 = con.readPassword(
                             resources.getString("writeKey.newPasswd2"));
-                    if (input2 == null) return;
+                    if (input2 == null)
+                        return;
                     try {
                         if (!Arrays.equals(input1, input2)) {
-                            con.printf(resources.getString("writeKey.passwd.noMatch"));
+                            con.format(resources.getString("writeKey.passwd.noMatch"));
                             continue;
                         }
                         param.setPassword(input1);
@@ -103,7 +107,7 @@ implements PromptingKey.View<P> {
                 }
             }
 
-            con.printf(resources.getString("keyStrength.banner"));
+            con.format(resources.getString("keyStrength.banner"));
             final String selection;
             final Map<Integer, S> map;
             {
@@ -112,7 +116,8 @@ implements PromptingKey.View<P> {
                 map = new HashMap<>(array.length / 3 * 4 + 1);
                 final PrintWriter writer = con.writer();
                 for (final S strength : array) {
-                    if (0 < builder.length()) builder.append('/');
+                    if (0 < builder.length())
+                        builder.append('/');
                     builder.append(strength.getBits());
                     map.put(strength.getBits(), strength);
                     writer.println(strength);
@@ -126,7 +131,8 @@ implements PromptingKey.View<P> {
                         resources.getString("keyStrength.prompt"),
                         selection,
                         null == keyStrength ? 0 : keyStrength.getBits());
-                if (null == input || input.length() <= 0) break;
+                if (null == input || input.length() <= 0)
+                    break;
                 try {
                     final int bits = Integer.parseInt(input);
                     final S strength = map.get(bits);
@@ -149,15 +155,17 @@ implements PromptingKey.View<P> {
             final boolean invalid)
     throws KeyPromptingDisabledException {
         final Console con = System.console();
-        if (null == con) throw new KeyPromptingDisabledException();
+        if (null == con)
+            throw new KeyPromptingDisabledException();
 
         synchronized (lock) {
-            if (invalid) con.printf(resources.getString("readKey.invalid"));
+            if (invalid)
+                con.format(resources.getString("readKey.invalid"));
 
             final URI resource = controller.getResource();
             assert null != resource;
             if (!lastResource.equals(resource))
-                con.printf(resources.getString("readKey.banner"), resource);
+                con.format(resources.getString("readKey.banner"), resource);
             lastResource = resource;
 
             final char[] passwd = con.readPassword(resources.getString("readKey.passwd"));
