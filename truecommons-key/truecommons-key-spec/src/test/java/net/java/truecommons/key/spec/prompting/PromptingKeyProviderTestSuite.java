@@ -4,17 +4,16 @@
  */
 package net.java.truecommons.key.spec.prompting;
 
-import net.java.truecommons.key.spec.prompting.PromptingKeyManager;
-import net.java.truecommons.key.spec.prompting.PromptingKeyProvider;
-import net.java.truecommons.key.spec.prompting.AbstractPromptingPbeParameters;
+import net.java.truecommons.key.spec.UnknownKeyException;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
-import net.java.truecommons.key.spec.UnknownKeyException;
+
 import static net.java.truecommons.key.spec.prompting.TestView.Action.*;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * @author Christian Schlichtherle
