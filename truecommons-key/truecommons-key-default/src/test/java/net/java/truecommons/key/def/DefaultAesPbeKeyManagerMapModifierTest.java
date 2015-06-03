@@ -4,13 +4,13 @@
  */
 package net.java.truecommons.key.def;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 import net.java.truecommons.key.spec.common.AesPbeParameters;
 import net.java.truecommons.key.spec.spi.KeyManagerMapModifier;
 import net.java.truecommons.key.spec.spi.KeyManagerMapModifierTestSuite;
-import static org.junit.Assert.*;
+
+import java.util.Collections;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @since  TrueCommons 2.2
