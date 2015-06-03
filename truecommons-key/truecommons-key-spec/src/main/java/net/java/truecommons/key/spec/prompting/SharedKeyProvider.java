@@ -4,12 +4,13 @@
  */
 package net.java.truecommons.key.spec.prompting;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.ThreadSafe;
 import net.java.truecommons.key.spec.PersistentUnknownKeyException;
 import net.java.truecommons.key.spec.UnknownKeyException;
 import net.java.truecommons.key.spec.util.SuspensionPenalty;
 import net.java.truecommons.shed.UniqueObject;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * @param  <K> the type of the prompting keys.
@@ -76,7 +77,8 @@ extends UniqueObject {
             final PromptingKeyProvider<K> provider,
             final boolean invalid)
     throws UnknownKeyException {
-        if (invalid) invalidated.set(System.currentTimeMillis());
+        if (invalid)
+            invalidated.set(System.currentTimeMillis());
         try {
             setupKeyForReading(provider, invalid);
         } finally {
@@ -108,7 +110,8 @@ extends UniqueObject {
 
     private K getNonNullKeyClone() throws UnknownKeyException {
         final K key = getKeyClone();
-        if (null == key) throw new UnknownKeyException();
+        if (null == key)
+            throw new UnknownKeyException();
         return key;
     }
 
@@ -122,7 +125,8 @@ extends UniqueObject {
         final boolean set = null != key;
         this.key = set ? key.clone() : null;
         this.state = set ? State.SET : State.CANCELLED;
-        if (null != old) old.reset();
+        if (null != old)
+            old.reset();
     }
 
     synchronized @CheckForNull PersistentUnknownKeyException getException() {
@@ -131,7 +135,8 @@ extends UniqueObject {
 
     synchronized void setException(
             final @CheckForNull PersistentUnknownKeyException exception) {
-        if (null != (this.exception = exception)) setKeyClone(null);
+        if (null != (this.exception = exception))
+            setKeyClone(null);
     }
 
     /**
@@ -190,7 +195,8 @@ extends UniqueObject {
                     final PromptingKeyProvider<K> provider,
                     final boolean invalid)
             throws UnknownKeyException {
-                if (invalid) provider.resetUnconditionally();
+                if (invalid)
+                    provider.resetUnconditionally();
                 return invalid;
             }
 
@@ -242,5 +248,5 @@ extends UniqueObject {
 
         abstract <K extends PromptingKey<K>> void resetCancelledKey(
                 SharedKeyProvider<K> provider);
-    } // State
+    }
 }
