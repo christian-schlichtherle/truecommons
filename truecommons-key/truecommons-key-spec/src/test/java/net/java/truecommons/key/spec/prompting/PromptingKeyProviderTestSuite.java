@@ -4,6 +4,8 @@
  */
 package net.java.truecommons.key.spec.prompting;
 
+import net.java.truecommons.key.spec.KeyManager;
+import net.java.truecommons.key.spec.KeyProvider;
 import net.java.truecommons.key.spec.UnknownKeyException;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,8 +27,7 @@ public abstract class PromptingKeyProviderTestSuite<
     private static final AtomicInteger count = new AtomicInteger();
 
     private TestView<P> view;
-    private PromptingKeyManager<P> manager;
-    private PromptingKeyProvider<P> provider;
+    private KeyManager<P> manager;
 
     private P createParam() {
         final P param = newParam();
@@ -39,12 +40,13 @@ public abstract class PromptingKeyProviderTestSuite<
 
     protected abstract P newParam();
 
+    private KeyProvider<P> provider() { return manager.provider(RESOURCE); }
+
     @Before
     public void setUp() {
         view = new TestView<>();
         view.setResource(RESOURCE);
         manager = new PromptingKeyManager<>(view);
-        provider = manager.provider(RESOURCE);
     }
 
     @Test
@@ -53,30 +55,30 @@ public abstract class PromptingKeyProviderTestSuite<
         view.setKey(param);
         assertSame(param, view.getKey());
 
-        assertEquals(param, provider.getKeyForWriting());
-        assertEquals(param, provider.getKeyForReading(false));
+        assertEquals(param, provider().getKeyForWriting());
+        assertEquals(param, provider().getKeyForReading(false));
 
         view.setAction(CANCEL);
 
-        assertEquals(param, provider.getKeyForWriting());
-        assertEquals(param, provider.getKeyForReading(false));
+        assertEquals(param, provider().getKeyForWriting());
+        assertEquals(param, provider().getKeyForReading(false));
 
-        provider.resetCancelledKey();
+        manager.release(RESOURCE);
 
-        assertEquals(param, provider.getKeyForReading(false));
-        assertEquals(param, provider.getKeyForWriting());
+        assertEquals(param, provider().getKeyForReading(false));
+        assertEquals(param, provider().getKeyForWriting());
 
-        provider.resetUnconditionally();
+        manager.unlink(RESOURCE);
 
         view.setKey(createParam());
         try {
-            provider.getKeyForReading(false);
+            provider().getKeyForReading(false);
             fail();
         } catch (UnknownKeyException expected) {
         }
         view.setKey(createParam());
         try {
-            provider.getKeyForWriting();
+            provider().getKeyForWriting();
             fail();
         } catch (UnknownKeyException expected) {
         }
@@ -85,42 +87,42 @@ public abstract class PromptingKeyProviderTestSuite<
 
         view.setKey(createParam());
         try {
-            provider.getKeyForReading(false);
+            provider().getKeyForReading(false);
             fail();
         } catch (UnknownKeyException expected) {
         }
         view.setKey(createParam());
         try {
-            provider.getKeyForWriting();
+            provider().getKeyForWriting();
             fail();
         } catch (UnknownKeyException expected) {
         }
 
-        provider.resetCancelledKey();
+        manager.release(RESOURCE);
         view.setAction(ENTER);
 
         param = createParam();
         param.setChangeRequested(true);
         view.setKey(param);
-        assertEquals(param, provider.getKeyForReading(false));
+        assertEquals(param, provider().getKeyForReading(false));
         view.setKey(param = createParam());
-        assertEquals(param, provider.getKeyForWriting());
+        assertEquals(param, provider().getKeyForWriting());
 
-        provider.setKey(null);
+        provider().setKey(null);
         try {
-            provider.getKeyForReading(false);
+            provider().getKeyForReading(false);
             fail();
         } catch (UnknownKeyException expected) {
         }
         try {
-            provider.getKeyForWriting();
+            provider().getKeyForWriting();
             fail();
         } catch (UnknownKeyException expected) {
         }
 
-        provider.setKey(param = createParam());
-        assertEquals(param, provider.getKeyForReading(false));
+        provider().setKey(param = createParam());
+        assertEquals(param, provider().getKeyForReading(false));
         view.setKey(createParam());
-        assertEquals(param, provider.getKeyForWriting());
+        assertEquals(param, provider().getKeyForWriting());
     }
 }

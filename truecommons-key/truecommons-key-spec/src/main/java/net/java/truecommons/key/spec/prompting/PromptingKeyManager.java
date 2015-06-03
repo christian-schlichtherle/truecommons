@@ -5,6 +5,7 @@
 package net.java.truecommons.key.spec.prompting;
 
 import net.java.truecommons.key.spec.AbstractKeyManager;
+import net.java.truecommons.key.spec.KeyProvider;
 import net.java.truecommons.key.spec.prompting.PromptingKey.View;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -20,7 +21,7 @@ import java.util.Objects;
  * @author Christian Schlichtherle
  */
 @ThreadSafe
-public class PromptingKeyManager<K extends PromptingKey<K>>
+public final class PromptingKeyManager<K extends PromptingKey<K>>
 extends AbstractKeyManager<K> {
 
     private final SharedKeyManager<K> manager = new SharedKeyManager<>();
@@ -31,17 +32,27 @@ extends AbstractKeyManager<K> {
      *
      * @param view the view for key prompting.
      */
-    public PromptingKeyManager(final View<K> view) {
+    public PromptingKeyManager(View<K> view) {
         this.view = Objects.requireNonNull(view);
     }
 
-    public final View<K> getView() { return view; }
+    View<K> getView() { return view; }
 
     @Override
-    public PromptingKeyProvider<K> provider(URI resource) {
+    public KeyProvider<K> provider(URI resource) {
         return new PromptingKeyProvider<>(this, resource,
                 manager.provider(resource));
     }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The implementation in the class {@code PromptingKeyManager} resets the
+     * state of the key provider for the given protected resource if and only
+     * if prompting for the key has been cancelled.
+     */
+    @Override
+    public void release(URI resource) { manager.release(resource); }
 
     @Override
     public void link(URI oldResource, URI newResource) {
@@ -50,35 +61,6 @@ extends AbstractKeyManager<K> {
 
     @Override
     public void unlink(URI resource) { manager.unlink(resource); }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * The implementation in the class {@code PromptingKeyManager} forwards the
-     * call to {@link #resetCancelledKey(URI)}.
-     */
-    @Override
-    public void release(URI resource) { resetCancelledKey(resource); }
-
-    /**
-     * Resets the state of the key provider for the given protected resource
-     * if and only if prompting for the key has been cancelled.
-     *
-     * @param resource the URI of the protected resource.
-     */
-    protected void resetCancelledKey(URI resource) {
-        manager.resetCancelledKey(resource);
-    }
-
-    /**
-     * Resets the state of the key provider for the given protected resource
-     * unconditionally.
-     *
-     * @param resource the URI of the protected resource.
-     */
-    protected void resetUnconditionally(URI resource) {
-        manager.resetUnconditionally(resource);
-    }
 
     /**
      * Returns a string representation of this object for logging and debugging
