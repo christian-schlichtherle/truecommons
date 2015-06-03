@@ -163,6 +163,14 @@
                 <artifactId>jna</artifactId>
                 <version>4.1.0</version>
             </dependency>
+            <dependency>
+                <!-- TODO: Remove this workaround for
+                     https://github.com/rickynils/scalacheck/issues/165 . -->
+                <groupId>org.scalacheck</groupId>
+                <artifactId>scalacheck_${scala.lang.version}</artifactId>
+                <version>1.12.2</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
