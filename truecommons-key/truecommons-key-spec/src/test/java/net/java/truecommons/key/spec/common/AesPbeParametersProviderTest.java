@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.key.spec.common;
 
-import net.java.truecommons.key.spec.common.AesPbeParameters;
 import net.java.truecommons.key.spec.prompting.PromptingKeyProviderTestSuite;
 
 /**
