@@ -4,8 +4,7 @@
  */
 package net.java.truecommons.key.spec.prompting;
 
-import net.java.truecommons.key.spec.prompting.AbstractPromptingPbeParameters;
-import net.java.truecommons.key.spec.AbstractSecretKeyTestSuite;
+import net.java.truecommons.key.spec.SecretKeyTestSuite;
 import net.java.truecommons.key.spec.KeyStrength;
 
 /**
@@ -14,7 +13,7 @@ import net.java.truecommons.key.spec.KeyStrength;
 public abstract class PromptingPbeParametersTestSuite<
         P extends AbstractPromptingPbeParameters<P, S>,
         S extends KeyStrength>
-extends AbstractSecretKeyTestSuite<P> {
+extends SecretKeyTestSuite<P> {
 
     protected abstract P newParam();
 

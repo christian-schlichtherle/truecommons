@@ -4,33 +4,31 @@
  */
 package net.java.truecommons.key.spec;
 
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
-import static java.nio.charset.StandardCharsets.*;
-import static net.java.truecommons.shed.Buffers.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static net.java.truecommons.shed.Buffers.byteBuffer;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.*;
+
 /**
  * @author Christian Schlichtherle
  */
-public abstract class AbstractSecretKeyTestSuite<
-        K extends AbstractSecretKey<K>> {
+public abstract class SecretKeyTestSuite<K extends SecretKey<K>> {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-            AbstractSecretKeyTestSuite.class);
+    private static final Logger logger =
+            LoggerFactory.getLogger(SecretKeyTestSuite.class);
 
     private K key;
 
