@@ -29,6 +29,8 @@ public interface KeyManager<K> {
      * Returns a key provider for accessing the identified protected resource.
      *
      * @param  resource the URI of the protected resource.
+     * @return a consistent (but not necessarily always the same) key provider
+     *         for accessing the identified protected resource.
      */
     KeyProvider<K> provider(URI resource);
 
