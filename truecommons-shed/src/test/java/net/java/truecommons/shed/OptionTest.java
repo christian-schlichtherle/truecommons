@@ -4,10 +4,13 @@
  */
 package net.java.truecommons.shed;
 
-import java.util.concurrent.ThreadLocalRandom;
-import javax.annotation.CheckForNull;
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import javax.annotation.CheckForNull;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 /**
  * @author Christian Schlichtherle
@@ -21,12 +24,14 @@ public class OptionTest {
 
     @Test
     public void testMostIdiomaticUseCase() {
-        for (String s : option) assertSame(string, s);
+        for (String s : option)
+            assertSame(string, s);
     }
 
     @Test
     public void testLessIdiomaticUseCase() {
-        if (!option.isEmpty()) assertSame(string, option.get());
+        if (!option.isEmpty())
+            assertSame(string, option.get());
     }
 
     @Test
@@ -35,9 +40,11 @@ public class OptionTest {
             Option<String> getMessage() { return Option.some("Hello world!"); }
         }
 
+        String check = null;
         Option<Container> option = Option.some(new Container());
         for (Container c : option)
             for (String s : c.getMessage())
-                System.out.println(s);
+                check = s;
+        assertEquals(new Container().getMessage().get(), check);
     }
 }

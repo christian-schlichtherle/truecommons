@@ -15,8 +15,7 @@ import org.junit.Test;
  */
 public class OptionNoneTest {
 
-    private final String string = null;
-    private final Option<String> option = Option.apply(string);
+    private final Option<String> option = Option.apply(null);
 
     @Test
     public void testEmptyIterator() {
@@ -47,6 +46,11 @@ public class OptionNoneTest {
     @Test
     public void testOrNull() {
         assertNull(option.orNull());
+    }
+
+    @Test
+    public void testOrElse() {
+        assertSame("foo", option.orElse(Option.some("foo")).get());
     }
 
     @Test

@@ -4,15 +4,10 @@
  */
 package net.java.truecommons.shed;
 
-import java.io.Serializable;
-import java.util.AbstractCollection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * An immutable collection of at most one element.
@@ -79,9 +74,9 @@ extends AbstractCollection<E> implements Serializable {
      * @param element the element.
      * @return An option for the given nullable element.
      */
-    public static <T> Option<T> apply(@CheckForNull T element) {
+    public static <T> Option<T> apply(@Nullable T element) {
         return null == element
-                ? (Option<T>) None.INSTANCE
+                ? Option.<T>none()
                 : new Some<>(element);
     }
 
@@ -91,6 +86,7 @@ extends AbstractCollection<E> implements Serializable {
      * @param <T> the type of the absent element.
      * @return An option with no element.
      */
+    @SuppressWarnings("unchecked")
     public static <T> Option<T> none() { return (Option<T>) None.INSTANCE; }
 
     /**
@@ -121,7 +117,7 @@ extends AbstractCollection<E> implements Serializable {
      *
      * @param alternative the alternative element.
      */
-    public abstract @Nullable E getOrElse(@CheckForNull E alternative);
+    public abstract @Nullable E getOrElse(@Nullable E alternative);
 
     /**
      * Equivalent to {@link #getOrElse getOrElse(null)}, but probably more
@@ -147,7 +143,7 @@ extends AbstractCollection<E> implements Serializable {
 
     private static final class None<T> extends Option<T> {
 
-        static final None<Object> INSTANCE = new None<>();
+        static final None<?> INSTANCE = new None<>();
 
         @Override
         public Iterator<T> iterator() { return Collections.emptyIterator(); }
@@ -162,10 +158,12 @@ extends AbstractCollection<E> implements Serializable {
         public T get() { throw new NoSuchElementException(); }
 
         @Override
-        public T getOrElse(T alternative) { return alternative; }
+        public @Nullable T getOrElse(@Nullable T alternative) {
+            return alternative;
+        }
 
         @Override
-        public T orNull() { return null; }
+        public @Nullable T orNull() { return null; }
 
         @Override
         public boolean equals(final Object other) {
@@ -174,14 +172,13 @@ extends AbstractCollection<E> implements Serializable {
 
         @Override
         public int hashCode() { return 42; }
-    } // None
+    }
 
     private static final class Some<T> extends Option<T> {
 
         final T element;
 
         Some(final T element) {
-            assert null != element;
             this.element = element;
         }
 
@@ -200,7 +197,7 @@ extends AbstractCollection<E> implements Serializable {
         public T get() { return element; }
 
         @Override
-        public T getOrElse(T alternative) { return this.element; }
+        public T getOrElse(@Nullable T alternative) { return this.element; }
 
         @Override
         public T orNull() { return element; }
@@ -214,5 +211,5 @@ extends AbstractCollection<E> implements Serializable {
 
         @Override
         public int hashCode() { return element.hashCode(); }
-    } // Some
+    }
 }

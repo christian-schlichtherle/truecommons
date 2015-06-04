@@ -56,6 +56,11 @@ public class OptionSomeTest {
     }
 
     @Test
+    public void testOrElse() {
+        assertSame("Hello world!", option.orElse(Option.some("foo")).get());
+    }
+
+    @Test
     @SuppressWarnings("RedundantStringConstructorCall")
     public void testEquals() {
         final Option<String> o1 = option;
