@@ -130,7 +130,8 @@ extends AbstractKeyManager<P> {
 
                 if (null != param) {
                     final ByteBuffer newSecret = param.getSecret();
-                    if (null == newSecret) throw new IllegalArgumentException();
+                    if (null == newSecret)
+                        throw new IllegalArgumentException();
                     try {
                         final ByteBuffer newXml = serialize(param);
                         @SuppressWarnings("unchecked")
@@ -186,7 +187,8 @@ extends AbstractKeyManager<P> {
 
     static @CheckForNull ByteBuffer serialize(
             final @CheckForNull Object object) {
-        if (null == object) return null;
+        if (null == object)
+            return null;
         try (final ByteArrayOutputStream bos = new ByteArrayOutputStream(512)) {
             try (final XMLEncoder _ = new XMLEncoder(bos)) {
                 _.writeObject(object);
@@ -200,7 +202,8 @@ extends AbstractKeyManager<P> {
     }
 
     static @CheckForNull Object deserialize(final @CheckForNull ByteBuffer xml) {
-        if (null == xml) return null;
+        if (null == xml)
+            return null;
         final byte[] array = new byte[xml.remaining()]; // cannot use bb.array()!
         xml.duplicate().get(array);
         try (final XMLDecoder _ = new XMLDecoder(new ByteArrayInputStream(array))) {
@@ -220,13 +223,6 @@ extends AbstractKeyManager<P> {
         }
     }
 
-    private interface Action<T> {
-        @CheckForNull T call(
-                Keychain keychain,
-                Map<AttributeClass, ByteBuffer> attributes)
-        throws KeychainException;
-    } // Action
-
     private static Map<AttributeClass, ByteBuffer> attributes(final URI uri) {
         final Map<AttributeClass, ByteBuffer>
                 m = new EnumMap<>(AttributeClass.class);
@@ -236,7 +232,8 @@ extends AbstractKeyManager<P> {
     }
 
     private synchronized Keychain open() throws KeychainException {
-        if (null != keychain) return keychain;
+        if (null != keychain)
+            return keychain;
         return keychain = Keychain.open(KEYCHAIN, null);
     }
 
@@ -247,7 +244,14 @@ extends AbstractKeyManager<P> {
     @Override
     @SuppressWarnings("FinalizeDeclaration")
     protected void finalize() throws Throwable {
-        try { super.finalize(); }
-        finally { close(); }
+        try { close(); }
+        finally { super.finalize(); }
+    }
+
+    private interface Action<T> {
+        @CheckForNull T call(
+                Keychain keychain,
+                Map<AttributeClass, ByteBuffer> attributes)
+                throws KeychainException;
     }
 }
