@@ -58,9 +58,11 @@ public final class Buffers {
         while (true) {
             final ByteBuffer obb = ByteBuffer.allocateDirect(bytes);
             final CoderResult cr = enc.encode(icb.duplicate(), obb, true);
-            if (cr.isUnderflow()) enc.flush(obb);
+            if (cr.isUnderflow())
+                enc.flush(obb);
             obb.flip();
-            if (cr.isUnderflow()) return obb;
+            if (cr.isUnderflow())
+                return obb;
             if (!cr.isOverflow())  {
                 cr.throwException();
                 throw new AssertionError();
@@ -77,7 +79,8 @@ public final class Buffers {
 
     public static @Nullable char[] charArray(
             final @CheckForNull ByteBuffer bb) {
-        if (null == bb) return null;
+        if (null == bb)
+            return null;
         final CharBuffer ocb = charBuffer(bb);
         final char[] oca = new char[ocb.remaining()];
         ocb.duplicate().get(oca);
@@ -87,7 +90,8 @@ public final class Buffers {
 
     public static @Nullable CharBuffer charBuffer(
             final @CheckForNull ByteBuffer bb) {
-        if (null == bb) return null;
+        if (null == bb)
+            return null;
         final CharsetDecoder dec = UTF_8.newDecoder()
             .onMalformedInput(REPLACE)
             .onUnmappableCharacter(REPLACE);
@@ -106,9 +110,11 @@ public final class Buffers {
                     .allocateDirect(bytes)
                     .asCharBuffer();
             final CoderResult cr = dec.decode(ibb.duplicate(), ocb, true);
-            if (cr.isUnderflow()) dec.flush(ocb);
+            if (cr.isUnderflow())
+                dec.flush(ocb);
             ocb.flip();
-            if (cr.isUnderflow()) return ocb;
+            if (cr.isUnderflow())
+                return ocb;
             if (!cr.isOverflow())  {
                 cr.throwException();
                 throw new AssertionError();
@@ -129,10 +135,12 @@ public final class Buffers {
     public static void fill(
             final @CheckForNull ByteBuffer bb,
             final byte value) {
-        if (null == bb) return;
+        if (null == bb)
+            return;
         final int position = bb.position();
         final int limit = bb.limit();
-        for (int i = position; i < limit; i++) bb.put(i, value);
+        for (int i = position; i < limit; i++)
+            bb.put(i, value);
     }
 
     /**
@@ -149,7 +157,8 @@ public final class Buffers {
         if (null == cb) return;
         final int position = cb.position();
         final int limit = cb.limit();
-        for (int i = position; i < limit; i++) cb.put(i, value);
+        for (int i = position; i < limit; i++)
+            cb.put(i, value);
     }
 
     /**
