@@ -10,7 +10,8 @@ import net.java.truecommons.key.spec.prompting.PromptingKey.View;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.net.URI;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A key manager which prompts the user for a secret key if required.
@@ -33,14 +34,14 @@ extends AbstractKeyManager<K> {
      * @param view the view for key prompting.
      */
     public PromptingKeyManager(View<K> view) {
-        this.view = Objects.requireNonNull(view);
+        this.view = requireNonNull(view);
     }
 
     View<K> getView() { return view; }
 
     @Override
     public KeyProvider<K> provider(URI resource) {
-        return new PromptingKeyProvider<>(this, resource,
+        return new PromptingKeyProvider<>(this, requireNonNull(resource),
                 manager.provider(resource));
     }
 
@@ -52,15 +53,19 @@ extends AbstractKeyManager<K> {
      * if prompting for the key has been cancelled.
      */
     @Override
-    public void release(URI resource) { manager.release(resource); }
-
-    @Override
-    public void link(URI oldResource, URI newResource) {
-        manager.link(oldResource, newResource);
+    public void release(URI resource) {
+        manager.release(requireNonNull(resource));
     }
 
     @Override
-    public void unlink(URI resource) { manager.unlink(resource); }
+    public void link(URI oldResource, URI newResource) {
+        manager.link(requireNonNull(oldResource), requireNonNull(newResource));
+    }
+
+    @Override
+    public void unlink(URI resource) {
+        manager.unlink(requireNonNull(resource));
+    }
 
     /**
      * Returns a string representation of this object for logging and debugging
