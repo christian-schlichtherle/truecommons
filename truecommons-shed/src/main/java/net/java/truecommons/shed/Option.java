@@ -136,7 +136,7 @@ extends AbstractCollection<E> implements Serializable {
     }
 
     @Override
-    public abstract boolean equals(final Object other);
+    public abstract boolean equals(Object other);
 
     @Override
     public abstract int hashCode();
@@ -166,7 +166,7 @@ extends AbstractCollection<E> implements Serializable {
         public @Nullable T orNull() { return null; }
 
         @Override
-        public boolean equals(final Object other) {
+        public boolean equals(Object other) {
             return other instanceof None;
         }
 
@@ -203,7 +203,7 @@ extends AbstractCollection<E> implements Serializable {
         public T orNull() { return element; }
 
         @Override
-        public boolean equals(final Object that) {
+        public boolean equals(Object that) {
             return this == that
                     || that instanceof Some
                     && this.element.equals(((Some<?>) that).element);
