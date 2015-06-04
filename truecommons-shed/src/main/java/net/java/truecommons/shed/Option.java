@@ -75,19 +75,8 @@ extends AbstractCollection<E> implements Serializable {
      * @return An option for the given nullable element.
      */
     public static <T> Option<T> apply(@Nullable T element) {
-        return null == element
-                ? Option.<T>none()
-                : new Some<>(element);
+        return null != element ? some(element) : Option.<T>none();
     }
-
-    /**
-     * Returns an option with no element.
-     *
-     * @param <T> the type of the absent element.
-     * @return An option with no element.
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> Option<T> none() { return (Option<T>) None.SINGLETON; }
 
     /**
      * Returns an option with the given element.
@@ -98,6 +87,15 @@ extends AbstractCollection<E> implements Serializable {
      * @throws NullPointerException if {@code element} is {@code null}.
      */
     public static <T> Option<T> some(T element) { return new Some<>(element); }
+
+    /**
+     * Returns an option with no element.
+     *
+     * @param <T> the type of the absent element.
+     * @return An option with no element.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Option<T> none() { return (Option<T>) None.SINGLETON; }
 
     /**
      * If present, returns the single element contained in this collection,
