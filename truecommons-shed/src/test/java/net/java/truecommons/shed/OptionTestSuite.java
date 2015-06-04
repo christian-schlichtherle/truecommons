@@ -70,8 +70,8 @@ public abstract class OptionTestSuite {
     throws Exception {
         final byte[] serialized;
         try (final ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-            try (ObjectOutputStream _ = new ObjectOutputStream(bos)) {
-                _.writeObject(original);
+            try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+                oos.writeObject(original);
             }
             bos.flush(); // redundant
             serialized = bos.toByteArray();
@@ -79,7 +79,8 @@ public abstract class OptionTestSuite {
 
         logger.trace("Serialized object to {} bytes.", serialized.length);
 
-        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(serialized))) {
+        try (ObjectInputStream ois = new ObjectInputStream(
+                new ByteArrayInputStream(serialized))) {
             return (T) ois.readObject();
         }
     }
@@ -96,8 +97,8 @@ public abstract class OptionTestSuite {
             serialized = bos.toByteArray();
         }
 
-        logger.debug("Serialized object to {} bytes.", serialized.length);
-        logger.debug("Serialized form:\n{}",
+        logger.debug("Serialized form ({} bytes):\n{}",
+                serialized.length,
                 new String(serialized, StandardCharsets.UTF_8));
 
         try (XMLDecoder decoder = new XMLDecoder(new ByteArrayInputStream(serialized))) {
