@@ -6,7 +6,7 @@ package net.java.truecommons.shed;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -63,9 +63,9 @@ import java.util.*;
 public abstract class Option<E>
 extends AbstractCollection<E> implements Serializable {
 
-    private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 1L;
 
-    private Option() { }
+    Option() { }
 
     /**
      * Returns an option for the given nullable element.
@@ -87,7 +87,7 @@ extends AbstractCollection<E> implements Serializable {
      * @return An option with no element.
      */
     @SuppressWarnings("unchecked")
-    public static <T> Option<T> none() { return (Option<T>) None.INSTANCE; }
+    public static <T> Option<T> none() { return (Option<T>) None.SINGLETON; }
 
     /**
      * Returns an option with the given element.
@@ -97,9 +97,7 @@ extends AbstractCollection<E> implements Serializable {
      * @return An option with the given element.
      * @throws NullPointerException if {@code element} is {@code null}.
      */
-    public static <T> Option<T> some(T element) {
-        return new Some<>(Objects.requireNonNull(element));
-    }
+    public static <T> Option<T> some(T element) { return new Some<>(element); }
 
     /**
      * If present, returns the single element contained in this collection,
@@ -140,76 +138,5 @@ extends AbstractCollection<E> implements Serializable {
 
     @Override
     public abstract int hashCode();
-
-    private static final class None<T> extends Option<T> {
-
-        static final None<?> INSTANCE = new None<>();
-
-        @Override
-        public Iterator<T> iterator() { return Collections.emptyIterator(); }
-
-        @Override
-        public int size() { return 0; }
-
-        @Override
-        public boolean isEmpty() { return true; }
-
-        @Override
-        public T get() { throw new NoSuchElementException(); }
-
-        @Override
-        public @Nullable T getOrElse(@Nullable T alternative) {
-            return alternative;
-        }
-
-        @Override
-        public @Nullable T orNull() { return null; }
-
-        @Override
-        public boolean equals(Object other) {
-            return other instanceof None;
-        }
-
-        @Override
-        public int hashCode() { return 42; }
-    }
-
-    private static final class Some<T> extends Option<T> {
-
-        final T element;
-
-        Some(final T element) {
-            this.element = element;
-        }
-
-        @Override
-        public Iterator<T> iterator() {
-            return Collections.singleton(element).iterator();
-        }
-
-        @Override
-        public int size() { return 1; }
-
-        @Override
-        public boolean isEmpty() { return false; }
-
-        @Override
-        public T get() { return element; }
-
-        @Override
-        public T getOrElse(@Nullable T alternative) { return this.element; }
-
-        @Override
-        public T orNull() { return element; }
-
-        @Override
-        public boolean equals(Object that) {
-            return this == that
-                    || that instanceof Some
-                    && this.element.equals(((Some<?>) that).element);
-        }
-
-        @Override
-        public int hashCode() { return element.hashCode(); }
-    }
 }
+
