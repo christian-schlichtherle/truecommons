@@ -26,6 +26,22 @@ extends UniqueObject {
     private @CheckForNull K key;
     private @CheckForNull PersistentUnknownKeyException exception;
     private volatile State state = State.RESET;
+    private int count;
+
+    synchronized void link() {
+        ++count;
+        assert 0 <= count;
+    }
+
+    synchronized void unlink() {
+        if (0 >= --count)
+            resetUnconditionally();
+        assert 0 <= count;
+    }
+
+    synchronized void release() {
+        resetCancelledKey();
+    }
 
     /**
      * {@inheritDoc}

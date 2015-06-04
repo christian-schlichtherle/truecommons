@@ -31,7 +31,7 @@ extends UniqueObject {
     synchronized SharedKeyProvider<K> provider(final URI resource) {
         SharedKeyProvider<K> p = get(resource);
         if (null == p)
-            providers.put(resource, p = new SharedKeyProvider<>());
+            link(resource, p = new SharedKeyProvider<K>());
         return p;
     }
 
@@ -41,16 +41,23 @@ extends UniqueObject {
         Objects.requireNonNull(newResource);
         final SharedKeyProvider<K> p = get(oldResource);
         if (null != p)
-            providers.put(newResource, p);
+            link(newResource, p);
+    }
+
+    private void link(URI resource, SharedKeyProvider<K> p) {
+        providers.put(resource, p);
+        p.link();
     }
 
     synchronized void unlink(URI resource) {
-        providers.remove(Objects.requireNonNull(resource));
+        final SharedKeyProvider<K> p = providers.remove(Objects.requireNonNull(resource));
+        if (null != p)
+            p.unlink();
     }
 
     synchronized void release(final URI resource) {
         final SharedKeyProvider<K> p = get(resource);
         if (null != p)
-            p.resetCancelledKey();
+            p.release();
     }
 }
