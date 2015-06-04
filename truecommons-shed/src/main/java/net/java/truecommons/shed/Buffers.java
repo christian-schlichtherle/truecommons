@@ -12,7 +12,7 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 import static java.nio.charset.CodingErrorAction.*;
 import static java.nio.charset.StandardCharsets.*;
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import javax.annotation.Nullable;
 
 /**
@@ -29,17 +29,16 @@ public final class Buffers {
 
     private Buffers() { }
 
-    public static @Nullable ByteBuffer byteBuffer(
-            final @CheckForNull String string) {
+    public static @Nullable ByteBuffer byteBuffer(@Nullable String string) {
         return null == string ? null : byteBuffer(CharBuffer.wrap(string));
     }
 
-    public static @Nullable ByteBuffer byteBuffer(
-            final @CheckForNull char[] password) {
+    public static @Nullable ByteBuffer byteBuffer(@Nullable char[] password) {
         return null == password ? null : byteBuffer(CharBuffer.wrap(password));
     }
 
-    public static @Nullable ByteBuffer byteBuffer(final CharBuffer cb) {
+    public static @Nullable ByteBuffer byteBuffer(
+            final @Nullable CharBuffer cb) {
         if (null == cb) return null;
         try {
             return encode(cb, UTF_8.newEncoder()
@@ -72,13 +71,12 @@ public final class Buffers {
         }
     }
 
-    public static @Nullable String string(
-            final @CheckForNull ByteBuffer bb) {
+    public static @Nullable String string(@Nullable ByteBuffer bb) {
         return null == bb ? null : charBuffer(bb).toString();
     }
 
     public static @Nullable char[] charArray(
-            final @CheckForNull ByteBuffer bb) {
+            final @Nullable ByteBuffer bb) {
         if (null == bb)
             return null;
         final CharBuffer ocb = charBuffer(bb);
@@ -89,7 +87,7 @@ public final class Buffers {
     }
 
     public static @Nullable CharBuffer charBuffer(
-            final @CheckForNull ByteBuffer bb) {
+            final @Nullable ByteBuffer bb) {
         if (null == bb)
             return null;
         final CharsetDecoder dec = UTF_8.newDecoder()
@@ -133,7 +131,7 @@ public final class Buffers {
      * @param value the byte value to use for filling the buffer.
      */
     public static void fill(
-            final @CheckForNull ByteBuffer bb,
+            final @Nullable ByteBuffer bb,
             final byte value) {
         if (null == bb)
             return;
@@ -152,9 +150,10 @@ public final class Buffers {
      * @param value the char value to use for filling the buffer.
      */
     public static void fill(
-            final @CheckForNull CharBuffer cb,
+            final @Nullable CharBuffer cb,
             final char value) {
-        if (null == cb) return;
+        if (null == cb)
+            return;
         final int position = cb.position();
         final int limit = cb.limit();
         for (int i = position; i < limit; i++)
@@ -168,8 +167,7 @@ public final class Buffers {
      *         The properties of this buffer remain unchanged.
      * @return the new direct byte buffer with the copied data.
      */
-    public static @Nullable ByteBuffer copy(
-            final @CheckForNull ByteBuffer bb) {
+    public static @Nullable ByteBuffer copy(@Nullable ByteBuffer bb) {
         return null == bb
                 ? null
                 : (ByteBuffer) ByteBuffer

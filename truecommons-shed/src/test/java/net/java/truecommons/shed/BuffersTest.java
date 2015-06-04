@@ -20,8 +20,7 @@ public class BuffersTest {
 
     @Test
     public void testStringRoundTrip() {
-        for (final String s : tests) {
-            final String ist = s;
+        for (final String ist : tests) {
             final ByteBuffer ibb = byteBuffer(ist);
             final ByteBuffer obb = ibb.duplicate();
             final String ost = string(obb);
@@ -32,8 +31,8 @@ public class BuffersTest {
 
     @Test
     public void testCharArrayRoundTrip() {
-        for (final String s : tests) {
-            final char[] ica = s.toCharArray();
+        for (final String ist : tests) {
+            final char[] ica = ist.toCharArray();
             final ByteBuffer ibb = byteBuffer(ica);
             final ByteBuffer obb = ibb.duplicate();
             final char[] oca = charArray(obb);
@@ -44,8 +43,8 @@ public class BuffersTest {
 
     @Test
     public void testCharBufferRoundTrip() {
-        for (final String s : tests) {
-            final CharBuffer icb = CharBuffer.wrap(s);
+        for (final String ist : tests) {
+            final CharBuffer icb = CharBuffer.wrap(ist);
             final ByteBuffer ibb = byteBuffer(icb);
             final ByteBuffer obb = ibb.duplicate();
             final CharBuffer ocb = charBuffer(obb);
