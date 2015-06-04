@@ -38,7 +38,7 @@ public abstract class KeyManagerTestSuite<M extends KeyManager<?>> {
     }
 
     @Test
-    public void testLinkKeyProvider() {
+    public void testLink() {
         URI idA = URI.create("a");
         URI idB = URI.create("b");
 
@@ -76,7 +76,7 @@ public abstract class KeyManagerTestSuite<M extends KeyManager<?>> {
     }
 
     @Test
-    public void testUnlinkKeyProvider() {
+    public void testUnlink() {
         URI id = URI.create("a");
 
         manager.unlink(id);
