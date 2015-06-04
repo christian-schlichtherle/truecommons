@@ -28,11 +28,11 @@ public interface KeyManager<K> {
     /**
      * Returns a key provider for accessing the identified protected resource.
      *
-     * @param  resource the URI of the protected resource.
+     * @param  uri the URI of the protected resource.
      * @return a consistent (but not necessarily always the same) key provider
      *         for accessing the identified protected resource.
      */
-    KeyProvider<K> provider(URI resource);
+    KeyProvider<K> provider(URI uri);
 
     /**
      * Notifies this key manager that a protected resource has been released.
@@ -43,23 +43,23 @@ public interface KeyManager<K> {
      * For example, an implementation may reset the key provider only if the
      * user had cancelled the prompting for the key.
      *
-     * @param resource the URI of the protected resource.
+     * @param uri the URI of the protected resource.
      */
-    void release(URI resource);
+    void release(URI uri);
 
     /**
      * Notifies this key manager that a protected resource has been linked.
      *
-     * @param oldResource the old URI of the protected resource.
-     * @param newResource the new URI of the protected resource.
+     * @param originUri the origin URI of the protected resource.
+     * @param targetUri the target URI of the protected resource.
      */
-    void link(URI oldResource, URI newResource);
+    void link(URI originUri, URI targetUri);
 
     /**
      * Notifies this key manager that a protected resource has been unlinked.
      * This implies a {@link #release}.
      *
-     * @param resource the URI of the protected resource.
+     * @param uri the URI of the protected resource.
      */
-    void unlink(URI resource);
+    void unlink(URI uri);
 }

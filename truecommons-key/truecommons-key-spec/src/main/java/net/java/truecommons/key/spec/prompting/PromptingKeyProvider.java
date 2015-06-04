@@ -31,18 +31,15 @@ final class PromptingKeyProvider<K extends PromptingKey<K>>
 extends AbstractKeyProvider<K> {
 
     private final PromptingKeyManager<K> manager;
-    private final URI resource;
+    private final URI uri;
     private final SharedKeyProvider<K> provider;
 
     PromptingKeyProvider(
             final PromptingKeyManager<K> manager,
-            final URI resource,
+            final URI uri,
             final SharedKeyProvider<K> provider) {
-        assert null != manager;
-        assert null != resource;
-        assert null != provider;
         this.manager = manager;
-        this.resource = resource;
+        this.uri = uri;
         this.provider = provider;
     }
 
@@ -104,7 +101,7 @@ extends AbstractKeyProvider<K> {
     private abstract class AbstractController implements Controller<K> {
 
         @Override
-        public final URI getResource() { return resource; }
+        public final URI getResource() { return uri; }
 
         @Override
         public final void setKeyClone(@CheckForNull K key) {

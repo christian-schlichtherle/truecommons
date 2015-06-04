@@ -57,31 +57,31 @@ extends AbstractKeyManager<P> {
     }
 
     @Override
-    public KeyProvider<P> provider(URI resource) {
-        return new OsxKeyProvider<>(this, resource, manager.provider(resource));
+    public KeyProvider<P> provider(URI uri) {
+        return new OsxKeyProvider<>(this, uri, manager.provider(uri));
     }
 
     @Override
-    public void release(URI resource) {
+    public void release(URI uri) {
         skip = false;
-        manager.release(resource);
+        manager.release(uri);
     }
 
     @Override
-    public void link(final URI oldResource, final URI newResource) {
-        final P param = getKey(oldResource);
-        manager.link(oldResource, newResource);
-        setKey(newResource, param);
+    public void link(final URI originUri, final URI targetUri) {
+        final P param = getKey(originUri);
+        manager.link(originUri, targetUri);
+        setKey(targetUri, param);
     }
 
     @Override
-    public void unlink(final URI resource) {
-        manager.unlink(resource);
-        setKey(resource, null);
+    public void unlink(final URI uri) {
+        manager.unlink(uri);
+        setKey(uri, null);
     }
 
-    @CheckForNull P getKey(final URI resource) {
-        return access(resource, new Action<P>() {
+    @CheckForNull P getKey(final URI uri) {
+        return access(uri, new Action<P>() {
             @Override
             public P call(
                     final Keychain keychain,
@@ -208,10 +208,11 @@ extends AbstractKeyManager<P> {
         }
     }
 
-    private @CheckForNull <T> T access(final URI resource, final Action<T> action) {
-        if (skip) return null;
+    private @CheckForNull <T> T access(final URI uri, final Action<T> action) {
+        if (skip)
+            return null;
         try {
-            return action.call(open(), attributes(resource));
+            return action.call(open(), attributes(uri));
         } catch (final KeychainException ex) {
             skip = true;
             logger.debug("access.exception", ex);
@@ -226,11 +227,11 @@ extends AbstractKeyManager<P> {
         throws KeychainException;
     } // Action
 
-    private static Map<AttributeClass, ByteBuffer> attributes(final URI resource) {
+    private static Map<AttributeClass, ByteBuffer> attributes(final URI uri) {
         final Map<AttributeClass, ByteBuffer>
                 m = new EnumMap<>(AttributeClass.class);
         m.put(AttributeClass.ACCOUNT, byteBuffer(ACCOUNT));
-        m.put(SERVICE, byteBuffer(resource.toString()));
+        m.put(SERVICE, byteBuffer(uri.toString()));
         return m;
     }
 

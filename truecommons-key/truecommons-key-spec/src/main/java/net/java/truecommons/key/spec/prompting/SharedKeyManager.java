@@ -26,35 +26,35 @@ extends UniqueObject {
 
     private final Map<URI, SharedKeyProvider<K>> providers = new HashMap<>();
 
-    private Option<SharedKeyProvider<K>> get(URI resource) {
-        return apply(providers.get(resource));
+    private Option<SharedKeyProvider<K>> get(URI uri) {
+        return apply(providers.get(uri));
     }
 
-    private Option<SharedKeyProvider<K>> put(URI resource, SharedKeyProvider<K> p) {
-        return apply(providers.put(resource, p));
+    private Option<SharedKeyProvider<K>> put(URI uri, SharedKeyProvider<K> p) {
+        return apply(providers.put(uri, p));
     }
 
-    private Option<SharedKeyProvider<K>> remove(URI resource) {
-        return apply(providers.remove(resource));
+    private Option<SharedKeyProvider<K>> remove(URI uri) {
+        return apply(providers.remove(uri));
     }
 
-    synchronized SharedKeyProvider<K> provider(final URI resource) {
-        for (final SharedKeyProvider<K> p : get(resource))
+    synchronized SharedKeyProvider<K> provider(final URI uri) {
+        for (final SharedKeyProvider<K> p : get(uri))
             return p;
         final SharedKeyProvider<K> p = new SharedKeyProvider<K>();
-        put(resource, p);
+        put(uri, p);
         p.link();
         return p;
     }
 
-    synchronized void release(final URI resource) {
-        for (final SharedKeyProvider<K> p : get(resource))
+    synchronized void release(final URI uri) {
+        for (final SharedKeyProvider<K> p : get(uri))
             p.release();
     }
 
-    synchronized void link(final URI originResource, final URI targetResource) {
-        for (final SharedKeyProvider<K> originProvider : get(originResource)) {
-            for (final SharedKeyProvider<K> targetProvider : put(targetResource, originProvider)) {
+    synchronized void link(final URI originUri, final URI targetUri) {
+        for (final SharedKeyProvider<K> originProvider : get(originUri)) {
+            for (final SharedKeyProvider<K> targetProvider : put(targetUri, originProvider)) {
                 if (targetProvider == originProvider)
                     return;
                 targetProvider.unlink();
@@ -63,8 +63,8 @@ extends UniqueObject {
         }
     }
 
-    synchronized void unlink(final URI resource) {
-        for (final SharedKeyProvider<K> p : remove(resource))
+    synchronized void unlink(final URI uri) {
+        for (final SharedKeyProvider<K> p : remove(uri))
             p.unlink();
     }
 }

@@ -25,16 +25,16 @@ public final class UnknownKeyManager extends AbstractKeyManager<Object> {
     private UnknownKeyManager() { }
 
     @Override
-    public KeyProvider<Object> provider(URI resource) {
+    public KeyProvider<Object> provider(URI uri) {
         return UnknownKeyProvider.SINGLETON;
     }
 
     @Override
-    public void release(URI resource) { }
+    public void release(URI uri) { }
 
     @Override
-    public void link(URI oldResource, URI newResource) { }
+    public void link(URI originUri, URI targetUri) { }
 
     @Override
-    public void unlink(URI resource) { }
+    public void unlink(URI uri) { }
 }
