@@ -40,9 +40,9 @@ extends AbstractKeyManager<K> {
     View<K> getView() { return view; }
 
     @Override
-    public KeyProvider<K> provider(URI resource) {
-        return new PromptingKeyProvider<>(this, requireNonNull(resource),
-                manager.provider(resource));
+    public KeyProvider<K> provider(URI uri) {
+        return new PromptingKeyProvider<>(this, requireNonNull(uri),
+                manager.provider(uri));
     }
 
     /**
@@ -53,18 +53,18 @@ extends AbstractKeyManager<K> {
      * if prompting for the key has been cancelled.
      */
     @Override
-    public void release(URI resource) {
-        manager.release(requireNonNull(resource));
+    public void release(URI uri) {
+        manager.release(requireNonNull(uri));
     }
 
     @Override
-    public void link(URI oldResource, URI newResource) {
-        manager.link(requireNonNull(oldResource), requireNonNull(newResource));
+    public void link(URI originUri, URI targetUri) {
+        manager.link(requireNonNull(originUri), requireNonNull(targetUri));
     }
 
     @Override
-    public void unlink(URI resource) {
-        manager.unlink(requireNonNull(resource));
+    public void unlink(URI uri) {
+        manager.unlink(requireNonNull(uri));
     }
 
     /**
