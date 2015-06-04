@@ -35,9 +35,9 @@ extends AbstractKey<K> implements SecretKey<K> {
     }
 
     @Override
-    public void reset() { reset0(); }
+    public void reset() { doReset(); }
 
-    private void reset0() {
+    private void doReset() {
         fill(secret, (byte) 0);
         secret = null;
     }
@@ -48,7 +48,7 @@ extends AbstractKey<K> implements SecretKey<K> {
         try {
             super.finalize();
         } finally {
-            reset0();
+            doReset();
         }
     }
 
@@ -66,7 +66,7 @@ extends AbstractKey<K> implements SecretKey<K> {
 
     @Override
     public final void setSecret(final @CheckForNull ByteBuffer secret) {
-        reset0();
+        doReset();
         this.secret = copy(secret);
     }
 
