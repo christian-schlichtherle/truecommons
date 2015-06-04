@@ -75,16 +75,16 @@ public abstract class KeyManagerTestSuite<M extends KeyManager<?>> {
         manager.link(idA, idB);
         manager.unlink(idA);
 
-        KeyProvider<?> provA1 = manager.provider(idA);
-        assertNotNull(provA1);
+        KeyProvider<?> provB1 = manager.provider(idA);
+        assertNotNull(provB1);
 
         manager.link(idA, idB);
         manager.unlink(idA);
 
-        KeyProvider<?> provA2 = manager.provider(idA);
-        assertNotNull(provA2);
+        KeyProvider<?> provB2 = manager.provider(idA);
+        assertNotNull(provB2);
 
-        assertNotSame(provA1, provA2);
+        assertNotSame(provB1, provB2); // may be trivially true - see contract
     }
 
     @Test
@@ -101,11 +101,11 @@ public abstract class KeyManagerTestSuite<M extends KeyManager<?>> {
 
         KeyProvider<?> prov1 = manager.provider(id);
         manager.unlink(id);
-        manager.unlink(id);
+        manager.unlink(id); // no effect
 
         KeyProvider<?> prov2 = manager.provider(id);
         manager.unlink(id);
-        manager.unlink(id);
+        manager.unlink(id); // no effect
 
         assertNotSame(prov1, prov2);
     }
