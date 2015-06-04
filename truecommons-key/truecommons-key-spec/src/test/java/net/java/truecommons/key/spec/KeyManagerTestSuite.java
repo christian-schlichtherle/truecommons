@@ -27,14 +27,26 @@ public abstract class KeyManagerTestSuite<M extends KeyManager<?>> {
         manager = Objects.requireNonNull(newKeyManager());
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testNoKeyProviderForNullResource() {
-        manager.provider(null);
+    @Test
+    public void testProvider() {
+        try {
+            manager.provider(null);
+            fail();
+        } catch (NullPointerException expected) {
+        }
+
+        assertNotNull(manager.provider(URI.create("a")));
     }
 
     @Test
-    public void testNonNullKeyProviderForAnyNonNullResource() {
-        assertNotNull(manager.provider(URI.create("a")));
+    public void testRelease() {
+        try {
+            manager.release(null);
+            fail();
+        } catch (NullPointerException expected) {
+        }
+
+        manager.release(URI.create("a")); // no effect
     }
 
     @Test
@@ -78,6 +90,12 @@ public abstract class KeyManagerTestSuite<M extends KeyManager<?>> {
     @Test
     public void testUnlink() {
         URI id = URI.create("a");
+
+        try {
+            manager.unlink(null);
+            fail();
+        } catch (NullPointerException expected) {
+        }
 
         manager.unlink(id);
 
