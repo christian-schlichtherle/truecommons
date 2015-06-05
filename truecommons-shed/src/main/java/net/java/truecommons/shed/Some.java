@@ -18,7 +18,7 @@ import java.util.Objects;
  */
 final class Some<T> extends Option<T> {
 
-    private T element;
+    private final T element;
 
     Some(final T element) {
         this.element = Objects.requireNonNull(element);
