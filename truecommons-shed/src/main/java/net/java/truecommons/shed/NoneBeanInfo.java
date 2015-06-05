@@ -18,33 +18,25 @@ public final class NoneBeanInfo extends SimpleBeanInfo {
 
     @Override
     public BeanDescriptor getBeanDescriptor() {
-        final BeanDescriptor descriptor = new BeanDescriptor(Some.class, null);
-        descriptor.setValue("persistenceDelegate", new PersistenceDelegate() {
-
-            @Override
-            protected boolean mutatesTo(Object oldInstance, Object newInstance) {
-                return Objects.equals(oldInstance, newInstance);
-            }
-
-            @Override
-            protected Expression instantiate(
-                    Object oldInstance,
-                    Encoder out) {
-                return new Expression(
-                        oldInstance,
-                        Option.class,
-                        "none",
-                        null);
-            }
-
-            @Override
-            protected void initialize(
-                    Class<?> type,
-                    Object oldInstance,
-                    Object newInstance,
-                    Encoder out) {
-            }
-        });
+        final BeanDescriptor descriptor = new BeanDescriptor(None.class, null);
+        descriptor.setValue("persistenceDelegate", new NonePersistenceDelegate());
         return descriptor;
+    }
+}
+
+final class NonePersistenceDelegate extends PersistenceDelegate {
+
+    @Override
+    protected boolean mutatesTo(Object oldInstance, Object newInstance) {
+        return Objects.equals(oldInstance, newInstance);
+    }
+
+    @Override
+    protected Expression instantiate(Object oldInstance, Encoder out) {
+        return new Expression(oldInstance, Option.class, "none", null);
+    }
+
+    @Override
+    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
     }
 }
