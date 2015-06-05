@@ -19,30 +19,25 @@ public final class SomeBeanInfo extends SimpleBeanInfo {
     @Override
     public BeanDescriptor getBeanDescriptor() {
         final BeanDescriptor descriptor = new BeanDescriptor(Some.class, null);
-        descriptor.setValue("persistenceDelegate", new PersistenceDelegate() {
-
-            @Override
-            protected boolean mutatesTo(Object oldInstance, Object newInstance) {
-                return Objects.equals(oldInstance, newInstance);
-            }
-
-            @Override
-            protected Expression instantiate(final Object oldInstance, final Encoder out) {
-                return new Expression(
-                        oldInstance,
-                        Option.class,
-                        "some",
-                        new Object[] { ((Some<?>) oldInstance).get() });
-            }
-
-            @Override
-            protected void initialize(
-                    Class<?> type,
-                    Object oldInstance,
-                    Object newInstance,
-                    Encoder out) {
-            }
-        });
+        descriptor.setValue("persistenceDelegate", new SomePersistenceDelegate());
         return descriptor;
+    }
+}
+
+final class SomePersistenceDelegate extends PersistenceDelegate {
+
+    @Override
+    protected boolean mutatesTo(Object oldInstance, Object newInstance) {
+        return Objects.equals(oldInstance, newInstance);
+    }
+
+    @Override
+    protected Expression instantiate(Object oldInstance, Encoder out) {
+        return new Expression(oldInstance, Option.class, "some",
+                new Object[] { ((Some<?>) oldInstance).get() });
+    }
+
+    @Override
+    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
     }
 }
