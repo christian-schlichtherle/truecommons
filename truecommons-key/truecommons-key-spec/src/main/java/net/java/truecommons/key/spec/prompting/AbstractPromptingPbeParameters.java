@@ -51,8 +51,10 @@ extends AbstractPbeParameters<P, S> implements PromptingPbeParameters<P, S> {
     @Override
     @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
     public boolean equals(final @Nullable Object obj) {
-        if (this == obj) return true;
-        if (!super.equals(obj)) return false;
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
         final AbstractPromptingPbeParameters<?, ?> that = (AbstractPromptingPbeParameters<?, ?>) obj;
         return this.changeRequested == that.changeRequested;
     }
