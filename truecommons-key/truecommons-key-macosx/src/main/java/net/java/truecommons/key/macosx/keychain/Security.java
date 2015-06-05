@@ -217,9 +217,9 @@ final class Security {
     //
 
     static String message(final int status) {
-        final CFStringRef theString = SecCopyErrorMessageString(status, null);
-        try { return decode(theString); }
-        finally { CFRelease(theString); }
+        final CFStringRef stringRef = SecCopyErrorMessageString(status, null);
+        try { return decode(stringRef); }
+        finally { CFRelease(stringRef); }
     }
 
     //
