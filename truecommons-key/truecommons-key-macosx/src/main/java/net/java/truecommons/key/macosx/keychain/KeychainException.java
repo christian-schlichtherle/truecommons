@@ -26,8 +26,10 @@ public class KeychainException extends Exception {
      */
     static KeychainException create(final int status) {
         switch (status) {
-            case errSecDuplicateItem:   return new DuplicateItemException();
-            default:                    return new KeychainException(status);
+            case errSecDuplicateItem:
+                return new DuplicateItemException();
+            default:
+                return new KeychainException(status);
         }
     }
 
