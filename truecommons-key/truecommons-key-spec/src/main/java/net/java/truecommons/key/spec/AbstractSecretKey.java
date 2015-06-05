@@ -82,8 +82,10 @@ extends AbstractKey<K> implements SecretKey<K> {
     @Override
     @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
     public boolean equals(final @Nullable Object obj) {
-        if (this == obj) return true;
-        if (!super.equals(obj)) return false;
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
         final AbstractSecretKey<?> that = (AbstractSecretKey<?>) obj;
         return Objects.equals(this.secret, that.secret);
     }
