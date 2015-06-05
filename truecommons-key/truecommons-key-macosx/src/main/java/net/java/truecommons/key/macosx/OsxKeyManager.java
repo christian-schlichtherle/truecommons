@@ -48,11 +48,9 @@ extends AbstractKeyManager<P> {
 
     private static final String KEYCHAIN = "TrueCommons KeyManager";
     private static final String ACCOUNT = KEYCHAIN;
-    private static final Logger logger = new LocalizedLogger(OsxKeyManager.class);
 
     private final KeyManager<P> manager;
     private final Class<P> keyClass;
-    private Option<Keychain> keychain = Option.none();
     private volatile boolean skip;
 
     public OsxKeyManager(final KeyManager<P> manager, final Class<P> keyClass) {
@@ -85,125 +83,25 @@ extends AbstractKeyManager<P> {
     }
 
     Option<P> getKey(final URI uri) {
-        return access(uri, new Action<Option<P>>() {
-            @Override
-            public Option<P> call(
-                    final Keychain keychain,
-                    final Map<AttributeClass, ByteBuffer> attributes)
-            throws KeychainException {
-
-                class Read implements Visitor {
-
-                    Option<P> param = Option.none();
-
-                    @Override
-                    @SuppressWarnings("unchecked")
-                    public void visit(final Item item) throws KeychainException {
-                        param = (Option<P>) deserialize(Option.apply(item.getAttribute(GENERIC)));
-                        if (param.isEmpty()) {
-                            try {
-                                param = Option.some(keyClass.newInstance());
-                            } catch (final InstantiationException | IllegalAccessException ex) {
-                                logger.debug("getKey.exception", ex);
-                                return;
-                            }
-                        }
-                        assert null == param.get().getSecret();
-                        final ByteBuffer secret = item.getSecret();
-                        try {
-                            param.get().setSecret(secret);
-                        } finally {
-                            fill(secret, (byte) 0);
-                        }
-                    }
-                }
-
-                final Read read = new Read();
-                keychain.visitItems(GENERIC_PASSWORD, attributes, read);
-                return read.param;
-            }
-        });
+        final GetKeyAction action = new GetKeyAction();
+        runAction(uri, action);
+        return action.param;
     }
 
-    void setKey(
-            final URI resource,
-            final Option<P> optionalParam) {
-        access(resource, new Action<Option<Void>>() {
-            @Override
-            public Option<Void> call(
-                    final Keychain keychain,
-                    final Map<AttributeClass, ByteBuffer> attributes)
-            throws KeychainException {
-                for (final P param : optionalParam) {
-                    for (final ByteBuffer newSecret : Option.apply(param.getSecret())) {
-                        try {
-                            final Option<ByteBuffer> newXml = serialize(optionalParam);
-                            @SuppressWarnings("unchecked")
-                            final Option<P> newParam = (Option<P>) deserialize(newXml); // rip off transient fields
-
-                            class Update implements Visitor {
-                                @Override
-                                public void visit(final Item item)
-                                        throws KeychainException {
-                                    {
-                                        final ByteBuffer oldSecret =
-                                                item.getSecret();
-                                        if (!newSecret.equals(oldSecret))
-                                            item.setSecret(newSecret);
-                                    }
-                                    {
-                                        final Option<ByteBuffer> oldXml =
-                                                Option.apply(item.getAttribute(GENERIC));
-                                        @SuppressWarnings("unchecked")
-                                        final Option<P> oldParam =
-                                                (Option<P>) deserialize(oldXml);
-                                        if (!newParam.equals(oldParam))
-                                            item.setAttribute(GENERIC, newXml.get());
-                                    }
-                                }
-                            }
-
-                            try {
-                                attributes.put(GENERIC, newXml.get());
-                                keychain.createItem(GENERIC_PASSWORD, attributes, newSecret);
-                            } catch (final DuplicateItemException ex) {
-                                attributes.remove(GENERIC);
-                                keychain.visitItems(GENERIC_PASSWORD, attributes, new Update());
-                            }
-                        } finally {
-                            fill(newSecret, (byte) 0);
-                        }
-
-                        return Option.none();
-                    }
-                    throw new IllegalArgumentException();
-                }
-
-                class Delete implements Visitor {
-                    @Override
-                    public void visit(Item item) throws KeychainException {
-                        item.delete();
-                    }
-                }
-
-                keychain.visitItems(GENERIC_PASSWORD, attributes, new Delete());
-
-                return Option.none();
-            }
-        });
+    void setKey(final URI uri, final Option<P> optionalParam) {
+        runAction(uri, new SetKeyAction(optionalParam));
     }
 
     static Option<ByteBuffer> serialize(final Option<?> optionalObject) {
         for (final Object object : optionalObject) {
             try (final ByteArrayOutputStream bos = new ByteArrayOutputStream(512)) {
-                try (final XMLEncoder encoder = new XMLEncoder(bos)) {
+                try (XMLEncoder encoder = new XMLEncoder(bos)) {
                     encoder.writeObject(object);
                 }
                 bos.flush(); // redundant
                 return Option.some(copy(ByteBuffer.wrap(bos.toByteArray())));
-            } catch (final IOException ex) {
-                logger.warn("serialize.exception", ex);
-                return Option.none();
+            } catch (IOException e) {
+                throw new IllegalArgumentException(e);
             }
         }
         return Option.none();
@@ -220,50 +118,153 @@ extends AbstractKeyManager<P> {
         return Option.none();
     }
 
-    private <T> Option<T> access(final URI uri, final Action<Option<T>> action) {
-        if (skip)
-            return Option.none();
-        try {
-            return action.call(open(), attributes(uri));
-        } catch (final KeychainException ex) {
-            skip = true;
-            logger.debug("access.exception", ex);
-            return Option.none();
+    private void runAction(final URI uri, final Action action) {
+        if (!skip) {
+            try (Keychain keychain = Keychain.open(KEYCHAIN, null)) {
+                action.run(new Controller() {
+
+                    final Map<AttributeClass, ByteBuffer> attributes = new EnumMap<>(AttributeClass.class);
+
+                    {
+                        attributes.put(AttributeClass.ACCOUNT, byteBuffer(ACCOUNT));
+                        attributes.put(SERVICE, byteBuffer(uri.toString()));
+                    }
+
+                    @Override
+                    public void setAttribute(final AttributeClass key, final Option<ByteBuffer> optionalValue) {
+                        for (final ByteBuffer value : optionalValue) {
+                            attributes.put(key, value);
+                            return;
+                        }
+                        attributes.remove(key);
+                    }
+
+                    @Override
+                    public void createItem(ByteBuffer secret) throws KeychainException {
+                        keychain.createItem(GENERIC_PASSWORD, attributes, secret);
+                    }
+
+                    @Override
+                    public void visitItems(Visitor visitor) throws KeychainException {
+                        keychain.visitItems(GENERIC_PASSWORD, attributes, visitor);
+                    }
+                });
+            } catch (final Exception e) {
+                skip = true;
+                new LocalizedLogger(OsxKeyManager.class).debug("access.exception", e);
+            }
         }
     }
 
-    private static Map<AttributeClass, ByteBuffer> attributes(final URI uri) {
-        final Map<AttributeClass, ByteBuffer>
-                m = new EnumMap<>(AttributeClass.class);
-        m.put(AttributeClass.ACCOUNT, byteBuffer(ACCOUNT));
-        m.put(SERVICE, byteBuffer(uri.toString()));
-        return m;
+    private interface Action {
+
+        void run(Controller controller) throws KeychainException;
     }
 
-    private synchronized Keychain open() throws KeychainException {
-        for (Keychain kc : keychain)
-            return kc;
-        final Keychain kc = Keychain.open(KEYCHAIN, null);
-        keychain = Option.some(kc);
-        return kc;
+    private interface Controller {
+
+        void setAttribute(AttributeClass key, Option<ByteBuffer> optionalValue);
+
+        void createItem(ByteBuffer secret) throws KeychainException;
+
+        void visitItems(Visitor visitor) throws KeychainException;
     }
 
-    private synchronized void close() {
-        for (final Keychain kc : keychain) {
-            keychain = Option.none();
-            kc.close();
+    private final class GetKeyAction implements Action, Visitor {
+
+        Option<P> param = Option.none();
+
+        @Override
+        public void run(Controller controller) throws KeychainException {
+            controller.visitItems(this);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public void visit(final Item item) throws KeychainException {
+            param = (Option<P>) deserialize(Option.apply(item.getAttribute(GENERIC)));
+            if (param.isEmpty())
+                param = Option.some(newKey());
+            for (final P p : param) {
+                assert null == p.getSecret();
+                final ByteBuffer secret = item.getSecret();
+                try {
+                    p.setSecret(secret);
+                } finally {
+                    fill(secret, (byte) 0);
+                }
+            }
+        }
+
+        private P newKey() {
+            try {
+                return keyClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new IllegalStateException(e);
+            }
         }
     }
 
-    @Override
-    @SuppressWarnings("FinalizeDeclaration")
-    protected void finalize() throws Throwable {
-        try { close(); }
-        finally { super.finalize(); }
-    }
+    private final class SetKeyAction implements Action {
 
-    private interface Action<T> {
-        T call(Keychain keychain, Map<AttributeClass, ByteBuffer> attributes)
-        throws KeychainException;
+        private final Option<P> optionalParam;
+
+        public SetKeyAction(final Option<P> optionalParam) {
+            this.optionalParam = optionalParam;
+        }
+
+        @Override
+        public void run(final Controller controller) throws KeychainException {
+            for (final P param : optionalParam) {
+                for (final ByteBuffer newSecret : Option.apply(param.getSecret())) {
+                    try {
+                        final Option<ByteBuffer> newXml = serialize(optionalParam);
+                        @SuppressWarnings("unchecked")
+                        final Option<P> newParam = (Option<P>) deserialize(newXml); // rip off transient fields
+
+                        class UpdateVisitor implements Visitor {
+                            @Override
+                            public void visit(final Item item) throws KeychainException {
+                                {
+                                    final ByteBuffer oldSecret =
+                                            item.getSecret();
+                                    if (!newSecret.equals(oldSecret))
+                                        item.setSecret(newSecret);
+                                }
+                                {
+                                    final Option<ByteBuffer> oldXml = Option.apply(item.getAttribute(GENERIC));
+                                    @SuppressWarnings("unchecked")
+                                    final Option<P> oldParam = (Option<P>) deserialize(oldXml);
+                                    if (!newParam.equals(oldParam))
+                                        item.setAttribute(GENERIC, newXml.get());
+                                }
+                            }
+                        }
+
+                        try {
+                            controller.setAttribute(GENERIC, newXml);
+                            controller.createItem(newSecret);
+                        } catch (final DuplicateItemException ex) {
+                            controller.setAttribute(GENERIC, Option.<ByteBuffer>none());
+                            controller.visitItems(new UpdateVisitor());
+                        }
+                    } finally {
+                        fill(newSecret, (byte) 0);
+                    }
+
+                    return;
+                }
+                throw new IllegalStateException();
+            }
+
+            class DeleteVisitor implements Visitor {
+                @Override
+                public void visit(Item item) throws KeychainException {
+                    item.delete();
+                }
+            }
+
+            controller.visitItems(new DeleteVisitor());
+        }
     }
 }
