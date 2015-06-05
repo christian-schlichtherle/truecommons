@@ -35,8 +35,7 @@ public class OsxKeyManagerTest {
         original.setPassword("föo".toCharArray());
         final ByteBuffer xml = serialize(Option.apply(original)).get(); // must not serialize password!
 
-        logger.trace("Serialized object to {} bytes.", xml.remaining());
-        logger.trace("Serialized form:\n{}", string(xml));
+        logger.trace("Serialized form ({} bytes):\n{}", xml.remaining(), string(xml));
 
         final AesPbeParameters clone = (AesPbeParameters) deserialize(Option.apply(xml)).get();
         assertNull(clone.getPassword());
