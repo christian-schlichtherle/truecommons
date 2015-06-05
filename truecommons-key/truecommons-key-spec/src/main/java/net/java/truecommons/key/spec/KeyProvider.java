@@ -74,9 +74,9 @@ import javax.annotation.Nullable;
  * <p>
  * Implementations must be safe for multi-threading.
  *
- * @param  <K> The type of the keys.
- * @see    KeyManager
- * @since  TrueCommons 2.2
+ * @param <K> The type of the keys.
+ * @see KeyManager
+ * @since TrueCommons 2.2
  * @author Christian Schlichtherle
  */
 @ImplementationsShouldExtend(AbstractKeyProvider.class)
