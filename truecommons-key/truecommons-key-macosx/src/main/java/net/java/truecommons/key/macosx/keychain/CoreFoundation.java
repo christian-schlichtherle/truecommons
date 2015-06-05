@@ -37,11 +37,11 @@ final class CoreFoundation {
     // Some utilities.
     //
 
-    static String decode(final CFStringRef theString) {
-        final int length = CFStringGetLength(theString).intValue();
+    static String decode(final CFStringRef stringRef) {
+        final int length = CFStringGetLength(stringRef).intValue();
         final char[] buffer = new char[length];
         CFStringGetCharacters(
-                theString,
+                stringRef,
                 new CFRange.ByValue(new CFIndex(0), new CFIndex(length)),
                 buffer);
         return new String(buffer);
