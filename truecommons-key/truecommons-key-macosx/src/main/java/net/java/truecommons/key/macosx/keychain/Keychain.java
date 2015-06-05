@@ -4,16 +4,14 @@
  */
 package net.java.truecommons.key.macosx.keychain;
 
-import java.nio.ByteBuffer;
-import java.util.Map;
-import javax.annotation.CheckForNull;
+import net.java.truecommons.shed.Option;
+
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
-import net.java.truecommons.key.macosx.keychain.Keychain.AttributeClass;
+import java.nio.ByteBuffer;
+import java.util.Map;
+
 import static net.java.truecommons.key.macosx.keychain.Keychain.AttributeClass.*;
-import net.java.truecommons.key.macosx.keychain.Keychain.Item;
-import net.java.truecommons.key.macosx.keychain.Keychain.ItemClass;
-import static net.java.truecommons.key.macosx.keychain.Keychain.ItemClass.*;
 import static net.java.truecommons.key.macosx.keychain.Security.*;
 
 /**
@@ -44,9 +42,9 @@ public abstract class Keychain implements AutoCloseable {
      * @param password the password to use for creating the keychain.
      *        If {@code null}, then the user gets prompted for a password.
      */
-    public static Keychain open(String path, @CheckForNull char[] password)
+    public static Keychain open(String path, @Nullable char[] password)
     throws KeychainException {
-        return new KeychainImpl(path, password);
+        return new KeychainImpl(path, Option.apply(password));
     }
 
     /**
@@ -76,8 +74,8 @@ public abstract class Keychain implements AutoCloseable {
      * @param visitor the visitor to apply to all matching items.
      */
     public abstract void visitItems(
-            @CheckForNull ItemClass id,
-            @CheckForNull Map<AttributeClass, ByteBuffer> attributes,
+            @Nullable ItemClass id,
+            @Nullable Map<AttributeClass, ByteBuffer> attributes,
             Visitor visitor)
     throws KeychainException;
 
@@ -111,7 +109,7 @@ public abstract class Keychain implements AutoCloseable {
         /**
          * Sets the value of the attribute with the given class.
          */
-        void setAttribute(AttributeClass id, @CheckForNull ByteBuffer value)
+        void setAttribute(AttributeClass id, @Nullable ByteBuffer value)
         throws KeychainException;
 
         /**
@@ -144,7 +142,7 @@ public abstract class Keychain implements AutoCloseable {
          * Deletes this item.
          */
         void delete() throws KeychainException;
-    } // Item
+    }
 
     /** Enumerates classes of items in a keychain. */
     public enum ItemClass {
@@ -263,26 +261,26 @@ public abstract class Keychain implements AutoCloseable {
         private final int tag;
         private final AttributeClass[] ids;
 
-        static @CheckForNull ItemClass lookup(final int tag) {
+        static Option<ItemClass> lookup(final int tag) {
             switch (tag) {
-                case CSSM_DL_DB_RECORD_ANY: assert false; return ANY_ITEM;
-                case CSSM_DL_DB_RECORD_CERT: assert false; return CERT_ITEM;
-                case CSSM_DL_DB_RECORD_CRL: assert false; return CRL_ITEM;
-                case CSSM_DL_DB_RECORD_POLICY: assert false; return POLICY_ITEM;
-                case CSSM_DL_DB_RECORD_GENERIC: assert false; return GENERIC_ITEM;
-                case kSecPublicKeyItemClass: return PUBLIC_KEY;
-                case kSecPrivateKeyItemClass: return PRIVATE_KEY;
-                case kSecSymmetricKeyItemClass: return SYMMETRIC_KEY;
-                case CSSM_DL_DB_RECORD_ALL_KEYS: assert false; return ALL_KEY_ITEMS;
-                case kSecInternetPasswordItemClass: return INTERNET_PASSWORD;
-                case kSecGenericPasswordItemClass: return GENERIC_PASSWORD;
-                case kSecAppleSharePasswordItemClass: return APPLE_SHARE_PASSWORD;
-                case kSecCertificateItemClass: return CERTIFICATE;
-                default: return null;
+                case CSSM_DL_DB_RECORD_ANY: assert false; return Option.some(ANY_ITEM);
+                case CSSM_DL_DB_RECORD_CERT: assert false; return Option.some(CERT_ITEM);
+                case CSSM_DL_DB_RECORD_CRL: assert false; return Option.some(CRL_ITEM);
+                case CSSM_DL_DB_RECORD_POLICY: assert false; return Option.some(POLICY_ITEM);
+                case CSSM_DL_DB_RECORD_GENERIC: assert false; return Option.some(GENERIC_ITEM);
+                case kSecPublicKeyItemClass: return Option.some(PUBLIC_KEY);
+                case kSecPrivateKeyItemClass: return Option.some(PRIVATE_KEY);
+                case kSecSymmetricKeyItemClass: return Option.some(SYMMETRIC_KEY);
+                case CSSM_DL_DB_RECORD_ALL_KEYS: assert false; return Option.some(ALL_KEY_ITEMS);
+                case kSecInternetPasswordItemClass: return Option.some(INTERNET_PASSWORD);
+                case kSecGenericPasswordItemClass: return Option.some(GENERIC_PASSWORD);
+                case kSecAppleSharePasswordItemClass: return Option.some(APPLE_SHARE_PASSWORD);
+                case kSecCertificateItemClass: return Option.some(CERTIFICATE);
+                default: return Option.none();
             }
         }
 
-        private ItemClass(final int tag, final AttributeClass... ids) {
+        ItemClass(final int tag, final AttributeClass... ids) {
             this.tag = tag;
             this.ids = ids;
         }
@@ -294,7 +292,7 @@ public abstract class Keychain implements AutoCloseable {
          * class.
          */
         public AttributeClass[] getAttributeClasses() { return ids.clone(); }
-    } // ItemClass
+    }
 
     /** Enumerates classes of attributes of items in a ketchain. */
     public enum AttributeClass {
@@ -358,7 +356,7 @@ public abstract class Keychain implements AutoCloseable {
 
         private final int tag;
 
-        static @CheckForNull AttributeClass lookup(final int tag) {
+        static @Nullable AttributeClass lookup(final int tag) {
             switch (tag) {
                 case kSecKeyKeyClass: return KEY_CLASS;
                 case kSecKeyPrintName: return KEY_PRINT_NAME;
@@ -420,8 +418,8 @@ public abstract class Keychain implements AutoCloseable {
             }
         }
 
-        private AttributeClass(final int tag) { this.tag = tag; }
+        AttributeClass(final int tag) { this.tag = tag; }
 
         int getTag() { return tag; }
-    } // AttributeClass
+    }
 }

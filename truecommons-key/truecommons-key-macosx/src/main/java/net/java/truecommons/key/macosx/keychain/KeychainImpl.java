@@ -7,27 +7,21 @@ package net.java.truecommons.key.macosx.keychain;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
+import net.java.truecommons.key.macosx.keychain.Security.*;
+import net.java.truecommons.shed.Option;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
 import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.Callable;
-import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
-import static net.java.truecommons.key.macosx.keychain.CoreFoundation.*;
-import net.java.truecommons.key.macosx.keychain.Keychain.AttributeClass;
-import net.java.truecommons.key.macosx.keychain.Keychain.Item;
-import net.java.truecommons.key.macosx.keychain.Keychain.ItemClass;
-import net.java.truecommons.key.macosx.keychain.Keychain.Visitor;
-import static net.java.truecommons.key.macosx.keychain.KeychainUtils.*;
+
+import static net.java.truecommons.key.macosx.keychain.CoreFoundation.CFRelease;
+import static net.java.truecommons.key.macosx.keychain.KeychainUtils.list;
+import static net.java.truecommons.key.macosx.keychain.KeychainUtils.map;
 import static net.java.truecommons.key.macosx.keychain.Security.*;
-import net.java.truecommons.key.macosx.keychain.Security.SecKeychainAttributeInfo;
-import net.java.truecommons.key.macosx.keychain.Security.SecKeychainAttributeList;
-import net.java.truecommons.key.macosx.keychain.Security.SecKeychainItemRef;
-import net.java.truecommons.key.macosx.keychain.Security.SecKeychainRef;
-import net.java.truecommons.key.macosx.keychain.Security.SecKeychainSearchRef;
-import static net.java.truecommons.shed.Buffers.*;
+import static net.java.truecommons.shed.Buffers.byteBuffer;
 
 /**
  * The default implementation of {@link Keychain}.
@@ -39,29 +33,31 @@ import static net.java.truecommons.shed.Buffers.*;
  * @since  TrueCommons 2.2
  * @author Christian Schlichtherle
  */
+@SuppressWarnings("LoopStatementThatDoesntLoop")
 @ThreadSafe
 final class KeychainImpl extends Keychain {
 
-    private @CheckForNull SecKeychainRef ref;
+    private Option<SecKeychainRef> ref;
 
     KeychainImpl() throws KeychainException {
         final PointerByReference pr = new PointerByReference();
         check(SecKeychainCopyDefault(pr));
-        this.ref = new SecKeychainRef(pr.getValue());
+        this.ref = Option.some(new SecKeychainRef(pr.getValue()));
     }
 
-    KeychainImpl(final String path, final @CheckForNull char[] password)
+    KeychainImpl(final String path, final Option<char[]> password)
     throws KeychainException {
-        final boolean prompt = null == password || 0 >= password.length;
+        final boolean prompt = password.isEmpty() || 0 >= password.get().length;
         final PointerByReference pr = new PointerByReference();
-        final ByteBuffer buffer = prompt ? null : byteBuffer(password);
-        final int length = prompt ? 0 : (int) buffer.remaining();
+        final ByteBuffer buffer = prompt ? null : byteBuffer(password.get());
+        final int length = prompt ? 0 : buffer.remaining();
         synchronized (KeychainImpl.class) { // this isn't really isolated!
             int s = SecKeychainCreate(path, length, buffer, prompt, null, pr);
-            if (s == errSecDuplicateKeychain) s = SecKeychainOpen(path, pr);
+            if (s == errSecDuplicateKeychain)
+                s = SecKeychainOpen(path, pr);
             check(s);
         }
-        this.ref = new SecKeychainRef(pr.getValue());
+        this.ref = Option.some(new SecKeychainRef(pr.getValue()));
     }
 
     @Override
@@ -72,7 +68,7 @@ final class KeychainImpl extends Keychain {
     throws KeychainException {
         check(SecKeychainItemCreateFromContent(
                 id.getTag(),
-                list(attributes),
+                list(Option.some(attributes)).get(),
                 secret.remaining(), secret,
                 ref(),
                 null,
@@ -81,11 +77,12 @@ final class KeychainImpl extends Keychain {
 
     @Override
     public synchronized void visitItems(
-            @CheckForNull ItemClass id,
-            final @CheckForNull Map<AttributeClass, ByteBuffer> attributes,
+            @Nullable ItemClass id,
+            final @Nullable Map<AttributeClass, ByteBuffer> attributes,
             final Visitor visitor)
     throws KeychainException {
-        if (null == id) id = ItemClass.ANY_ITEM;
+        if (null == id)
+            id = ItemClass.ANY_ITEM;
 
         final SecKeychainSearchRef sr;
         {
@@ -93,7 +90,7 @@ final class KeychainImpl extends Keychain {
             check(SecKeychainSearchCreateFromAttributes(
                     ref(),
                     id.getTag(),
-                    list(attributes),
+                    list(Option.apply(attributes)).orNull(),
                     srr));
             sr = new SecKeychainSearchRef(srr.getValue());
         }
@@ -105,7 +102,8 @@ final class KeychainImpl extends Keychain {
 
             SecKeychainAttributeInfo info(final ItemClass id) {
                 SecKeychainAttributeInfo info = infos.get(id);
-                if (null != info) return info;
+                if (null != info)
+                    return info;
                 info = KeychainUtils.info(id.getAttributeClasses());
                 infos.put(id, info);
                 return info;
@@ -131,28 +129,28 @@ final class KeychainImpl extends Keychain {
 
                     class ItemImpl implements Item {
 
-                        private ItemClass id;
+                        private Option<ItemClass> ic = Option.none();
 
                         @Override
                         public ItemClass getItemClass()
                         throws KeychainException {
-                            ItemClass id = this.id;
-                            if (null != id) return id;
+                            for (ItemClass ic : this.ic)
+                                return ic;
                             final IntByReference cr = new IntByReference();
                             check(SecKeychainItemCopyAttributesAndData(
                                     ir, null, cr, null, null, null));
                             final int c = cr.getValue();
-                            this.id = id = ItemClass.lookup(c);
-                            if (null == id)
+                            ic = ItemClass.lookup(c);
+                            if (ic.isEmpty())
                                 throw (KeychainException) KeychainException
                                         .create(errSecUnimplemented)
                                         .initCause(new UnsupportedOperationException("Unknown class id: " + c));
-                            return id;
+                            return ic.get();
                         }
 
                         @Override
                         public @Nullable ByteBuffer getAttribute(
-                                final AttributeClass id)
+                                AttributeClass id)
                         throws KeychainException {
                             return getAttributes(KeychainUtils.info(id)).get(id);
                         }
@@ -160,7 +158,7 @@ final class KeychainImpl extends Keychain {
                         @Override
                         public void setAttribute(
                                 final AttributeClass id,
-                                final @CheckForNull ByteBuffer value)
+                                final @Nullable ByteBuffer value)
                         throws KeychainException {
                             final Map<AttributeClass, ByteBuffer> attributes =
                                     new EnumMap<>(AttributeClass.class);
@@ -185,7 +183,7 @@ final class KeychainImpl extends Keychain {
                                         ar.getValue());
                             try {
                                 l.read();
-                                return map(l);
+                                return map(Option.some(l)).get();
                             } finally {
                                 SecKeychainItemFreeAttributesAndData(l, null);
                             }
@@ -197,7 +195,7 @@ final class KeychainImpl extends Keychain {
                         throws KeychainException {
                             check(SecKeychainItemModifyAttributesAndData(
                                     ir,
-                                    list(Objects.requireNonNull(attributes)),
+                                    list(Option.some(attributes)).get(),
                                     0, null));
                         }
 
@@ -230,7 +228,7 @@ final class KeychainImpl extends Keychain {
                         public void delete() throws KeychainException {
                             check(SecKeychainItemDelete(ir));
                         }
-                    } // ItemImpl
+                    }
 
                     try {
                         visitor.visit(new ItemImpl());
@@ -239,7 +237,7 @@ final class KeychainImpl extends Keychain {
                     }
                 }
             }
-        } // Visit
+        }
 
         try {
             new Visit().call();
@@ -255,26 +253,28 @@ final class KeychainImpl extends Keychain {
     }
 
     private static void check(int status) throws KeychainException {
-        if (errSecSuccess != status) throw KeychainException.create(status);
+        if (errSecSuccess != status)
+            throw KeychainException.create(status);
     }
 
     private SecKeychainRef ref() throws KeychainException {
-        if (null == ref) check(errSecInvalidKeychain);
-        return ref;
+        for (SecKeychainRef r : ref)
+            return r;
+        throw KeychainException.create(errSecInvalidKeychain);
     }
 
     @Override
     public synchronized void close() {
-        final SecKeychainRef ref = this.ref;
-        if (null == ref) return;
-        this.ref = null;
-        CFRelease(ref);
+        for (final SecKeychainRef r : ref) {
+            ref = Option.none();
+            CFRelease(r);
+        }
     }
 
     @Override
     @SuppressWarnings("FinalizeDeclaration")
     protected void finalize() throws Throwable {
-        try { super.finalize(); }
-        finally { close(); }
+        try { close(); }
+        finally { super.finalize(); }
     }
 }

@@ -6,6 +6,8 @@ package net.java.truecommons.key.spec;
 
 import net.java.truecommons.shed.ImplementationsShouldExtend;
 
+import javax.annotation.Nullable;
+
 /**
  * A generic key with basic features for life cycle management.
  * <p>
@@ -36,7 +38,7 @@ public interface Key<K extends Key<K>> extends Cloneable {
      * A safe key equals another object if and only if the other object
      * has the same runtime class and all its properties compare deeply equal.
      */
-    @Override boolean equals(final Object obj);
+    @Override boolean equals(final @Nullable Object obj);
 
     /**
      * Returns a hash code which is consistent with {@link #equals(Object)}.

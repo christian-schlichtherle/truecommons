@@ -5,6 +5,7 @@
 package net.java.truecommons.key.spec;
 
 import java.io.Serializable;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -33,7 +34,7 @@ implements Key<K>, Serializable {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(final @Nullable Object obj) {
         return this == obj
                 || null != obj && this.getClass().equals(obj.getClass());
     }

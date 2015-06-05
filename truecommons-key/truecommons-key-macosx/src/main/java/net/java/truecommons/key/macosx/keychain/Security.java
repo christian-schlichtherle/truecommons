@@ -4,19 +4,21 @@
  */
 package net.java.truecommons.key.macosx.keychain;
 
-import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
+import net.java.truecommons.key.macosx.keychain.CoreFoundation.CFStringRef;
+import net.java.truecommons.key.macosx.keychain.CoreFoundation.CFTypeRef;
+
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
-import javax.annotation.CheckForNull;
-import static net.java.truecommons.key.macosx.keychain.CoreFoundation.*;
-import net.java.truecommons.key.macosx.keychain.CoreFoundation.CFStringRef;
-import net.java.truecommons.key.macosx.keychain.CoreFoundation.CFTypeRef;
+
+import static net.java.truecommons.key.macosx.keychain.CoreFoundation.CFRelease;
+import static net.java.truecommons.key.macosx.keychain.CoreFoundation.decode;
 
 /**
  * Exposes some parts of Apple's native Keychain Services API.
@@ -45,7 +47,7 @@ final class Security {
             errSecItemNotFound      = -25300;
 
     static final int
-            CSSM_DL_DB_RECORD_ANY           = 0xA + 0,
+            CSSM_DL_DB_RECORD_ANY           = 0xA,
             CSSM_DL_DB_RECORD_CERT          = 0xA + 1,
             CSSM_DL_DB_RECORD_CRL           = 0xA + 2,
             CSSM_DL_DB_RECORD_POLICY        = 0xA + 3,
@@ -133,10 +135,10 @@ final class Security {
     SecKeychainCreate(
             String pathName, // const char*
             int passwordLength, // Uint32
-            @CheckForNull ByteBuffer password, // const void*
+            @Nullable ByteBuffer password, // const void*
             boolean promptUser, // Boolean
-            @CheckForNull SecAccessRef initialAccess,
-            @CheckForNull PointerByReference keychain // SecKeychainRef*
+            @Nullable SecAccessRef initialAccess,
+            @Nullable PointerByReference keychain // SecKeychainRef*
     );
 
     static native int // OSStatus
@@ -147,11 +149,11 @@ final class Security {
     static native int // OSStatus
     SecKeychainItemCopyAttributesAndData(
             SecKeychainItemRef itemRef, // SecKeychainItemRef
-            @CheckForNull SecKeychainAttributeInfo info, // SecKeychainAttributeInfo*
-            @CheckForNull IntByReference itemClass, // SecItemClass*
-            @CheckForNull PointerByReference attrList, // SecKeychainAttributeList**
-            @CheckForNull IntByReference length, // UInt32*
-            @CheckForNull PointerByReference outData // void**
+            @Nullable SecKeychainAttributeInfo info, // SecKeychainAttributeInfo*
+            @Nullable IntByReference itemClass, // SecItemClass*
+            @Nullable PointerByReference attrList, // SecKeychainAttributeList**
+            @Nullable IntByReference length, // UInt32*
+            @Nullable PointerByReference outData // void**
     );
 
     static native int // OSStatus
@@ -160,9 +162,9 @@ final class Security {
             SecKeychainAttributeList attrList, // SecKeychainAttributeList*
             int length, // UInt32
             ByteBuffer data, // const void*
-            @CheckForNull SecKeychainRef keychainRef,
-            @CheckForNull SecAccessRef initialAccess,
-            @CheckForNull PointerByReference itemRef // SecKeychainItemRef*
+            @Nullable SecKeychainRef keychainRef,
+            @Nullable SecAccessRef initialAccess,
+            @Nullable PointerByReference itemRef // SecKeychainItemRef*
     );
 
     static native int // OSStatus
@@ -172,16 +174,16 @@ final class Security {
 
     static native int // OSStatus
     SecKeychainItemFreeAttributesAndData(
-            @CheckForNull SecKeychainAttributeList attrList, // SecKeychainAttributeList*
-            @CheckForNull Pointer data // void*
+            @Nullable SecKeychainAttributeList attrList, // SecKeychainAttributeList*
+            @Nullable Pointer data // void*
     );
 
     static native int // OSStatus
     SecKeychainItemModifyAttributesAndData (
             SecKeychainItemRef itemRef,
-            @CheckForNull SecKeychainAttributeList attrList, // const SecKeychainAttributeList*
+            @Nullable SecKeychainAttributeList attrList, // const SecKeychainAttributeList*
             int length, // UInt32
-            @CheckForNull ByteBuffer data // const void*
+            @Nullable ByteBuffer data // const void*
     );
 
     static native int // OSStatus
@@ -198,16 +200,16 @@ final class Security {
 
     static native int // OSStatus
     SecKeychainSearchCreateFromAttributes(
-            @CheckForNull CFTypeRef keychainOrArray,
+            @Nullable CFTypeRef keychainOrArray,
             int itemClass, // SecItemClass
-            @CheckForNull SecKeychainAttributeList attrList, // const SecKeychainAttributeList*
+            @Nullable SecKeychainAttributeList attrList, // const SecKeychainAttributeList*
             PointerByReference searchRef // SecKeychainSearchRef*
     );
 
     static native CFStringRef
     SecCopyErrorMessageString(
             int status, // OSStatus
-            @CheckForNull Pointer reserved // void*
+            @Nullable Pointer reserved // void*
     );
 
     //
@@ -227,7 +229,7 @@ final class Security {
     public static class SecAccessRef extends CFTypeRef {
         public SecAccessRef() { }
         SecAccessRef(Pointer p) { super(p); }
-    } // SecAccessRef
+    }
 
     public static class SecKeychainAttribute extends Structure {
         public int tag; // SecKeychainAttrType
@@ -241,7 +243,7 @@ final class Security {
         protected List<String> getFieldOrder() {
             return Arrays.asList("tag", "length", "data");
         }
-    } // SecKeyChainAttribute
+    }
 
     public static class SecKeychainAttributeInfo extends Structure {
         public int count; // UInt32
@@ -255,7 +257,7 @@ final class Security {
         protected List<String> getFieldOrder() {
             return Arrays.asList("count", "tag", "format");
         }
-    } // SecKeyChainAttribute
+    }
 
     public static class SecKeychainAttributeList extends Structure {
         public int count; // UInt32
@@ -268,20 +270,20 @@ final class Security {
         protected List<String> getFieldOrder() {
             return Arrays.asList("count", "attr");
         }
-    } // SecKeychainAttributeList
+    }
 
     public static class SecKeychainItemRef extends CFTypeRef {
         public SecKeychainItemRef() { }
         SecKeychainItemRef(Pointer p) { super(p); }
-    } // SecKeychainItemRef
+    }
 
     public static class SecKeychainRef extends CFTypeRef {
         public SecKeychainRef() { }
         SecKeychainRef(Pointer p) { super(p); }
-    } // SecKeychainRef
+    }
 
     public static class SecKeychainSearchRef extends CFTypeRef {
         public SecKeychainSearchRef() { }
         SecKeychainSearchRef(Pointer p) { super(p); }
-    } // SecKeychainSearchRef
-} // Security
+    }
+}

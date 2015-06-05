@@ -4,14 +4,18 @@
  */
 package net.java.truecommons.key.macosx.keychain;
 
+import net.java.truecommons.key.macosx.keychain.Keychain.AttributeClass;
+import net.java.truecommons.shed.Option;
+import org.junit.Test;
+
 import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Map;
-import net.java.truecommons.key.macosx.keychain.Keychain.AttributeClass;
-import static net.java.truecommons.key.macosx.keychain.KeychainUtils.*;
-import static org.hamcrest.CoreMatchers.*;
+
+import static net.java.truecommons.key.macosx.keychain.KeychainUtils.list;
+import static net.java.truecommons.key.macosx.keychain.KeychainUtils.map;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
-import org.junit.Test;
 
 /**
  * @author Christian Schlichtherle
@@ -24,7 +28,7 @@ public class KeychainUtilsTest {
         int count = 0;
         for (final AttributeClass id : AttributeClass.values())
             input.put(id, ByteBuffer.allocateDirect(++count));
-        final Map<AttributeClass, ByteBuffer> output = map(list(input));
+        final Map<AttributeClass, ByteBuffer> output = map(list(Option.some(input))).get();
         assertThat(output.size(), is(input.size()));
         for (final AttributeClass id : AttributeClass.values()) {
             final ByteBuffer ib = input.get(id), ob = output.get(id);

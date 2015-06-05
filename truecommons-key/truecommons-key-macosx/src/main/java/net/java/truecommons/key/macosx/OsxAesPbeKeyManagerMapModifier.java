@@ -4,13 +4,14 @@
  */
 package net.java.truecommons.key.macosx;
 
-import java.util.Map;
-import java.util.ServiceConfigurationError;
-import javax.annotation.concurrent.Immutable;
 import net.java.truecommons.annotations.ServiceImplementation;
 import net.java.truecommons.key.spec.KeyManager;
 import net.java.truecommons.key.spec.common.AesPbeParameters;
 import net.java.truecommons.key.spec.spi.KeyManagerMapModifier;
+
+import javax.annotation.concurrent.Immutable;
+import java.util.Map;
+import java.util.ServiceConfigurationError;
 
 /**
  * Adds the {@link OsxKeyManager} to the map if and only if this JVM is running
