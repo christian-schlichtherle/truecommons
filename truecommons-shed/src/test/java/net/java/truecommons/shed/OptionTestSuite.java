@@ -97,7 +97,7 @@ public abstract class OptionTestSuite {
             serialized = bos.toByteArray();
         }
 
-        logger.debug("Serialized form ({} bytes):\n{}",
+        logger.trace("Serialized form ({} bytes):\n{}",
                 serialized.length,
                 new String(serialized, StandardCharsets.UTF_8));
 
