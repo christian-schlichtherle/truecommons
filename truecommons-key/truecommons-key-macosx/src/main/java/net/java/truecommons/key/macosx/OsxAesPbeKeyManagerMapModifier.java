@@ -8,6 +8,7 @@ import net.java.truecommons.annotations.ServiceImplementation;
 import net.java.truecommons.key.spec.KeyManager;
 import net.java.truecommons.key.spec.common.AesPbeParameters;
 import net.java.truecommons.key.spec.spi.KeyManagerMapModifier;
+import net.java.truecommons.shed.Option;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Map;
@@ -20,6 +21,7 @@ import java.util.ServiceConfigurationError;
  * @since  TrueCommons 2.2
  * @author Christian Schlichtherle
  */
+@SuppressWarnings("LoopStatementThatDoesntLoop")
 @Immutable
 @ServiceImplementation
 public final class OsxAesPbeKeyManagerMapModifier
@@ -29,14 +31,16 @@ extends KeyManagerMapModifier {
     @SuppressWarnings("unchecked")
     public Map<Class<?>, KeyManager<?>> apply(
             final Map<Class<?>, KeyManager<?>> map) {
-        if (!"Mac OS X".equals(System.getProperty("os.name"))) return map;
-        final KeyManager<?> m = map.get(AesPbeParameters.class);
-        if (null == m)
+        if ("Mac OS X".equals(System.getProperty("os.name"))) {
+            for (final KeyManager<AesPbeParameters> km : Option.apply((KeyManager<AesPbeParameters>) map.get(AesPbeParameters.class))) {
+                map.put(AesPbeParameters.class, new OsxKeyManager<>(km, AesPbeParameters.class));
+                return map;
+            }
             throw new ServiceConfigurationError(
-                "This module is a pure persistence service and depends on another key manager module to implement the user interface.");
-        map.put(AesPbeParameters.class,
-                new OsxKeyManager<>((KeyManager<AesPbeParameters>) m, AesPbeParameters.class));
-        return map;
+                    "This module is a pure persistence service and depends on another key manager module to implement the user interface.");
+        } else {
+            return map;
+        }
     }
 
     /** @return -100 */
