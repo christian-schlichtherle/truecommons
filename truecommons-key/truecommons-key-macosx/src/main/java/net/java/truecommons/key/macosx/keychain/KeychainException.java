@@ -4,7 +4,8 @@
  */
 package net.java.truecommons.key.macosx.keychain;
 
-import static net.java.truecommons.key.macosx.keychain.Security.*;
+import static net.java.truecommons.key.macosx.keychain.Security.errSecDuplicateItem;
+import static net.java.truecommons.key.macosx.keychain.Security.message;
 
 /**
  * Indicates an error when using Apple's Keychain Services API.

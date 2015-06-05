@@ -4,9 +4,10 @@
  */
 package net.java.truecommons.key.spec;
 
-import java.nio.ByteBuffer;
-import javax.annotation.CheckForNull;
 import net.java.truecommons.shed.ImplementationsShouldExtend;
+
+import javax.annotation.Nullable;
+import java.nio.ByteBuffer;
 
 /**
  * A key with properties for secret key management.
@@ -21,7 +22,7 @@ import net.java.truecommons.shed.ImplementationsShouldExtend;
 public interface SecretKey<K extends SecretKey<K>> extends Key<K> {
 
     /** Returns a protective copy of the secret data. */
-    @CheckForNull ByteBuffer getSecret();
+    @Nullable ByteBuffer getSecret();
 
     /**
      * Clears the current secret data and sets it to a protective copy of the
@@ -29,5 +30,5 @@ public interface SecretKey<K extends SecretKey<K>> extends Key<K> {
      *
      * @param secret the secret data to copy and set.
      */
-    void setSecret(@CheckForNull ByteBuffer secret);
+    void setSecret(@Nullable ByteBuffer secret);
 }

@@ -6,16 +6,17 @@ package net.java.truecommons.key.macosx.keychain;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
-import java.nio.ByteBuffer;
-import java.util.EnumMap;
-import java.util.Map;
-import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
 import net.java.truecommons.key.macosx.keychain.Keychain.AttributeClass;
-import static net.java.truecommons.key.macosx.keychain.Security.*;
 import net.java.truecommons.key.macosx.keychain.Security.SecKeychainAttribute;
 import net.java.truecommons.key.macosx.keychain.Security.SecKeychainAttributeInfo;
 import net.java.truecommons.key.macosx.keychain.Security.SecKeychainAttributeList;
+import net.java.truecommons.shed.Option;
+
+import java.nio.ByteBuffer;
+import java.util.EnumMap;
+import java.util.Map;
+
+import static net.java.truecommons.key.macosx.keychain.Security.kSecFormatUnknown;
 
 /**
  * Utilities for Apple's Keychain Services API.
@@ -27,18 +28,22 @@ final class KeychainUtils {
 
     private KeychainUtils() { }
 
-    static @Nullable SecKeychainAttributeList list(
-            final @CheckForNull Map<AttributeClass, ByteBuffer> map) {
-        if (null == map) return null;
+    static Option<SecKeychainAttributeList> list(
+            final Option<Map<AttributeClass, ByteBuffer>> optionalMap) {
+        if (optionalMap.isEmpty())
+            return Option.none();
+        final Map<AttributeClass, ByteBuffer> map = optionalMap.get();
         final SecKeychainAttributeList list = new SecKeychainAttributeList();
         final int size = map.size();
-        if (0 >= size) return list;
+        if (0 >= size)
+            return Option.some(list);
         final SecKeychainAttribute[] array = (SecKeychainAttribute[])
                 new SecKeychainAttribute().toArray(size);
         int count = 0;
         for (final Map.Entry<AttributeClass, ByteBuffer> entry : map.entrySet()) {
             final AttributeClass id = entry.getKey();
-            if (null == id) continue;
+            if (null == id)
+                continue;
             final SecKeychainAttribute attr = array[count++];
             attr.tag = id.getTag();
             final ByteBuffer buffer = entry.getValue();
@@ -55,22 +60,28 @@ final class KeychainUtils {
         }
         list.count = count;
         if (0 < count) list.attr = array[0].getPointer();
-        return list;
+        return Option.some(list);
     }
 
     private static Pointer malloc(final int size) {
-        if (0 < size) return new Memory(size);
-        else if (0 == size) return (Memory) new Memory(4).share(0, 0); // fix
-        else throw new IllegalArgumentException("" + size);
+        if (0 < size)
+            return new Memory(size);
+        else if (0 == size)
+            return (Memory) new Memory(4).share(0, 0); // fix
+        else
+            throw new IllegalArgumentException("" + size);
     }
 
-    static @Nullable Map<AttributeClass, ByteBuffer> map(
-            final @CheckForNull SecKeychainAttributeList list) {
-        if (null == list) return null;
+    static Option<Map<AttributeClass, ByteBuffer>> map(
+            final Option<SecKeychainAttributeList> optionalList) {
+        if (optionalList.isEmpty())
+            return Option.none();
+        final SecKeychainAttributeList list = optionalList.get();
         final Map<AttributeClass, ByteBuffer>
                 map = new EnumMap<>(AttributeClass.class);
         final int count = list.count;
-        if (0 >= count) return map;
+        if (0 >= count)
+            return Option.some(map);
         final SecKeychainAttribute[] array;
         {
             final SecKeychainAttribute
@@ -80,9 +91,11 @@ final class KeychainUtils {
         }
         for (final SecKeychainAttribute attr : array) {
             final AttributeClass id = AttributeClass.lookup(attr.tag);
-            if (null == id) continue;
+            if (null == id)
+                continue;
             final Pointer data = attr.data;
-            if (null == data) continue;
+            if (null == data)
+                continue;
             final int length = attr.length;
             final ByteBuffer buffer = (ByteBuffer) ByteBuffer
                     .allocateDirect(length)
@@ -90,7 +103,7 @@ final class KeychainUtils {
                     .flip();
             map.put(id, buffer);
         }
-        return map;
+        return Option.some(map);
     }
 
     static SecKeychainAttributeInfo info(final AttributeClass... ids) {

@@ -4,13 +4,15 @@
  */
 package net.java.truecommons.key.macosx.keychain;
 
-import java.io.PrintStream;
-import java.nio.ByteBuffer;
-import java.util.Map.Entry;
 import net.java.truecommons.key.macosx.keychain.Keychain.AttributeClass;
 import net.java.truecommons.key.macosx.keychain.Keychain.Item;
 import net.java.truecommons.key.macosx.keychain.Keychain.Visitor;
-import static net.java.truecommons.shed.Buffers.*;
+
+import java.io.PrintStream;
+import java.nio.ByteBuffer;
+import java.util.Map.Entry;
+
+import static net.java.truecommons.shed.Buffers.string;
 
 public class ListDefaultKeychain {
 
@@ -35,7 +37,7 @@ public class ListDefaultKeychain {
             }
         };
 
-        try (final Keychain kc = Keychain.open()) {
+        try (Keychain kc = Keychain.open()) {
             kc.visitItems(null, null, visitor);
         }
     }

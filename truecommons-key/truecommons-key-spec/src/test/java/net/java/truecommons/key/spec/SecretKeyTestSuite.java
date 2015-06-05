@@ -114,8 +114,8 @@ public abstract class SecretKeyTestSuite<K extends SecretKey<K>> {
         final byte[] serialized;
         try (final ByteArrayOutputStream
                 bos = new ByteArrayOutputStream(sizeHint)) {
-            try (final XMLEncoder _ = new XMLEncoder(bos)) {
-                _.writeObject(original);
+            try (XMLEncoder encoder = new XMLEncoder(bos)) {
+                encoder.writeObject(original);
             }
             bos.flush(); // redundant
             serialized = bos.toByteArray();
@@ -125,9 +125,8 @@ public abstract class SecretKeyTestSuite<K extends SecretKey<K>> {
         logger.trace("Serialized form:\n{}",
                 new String(serialized, StandardCharsets.UTF_8));
 
-        try (final XMLDecoder
-                dec = new XMLDecoder(new ByteArrayInputStream(serialized))) {
-            return (T) dec.readObject();
+        try (XMLDecoder decoder = new XMLDecoder(new ByteArrayInputStream(serialized))) {
+            return (T) decoder.readObject();
         }
     }
 

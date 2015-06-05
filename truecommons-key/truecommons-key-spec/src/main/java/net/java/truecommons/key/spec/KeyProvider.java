@@ -4,8 +4,9 @@
  */
 package net.java.truecommons.key.spec;
 
-import javax.annotation.CheckForNull;
 import net.java.truecommons.shed.ImplementationsShouldExtend;
+
+import javax.annotation.Nullable;
 
 /**
  * Manages the life cycle of a key for reading and (over)writing a protected
@@ -142,5 +143,5 @@ public interface KeyProvider<K> {
      *        If this is {@code null}, this key provider is set to a state
      *        as if prompting for the key had been cancelled.
      */
-    void setKey(@CheckForNull K key);
+    void setKey(@Nullable K key);
 }

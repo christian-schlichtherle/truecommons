@@ -4,10 +4,12 @@
  */
 package net.java.truecommons.key.spec;
 
+import net.java.truecommons.shed.Option;
+
 import java.beans.Transient;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import javax.annotation.Nullable;
 import static net.java.truecommons.shed.Buffers.*;
 
@@ -25,18 +27,19 @@ import static net.java.truecommons.shed.Buffers.*;
  * @since TrueCommons 2.2
  * @author Christian Schlichtherle
  */
+@SuppressWarnings("LoopStatementThatDoesntLoop")
 public abstract class AbstractPbeParameters<
         P extends AbstractPbeParameters<P, S>,
         S extends KeyStrength>
 extends AbstractSecretKey<P>
 implements PbeParameters<P, S> {
 
-    private @CheckForNull S keyStrength;
+    private Option<S> keyStrength = Option.none();
 
     @Override
     public void reset() {
         super.reset();
-        keyStrength = null;
+        keyStrength = Option.none();
     }
 
     @Transient
@@ -44,22 +47,24 @@ implements PbeParameters<P, S> {
     public @Nullable char[] getPassword() { return charArray(getSecret()); }
 
     @Override
-    public void setPassword(final @CheckForNull char[] password) {
+    public void setPassword(final @Nullable char[] password) {
         setSecret(byteBuffer(password));
     }
 
     @Transient
     @Override
-    public @CheckForNull S getKeyStrength() { return keyStrength; }
+    public @Nullable S getKeyStrength() { return keyStrength.orNull(); }
 
     @Override
-    public void setKeyStrength(final @CheckForNull S keyStrength) {
-        this.keyStrength = keyStrength;
+    public void setKeyStrength(final @Nullable S keyStrength) {
+        this.keyStrength = Option.apply(keyStrength);
     }
 
     /** Returns the cipher key strength in bits. */
     public int getKeyStrengthBits() {
-        return null == keyStrength ? 0 : keyStrength.getBits();
+        for (S s : keyStrength)
+            return s.getBits();
+        return 0;
     }
 
     /**
@@ -74,11 +79,11 @@ implements PbeParameters<P, S> {
      */
     public void setKeyStrengthBits(final int bits) {
         if (0 == bits) {
-            this.keyStrength = null;
+            this.keyStrength = Option.none();
         } else {
             for (final S s : getAllKeyStrengths()) {
                 if (s.getBits() == bits) {
-                    this.keyStrength = s;
+                    this.keyStrength = Option.some(s);
                     return;
                 }
             }
@@ -88,23 +93,23 @@ implements PbeParameters<P, S> {
 
     @Override
     @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
-    public boolean equals(final Object obj) {
+    public boolean equals(final @Nullable Object obj) {
         if (this == obj) return true;
         if (!super.equals(obj)) return false;
         final AbstractPbeParameters<?, ?> that = (AbstractPbeParameters<?, ?>) obj;
-        return Objects.equals(this.keyStrength, that.keyStrength);
+        return this.keyStrength.equals(that.keyStrength);
     }
 
     @Override
     public int hashCode() {
         int c = super.hashCode();
-        c = 31 * c + Objects.hashCode(keyStrength);
+        c = 31 * c + keyStrength.hashCode();
         return c;
     }
 
     @Override
     public String toString() {
         return String.format("%s[keystrength=%s]",
-                super.toString(), keyStrength);
+                super.toString(), keyStrength.orNull());
     }
 }

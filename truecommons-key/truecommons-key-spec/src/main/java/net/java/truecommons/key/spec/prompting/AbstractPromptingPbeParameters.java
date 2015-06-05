@@ -4,6 +4,7 @@
  */
 package net.java.truecommons.key.spec.prompting;
 
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 import net.java.truecommons.key.spec.AbstractPbeParameters;
 import net.java.truecommons.key.spec.KeyStrength;
@@ -49,7 +50,7 @@ extends AbstractPbeParameters<P, S> implements PromptingPbeParameters<P, S> {
      */
     @Override
     @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
-    public boolean equals(final Object obj) {
+    public boolean equals(final @Nullable Object obj) {
         if (this == obj) return true;
         if (!super.equals(obj)) return false;
         final AbstractPromptingPbeParameters<?, ?> that = (AbstractPromptingPbeParameters<?, ?>) obj;

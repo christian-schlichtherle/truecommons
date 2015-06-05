@@ -4,15 +4,20 @@
  */
 package net.java.truecommons.key.macosx;
 
-import java.nio.ByteBuffer;
-import static net.java.truecommons.key.macosx.OsxKeyManager.*;
 import net.java.truecommons.key.spec.common.AesKeyStrength;
 import net.java.truecommons.key.spec.common.AesPbeParameters;
-import static net.java.truecommons.shed.Buffers.*;
-import static org.junit.Assert.*;
+import net.java.truecommons.shed.Option;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.ByteBuffer;
+
+import static net.java.truecommons.key.macosx.OsxKeyManager.deserialize;
+import static net.java.truecommons.key.macosx.OsxKeyManager.serialize;
+import static net.java.truecommons.shed.Buffers.string;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Christian Schlichtherle
@@ -28,12 +33,12 @@ public class OsxKeyManagerTest {
         original.setChangeRequested(true);
         original.setKeyStrength(AesKeyStrength.BITS_256);
         original.setPassword("föo".toCharArray());
-        final ByteBuffer xml = serialize(original); // must not serialize password!
+        final ByteBuffer xml = serialize(Option.apply(original)).get(); // must not serialize password!
 
         logger.trace("Serialized object to {} bytes.", xml.remaining());
         logger.trace("Serialized form:\n{}", string(xml));
 
-        final AesPbeParameters clone = (AesPbeParameters) deserialize(xml);
+        final AesPbeParameters clone = (AesPbeParameters) deserialize(Option.apply(xml)).get();
         assertNull(clone.getPassword());
         original.setPassword(null);
         assertEquals(original, clone);

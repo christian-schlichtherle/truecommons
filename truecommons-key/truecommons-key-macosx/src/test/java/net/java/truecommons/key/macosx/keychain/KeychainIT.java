@@ -4,20 +4,24 @@
  */
 package net.java.truecommons.key.macosx.keychain;
 
+import net.java.truecommons.key.macosx.keychain.Keychain.AttributeClass;
+import net.java.truecommons.key.macosx.keychain.Keychain.Item;
+import net.java.truecommons.key.macosx.keychain.Keychain.Visitor;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.CheckForNull;
-import net.java.truecommons.key.macosx.keychain.Keychain.AttributeClass;
+
 import static net.java.truecommons.key.macosx.keychain.Keychain.AttributeClass.*;
-import net.java.truecommons.key.macosx.keychain.Keychain.Item;
-import static net.java.truecommons.key.macosx.keychain.Keychain.ItemClass.*;
-import net.java.truecommons.key.macosx.keychain.Keychain.Visitor;
-import static net.java.truecommons.shed.Buffers.*;
-import org.junit.AfterClass;
-import static org.junit.Assert.*;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static net.java.truecommons.key.macosx.keychain.Keychain.ItemClass.GENERIC_PASSWORD;
+import static net.java.truecommons.shed.Buffers.byteBuffer;
+import static net.java.truecommons.shed.Buffers.string;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Christian Schlichtherle
@@ -143,7 +147,7 @@ public class KeychainIT {
 
         private Map<AttributeClass, ByteBuffer> map = new EnumMap<>(AttributeClass.class);
 
-        MapBuilder put(final AttributeClass id, final @CheckForNull String string) {
+        MapBuilder put(final AttributeClass id, final @Nullable String string) {
             if (null != string) map.put(id, byteBuffer(string));
             else map.remove(id);
             return this;
@@ -151,19 +155,19 @@ public class KeychainIT {
 
         @SuppressWarnings("ReturnOfCollectionOrArrayField")
         Map<AttributeClass, ByteBuffer> get() { return map; }
-    } // MapBuilder
+    }
 
     private static class ModifyAttribute implements Visitor {
 
         final String service;
         final AttributeClass id;
-        final @CheckForNull String string;
+        final @Nullable String string;
         boolean modified;
 
         ModifyAttribute(
                 final String service,
                 final AttributeClass id,
-                final @CheckForNull String string) {
+                final @Nullable String string) {
             this.service = service;
             this.id = id;
             this.string = string;
@@ -178,7 +182,7 @@ public class KeychainIT {
             item.putAttributeMap(attributes);
             modified = true;
         }
-    } // ModifyAttribute
+    }
 
     private static class ModifyData implements Visitor {
 
@@ -200,16 +204,16 @@ public class KeychainIT {
             item.setSecret(byteBuffer(data));
             modified = true;
         }
-    } // ModifyData
+    }
 
     private static class Delete implements Visitor {
 
         final String service;
-        final @CheckForNull String data;
+        final @Nullable String data;
         boolean deleted;
 
         Delete(final String service) { this(service, null); }
-        Delete(final String service, final @CheckForNull String data) {
+        Delete(final String service, final @Nullable String data) {
             this.service = service;
             this.data = data;
         }
@@ -222,5 +226,5 @@ public class KeychainIT {
             item.delete();
             deleted = true;
         }
-    } // Delete
+    }
 }

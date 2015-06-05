@@ -4,11 +4,17 @@
  */
 package net.java.truecommons.key.spec;
 
+import net.java.truecommons.shed.Option;
+
+import javax.annotation.Nullable;
 import java.beans.Transient;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.nio.ByteBuffer;
 import java.util.Objects;
-import javax.annotation.CheckForNull;
-import static net.java.truecommons.shed.Buffers.*;
+
+import static net.java.truecommons.shed.Buffers.copy;
+import static net.java.truecommons.shed.Buffers.fill;
 
 /**
  * A JavaBean with properties for secret key management.
@@ -24,13 +30,18 @@ import static net.java.truecommons.shed.Buffers.*;
 public abstract class AbstractSecretKey<K extends AbstractSecretKey<K>>
 extends AbstractKey<K> implements SecretKey<K> {
 
-    private transient @CheckForNull ByteBuffer secret;
+    private transient Option<ByteBuffer> secret = Option.none();
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        secret = Option.none();
+    }
 
     @Override
     @SuppressWarnings({"AccessingNonPublicFieldOfAnotherObject", "unchecked"})
     public K clone() {
         final AbstractSecretKey<K> clone = super.clone();
-        clone.secret = copy(this.secret);
+        clone.secret = Option.apply(copy(this.secret.orNull()));
         return (K) clone;
     }
 
@@ -38,41 +49,39 @@ extends AbstractKey<K> implements SecretKey<K> {
     public void reset() { doReset(); }
 
     private void doReset() {
-        fill(secret, (byte) 0);
-        secret = null;
+        for (ByteBuffer bb : secret)
+            fill(bb, (byte) 0);
+        secret = Option.none();
     }
 
     @Override
     @SuppressWarnings("FinalizeDeclaration")
     protected void finalize() throws Throwable {
-        try {
-            super.finalize();
-        } finally {
-            doReset();
-        }
+        try { doReset(); }
+        finally { super.finalize(); }
     }
 
     /**
      * Returns {@code true} if and only if the secret data is not {@code null}.
      */
     @Transient
-    public final boolean isSecretSet() { return null != secret; }
+    public final boolean isSecretSet() { return !secret.isEmpty(); }
 
     @Transient
     @Override
-    public final @CheckForNull ByteBuffer getSecret() {
-        return copy(secret);
+    public final @Nullable ByteBuffer getSecret() {
+        return copy(secret.orNull());
     }
 
     @Override
-    public final void setSecret(final @CheckForNull ByteBuffer secret) {
+    public final void setSecret(final @Nullable ByteBuffer secret) {
         doReset();
-        this.secret = copy(secret);
+        this.secret = Option.apply(copy(secret));
     }
 
     @Override
     @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
-    public boolean equals(final Object obj) {
+    public boolean equals(final @Nullable Object obj) {
         if (this == obj) return true;
         if (!super.equals(obj)) return false;
         final AbstractSecretKey<?> that = (AbstractSecretKey<?>) obj;
