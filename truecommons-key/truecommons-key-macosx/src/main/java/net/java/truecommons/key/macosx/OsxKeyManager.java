@@ -134,7 +134,6 @@ extends AbstractKeyManager<P> {
                     final Keychain keychain,
                     final Map<AttributeClass, ByteBuffer> attributes)
             throws KeychainException {
-
                 for (final P param : optionalParam) {
                     for (final ByteBuffer newSecret : Option.apply(param.getSecret())) {
                         try {
@@ -197,8 +196,8 @@ extends AbstractKeyManager<P> {
     static Option<ByteBuffer> serialize(final Option<?> optionalObject) {
         for (final Object object : optionalObject) {
             try (final ByteArrayOutputStream bos = new ByteArrayOutputStream(512)) {
-                try (final XMLEncoder _ = new XMLEncoder(bos)) {
-                    _.writeObject(object);
+                try (final XMLEncoder encoder = new XMLEncoder(bos)) {
+                    encoder.writeObject(object);
                 }
                 bos.flush(); // redundant
                 return Option.some(copy(ByteBuffer.wrap(bos.toByteArray())));
@@ -214,7 +213,7 @@ extends AbstractKeyManager<P> {
         for (final ByteBuffer xml : optionalXml) {
             final byte[] array = new byte[xml.remaining()]; // cannot use bb.array()!
             xml.duplicate().get(array);
-            try (final XMLDecoder decoder = new XMLDecoder(new ByteArrayInputStream(array))) {
+            try (XMLDecoder decoder = new XMLDecoder(new ByteArrayInputStream(array))) {
                 return Option.apply(decoder.readObject());
             }
         }
