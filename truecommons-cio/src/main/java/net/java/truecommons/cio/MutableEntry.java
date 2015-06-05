@@ -4,7 +4,7 @@
  */
 package net.java.truecommons.cio;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 
 /**
  * Represents a mutable entry in a container.
@@ -55,5 +55,5 @@ public interface MutableEntry extends Entry {
     boolean setPermitted(
             Access type,
             Entity entity,
-            @CheckForNull Boolean value);
+            @Nullable Boolean value);
 }

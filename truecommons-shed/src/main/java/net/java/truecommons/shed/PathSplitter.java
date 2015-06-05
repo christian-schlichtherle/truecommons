@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -19,7 +18,7 @@ public class PathSplitter {
     
     private final char separatorChar;
     private final int fixum;
-    private @CheckForNull String parentPath;
+    private @Nullable String parentPath;
     private String memberName;
 
     /**

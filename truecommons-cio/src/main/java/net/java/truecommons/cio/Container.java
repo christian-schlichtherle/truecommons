@@ -4,9 +4,10 @@
  */
 package net.java.truecommons.cio;
 
-import java.util.*;
-import javax.annotation.CheckForNull;
-import net.java.truecommons.shed.*;
+import net.java.truecommons.shed.Stream;
+
+import javax.annotation.Nullable;
+import java.util.Iterator;
 
 /**
  * An iterable container for entries.
@@ -48,5 +49,5 @@ public interface Container<E extends Entry> extends Stream<E> {
      * @return The entry for the given {@code name} or {@code null} if no entry
      *         with this name exists in this container.
      */
-    @CheckForNull E entry(String name);
+    @Nullable E entry(String name);
 }

@@ -4,23 +4,19 @@
  */
 package net.java.truecommons.key.swing.util;
 
-import java.awt.Component;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.Serializable;
-import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
-import javax.swing.ComboBoxEditor;
-import javax.swing.ComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.MutableComboBoxModel;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.Serializable;
 
 /**
  * An observer for a {@link JComboBox} which provides auto completion for the
@@ -46,7 +42,7 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
 
     private final Listener listener = new Listener();
 
-    private @CheckForNull JComboBox<E> comboBox;
+    private @Nullable JComboBox<E> comboBox;
 
     /**
      * Used to inhibit mutual recursive event firing.
@@ -67,7 +63,7 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
      * @param comboBox The combo box to enable browsing for auto completions.
      * May be {@code null}.
      */
-    protected AbstractComboBoxBrowser(final @CheckForNull JComboBox<E> comboBox) {
+    protected AbstractComboBoxBrowser(final @Nullable JComboBox<E> comboBox) {
         changeComboBox(null, comboBox, false);
     }
 
@@ -86,13 +82,13 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
      * @param comboBox The combo box to enable browsing for auto completions.
      *        May be {@code null}.
      */
-    public void setComboBox(final @CheckForNull JComboBox<E> comboBox) {
+    public void setComboBox(final @Nullable JComboBox<E> comboBox) {
         changeComboBox(getComboBox(), comboBox, true);
     }
 
     private void changeComboBox(
-            final @CheckForNull JComboBox<E> oldCB,
-            final @CheckForNull JComboBox<E> newCB,
+            final @Nullable JComboBox<E> oldCB,
+            final @Nullable JComboBox<E> newCB,
             final boolean update) {
         if (newCB == oldCB) return;
 
@@ -117,8 +113,8 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
     }
 
     private void changeEditor(
-            final @CheckForNull ComboBoxEditor oldCBE,
-            final @CheckForNull ComboBoxEditor newCBE,
+            final @Nullable ComboBoxEditor oldCBE,
+            final @Nullable ComboBoxEditor newCBE,
             final boolean update) {
         if (newCBE == oldCBE) return;
 
@@ -140,8 +136,8 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
     }
 
     private void changeText(
-            final @CheckForNull JTextComponent oldTC,
-            final @CheckForNull JTextComponent newTC,
+            final @Nullable JTextComponent oldTC,
+            final @Nullable JTextComponent newTC,
             final boolean update) {
         if (newTC == oldTC) return;
 
@@ -161,8 +157,8 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
     }
 
     private void changeDocument(
-            final @CheckForNull Document oldDoc,
-            final @CheckForNull Document newDoc,
+            final @Nullable Document oldDoc,
+            final @Nullable Document newDoc,
             final boolean update) {
         if (newDoc == oldDoc) return;
 
@@ -199,7 +195,7 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
         }
     }
 
-    private void updateEditor(final ComboBoxEditor cbe, final @CheckForNull Object item) {
+    private void updateEditor(final ComboBoxEditor cbe, final @Nullable Object item) {
         if (lock()) return;
         try {
             cbe.setItem(item);
@@ -309,12 +305,12 @@ public abstract class AbstractComboBoxBrowser<E> implements Serializable {
         }
 
         @Override
-        public void setItem(final @CheckForNull Object item) {
+        public void setItem(final @Nullable Object item) {
             updateEditor(editor, item);
         }
 
         @Override
-        public @CheckForNull Object getItem() { return editor.getItem(); }
+        public @Nullable Object getItem() { return editor.getItem(); }
 
         @Override
         public void selectAll() { editor.selectAll(); }

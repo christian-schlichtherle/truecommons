@@ -5,6 +5,11 @@
 package net.java.truecommons.cio;
 
 import edu.umd.cs.findbugs.annotations.CreatesObligation;
+import net.java.truecommons.io.ByteBufferChannel;
+import net.java.truecommons.io.DisconnectingSeekableChannel;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,16 +17,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.util.EnumMap;
 import java.util.Objects;
-import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
+
 import static net.java.truecommons.cio.Entry.Access.READ;
 import static net.java.truecommons.cio.Entry.Access.WRITE;
-import net.java.truecommons.cio.Entry.Entity;
-import net.java.truecommons.cio.Entry.Size;
-import static net.java.truecommons.cio.Entry.UNKNOWN;
-import net.java.truecommons.io.ByteBufferChannel;
-import net.java.truecommons.io.DisconnectingSeekableChannel;
 
 /**
  * An I/O buffer which shares its contents with a
@@ -44,7 +42,7 @@ public class MemoryBuffer implements IoBuffer {
 
     private final String name;
     private int initialCapacity;
-    private @CheckForNull ByteBuffer buffer;
+    private @Nullable ByteBuffer buffer;
     private final EnumMap<Access, Long> times = new EnumMap<>(Access.class);
     private int reads;
     private int writes;
@@ -77,7 +75,7 @@ public class MemoryBuffer implements IoBuffer {
 
     private MemoryBuffer(
             final String name,
-            final @CheckForNull ByteBuffer buffer,
+            final @Nullable ByteBuffer buffer,
             final int initialCapacity) {
         this.name = Objects.requireNonNull(name);
         setBuffer(buffer);
@@ -133,7 +131,7 @@ public class MemoryBuffer implements IoBuffer {
      * @param buffer the nullable byte buffer with the contents to share
      *        with this memory buffer.
      */
-    public final void setBuffer(final @CheckForNull ByteBuffer buffer) {
+    public final void setBuffer(final @Nullable ByteBuffer buffer) {
         this.buffer = null != buffer
                 ? (ByteBuffer) buffer.duplicate().rewind()
                 : null;

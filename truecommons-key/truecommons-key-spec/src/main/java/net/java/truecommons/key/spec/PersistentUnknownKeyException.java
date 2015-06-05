@@ -4,7 +4,7 @@
  */
 package net.java.truecommons.key.spec;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 
 /**
  * Thrown to indicate that the retrieval of the key to (over)write or read a
@@ -19,15 +19,15 @@ public class PersistentUnknownKeyException extends UnknownKeyException {
 
     public PersistentUnknownKeyException() { }
 
-    public PersistentUnknownKeyException(@CheckForNull String msg) {
+    public PersistentUnknownKeyException(@Nullable String msg) {
         super(msg);
     }
 
-    public PersistentUnknownKeyException(@CheckForNull Throwable cause) {
+    public PersistentUnknownKeyException(@Nullable Throwable cause) {
         super(cause);
     }
 
-    public PersistentUnknownKeyException(@CheckForNull String msg, @CheckForNull Throwable cause) {
+    public PersistentUnknownKeyException(@Nullable String msg, @Nullable Throwable cause) {
         super(msg, cause);
     }
 }

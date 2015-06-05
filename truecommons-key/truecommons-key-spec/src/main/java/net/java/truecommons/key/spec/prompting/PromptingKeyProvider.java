@@ -10,7 +10,7 @@ import net.java.truecommons.key.spec.UnknownKeyException;
 import net.java.truecommons.key.spec.prompting.PromptingKey.Controller;
 import net.java.truecommons.key.spec.prompting.PromptingKey.View;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.annotation.concurrent.ThreadSafe;
 import java.net.URI;
@@ -60,13 +60,13 @@ extends AbstractKeyProvider<K> {
      * given nullable key before setting it.
      */
     @Override
-    public void setKey(@CheckForNull K key) { provider.setKeyClone(key); }
+    public void setKey(@Nullable K key) { provider.setKeyClone(key); }
 
-    @CheckForNull PersistentUnknownKeyException getException() {
+    @Nullable PersistentUnknownKeyException getException() {
         return provider.getException();
     }
 
-    void setException(@CheckForNull PersistentUnknownKeyException exception) {
+    void setException(@Nullable PersistentUnknownKeyException exception) {
         provider.setException(exception);
     }
 
@@ -104,7 +104,7 @@ extends AbstractKeyProvider<K> {
         public final URI getResource() { return uri; }
 
         @Override
-        public final void setKeyClone(@CheckForNull K key) {
+        public final void setKeyClone(@Nullable K key) {
             provider.setKeyClone(key);
         }
     }

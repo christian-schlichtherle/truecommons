@@ -4,12 +4,12 @@
  */
 package net.java.truecommons.io;
 
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.channels.Channel;
 import java.util.Objects;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * A source or sink which provides a given stream or channel at most once.
@@ -21,8 +21,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 @NotThreadSafe
 public abstract class OneTimeFoundry<S extends Closeable, C extends Channel> {
 
-    private @CheckForNull S stream;
-    private @CheckForNull C channel;
+    private @Nullable S stream;
+    private @Nullable C channel;
 
     OneTimeFoundry(final S stream) {
         this.stream = Objects.requireNonNull(stream);

@@ -4,14 +4,8 @@
  */
 package net.java.truecommons.shed;
 
-import java.util.AbstractSet;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * An abstract set of the canonical string representation of objects in
@@ -268,7 +262,7 @@ public class CanonicalStringSet extends AbstractSet<String> {
 
     private class CanonicalStringIterator implements Iterator<String> {
         private final StringTokenizer tokenizer;
-        private @CheckForNull String canonical;
+        private @Nullable String canonical;
 
         private CanonicalStringIterator(final String list) {
             tokenizer = new StringTokenizer(list, "" + separator); // NOI18N

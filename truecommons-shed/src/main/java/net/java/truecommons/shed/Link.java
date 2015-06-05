@@ -4,7 +4,7 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
@@ -30,7 +30,7 @@ public interface Link<T> {
      *
      * @return The target of this link.
      */
-    @CheckForNull T get();
+    @Nullable T get();
 
     /**
      * A factory for links which defines the terms and conditions for clearing
@@ -42,7 +42,7 @@ public interface Link<T> {
         /** This reference type never clears the target of a link. */
         STRONG {
             @Override
-            <T> Link<T> newLink(@CheckForNull T target, ReferenceQueue<? super T> queue) {
+            <T> Link<T> newLink(@Nullable T target, ReferenceQueue<? super T> queue) {
                 return new Strong<>(target);
             }
         },
@@ -53,7 +53,7 @@ public interface Link<T> {
          */
         SOFT {
             @Override
-            <T> Link<T> newLink(@CheckForNull T target, ReferenceQueue<? super T> queue) {
+            <T> Link<T> newLink(@Nullable T target, ReferenceQueue<? super T> queue) {
                 return new Soft<>(target, queue);
             }
         },
@@ -64,7 +64,7 @@ public interface Link<T> {
          */
         WEAK {
             @Override
-            <T> Link<T> newLink(@CheckForNull T target, ReferenceQueue<? super T> queue) {
+            <T> Link<T> newLink(@Nullable T target, ReferenceQueue<? super T> queue) {
                 return new Weak<>(target, queue);
             }
         },
@@ -75,25 +75,25 @@ public interface Link<T> {
          */
         PHANTOM {
             @Override
-            public <T> Link<T> newLink(@CheckForNull T target, ReferenceQueue<? super T> queue) {
+            public <T> Link<T> newLink(@Nullable T target, ReferenceQueue<? super T> queue) {
                 return new Phantom<>(target, queue);
             }
         };
 
         /** Returns a new typed link to the given nullable target. */
-        abstract <T> Link<T> newLink(@CheckForNull T target, @CheckForNull ReferenceQueue<? super T> queue);
+        abstract <T> Link<T> newLink(@Nullable T target, @Nullable ReferenceQueue<? super T> queue);
 
         /** Returns a new typed link to the given nullable target. */
-        public <T> Link<T> newLink(@CheckForNull T target) {
+        public <T> Link<T> newLink(@Nullable T target) {
             return newLink(target, null);
         }
 
         /** A strong reference. */
         private static final class Strong<T> implements Link<T> {
 
-            private final @CheckForNull T target;
+            private final @Nullable T target;
 
-            Strong(final @CheckForNull T target) {
+            Strong(final @Nullable T target) {
                 this.target = target;
             }
 

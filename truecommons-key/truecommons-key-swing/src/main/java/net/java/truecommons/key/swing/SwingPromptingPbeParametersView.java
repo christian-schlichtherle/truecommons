@@ -4,21 +4,6 @@
  */
 package net.java.truecommons.key.swing;
 
-import java.awt.EventQueue;
-import java.awt.GraphicsEnvironment;
-import java.awt.Window;
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.net.URI;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.util.Arrays;
-import java.util.ResourceBundle;
-import java.util.zip.Deflater;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.ThreadSafe;
-import javax.swing.JOptionPane;
 import net.java.truecommons.key.spec.KeyStrength;
 import net.java.truecommons.key.spec.PbeParameters;
 import net.java.truecommons.key.spec.UnknownKeyException;
@@ -30,6 +15,20 @@ import net.java.truecommons.key.spec.prompting.PromptingPbeParameters;
 import net.java.truecommons.key.swing.sl.InvalidKeyFeedbackLocator;
 import net.java.truecommons.key.swing.sl.UnknownKeyFeedbackLocator;
 import net.java.truecommons.key.swing.util.Windows;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.net.URI;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.util.Arrays;
+import java.util.ResourceBundle;
+import java.util.zip.Deflater;
 
 /**
  * A Swing based user interface for prompting for passwords or key files.
@@ -146,7 +145,7 @@ implements PromptingKey.View<P> {
         return chars;
     }
 
-    private volatile @CheckForNull URI lastResource;
+    private volatile @Nullable URI lastResource;
 
     /** Returns the last resource ID used when prompting. */
     URI getLastResource() {
@@ -194,7 +193,7 @@ implements PromptingKey.View<P> {
 
         final KeyStrengthPanel<S> keyStrengthPanel = new KeyStrengthPanel<>(
                 param.getAllKeyStrengths());
-        final @CheckForNull S keyStrength = param.getKeyStrength();
+        final @Nullable S keyStrength = param.getKeyStrength();
         if (null != keyStrength) keyStrengthPanel.setKeyStrength(keyStrength);
         final WriteKeyPanel keyPanel = new WriteKeyPanel(this);
         keyPanel.setExtraDataUI(keyStrengthPanel);

@@ -4,19 +4,16 @@
  */
 package net.java.truecommons.services;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.ServiceConfigurationError;
-import java.util.ServiceLoader;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.Immutable;
 import net.java.truecommons.logging.BundledMessage;
 import net.java.truecommons.logging.LocalizedLogger;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * Creates containers or factories of products.
@@ -113,7 +110,7 @@ public final class ServiceLocator {
      */
     public <P> Factory<P> factory(
             final Class<? extends LocatableFactory<P>> factory,
-            final @CheckForNull Class<? extends LocatableFunction<P>> functions)
+            final @Nullable Class<? extends LocatableFunction<P>> functions)
     throws ServiceConfigurationError {
         final LocatableFactory<P> p = provider(factory);
         final LocatableFunction<P>[] f = null == functions ? null
@@ -148,7 +145,7 @@ public final class ServiceLocator {
      */
     public <P> Container<P> container(
             final Class<? extends LocatableProvider<P>> provider,
-            final @CheckForNull Class<? extends LocatableDecorator<P>> decorator)
+            final @Nullable Class<? extends LocatableDecorator<P>> decorator)
     throws ServiceConfigurationError {
         final LocatableProvider<P> p = provider(provider);
         final LocatableDecorator<P>[] d = null == decorator ? null

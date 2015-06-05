@@ -4,10 +4,12 @@
  */
 package net.java.truecommons.cio;
 
-import javax.annotation.CheckForNull;
+import net.java.truecommons.shed.BitField;
+
+import javax.annotation.Nullable;
+
 import static net.java.truecommons.cio.Entry.Access.*;
 import static net.java.truecommons.cio.Entry.Type.*;
-import net.java.truecommons.shed.BitField;
 
 /**
  * Represents an entry in a container.
@@ -198,5 +200,5 @@ public interface Entry {
      * @return {@code true} if and only if the given access {@code type} to
      *         this entry is permitted for the given {@code entity}.
      */
-    @CheckForNull Boolean isPermitted(Access type, Entity entity);
+    @Nullable Boolean isPermitted(Access type, Entity entity);
 }

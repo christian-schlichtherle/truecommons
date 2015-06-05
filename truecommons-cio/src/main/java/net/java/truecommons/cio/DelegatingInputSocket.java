@@ -4,11 +4,11 @@
  */
 package net.java.truecommons.cio;
 
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.SeekableByteChannel;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.Immutable;
 
 /**
  * Delegates all methods to another input socket.
@@ -38,14 +38,14 @@ extends AbstractInputSocket<E> {
     }
 
     @Override
-    public InputStream stream(@CheckForNull OutputSocket<? extends Entry> peer)
+    public InputStream stream(@Nullable OutputSocket<? extends Entry> peer)
     throws IOException {
         return socket().stream(peer);
     }
 
     @Override
     public SeekableByteChannel channel(
-            @CheckForNull OutputSocket<? extends Entry> peer)
+            @Nullable OutputSocket<? extends Entry> peer)
     throws IOException {
         return socket().channel(peer);
     }

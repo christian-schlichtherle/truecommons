@@ -4,11 +4,12 @@
  */
 package net.java.truecommons.shed;
 
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.CharBuffer;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.NotThreadSafe;
+
 import static net.java.truecommons.shed.UriEncoder.Encoding.*;
 
 /**
@@ -70,12 +71,12 @@ import static net.java.truecommons.shed.UriEncoder.Encoding.*;
 public final class UriBuilder {
 
     private final UriEncoder encoder;
-    private @CheckForNull StringBuilder builder;
-    private @CheckForNull String scheme;
-    private @CheckForNull String authority;
-    private @CheckForNull String path;
-    private @CheckForNull String query;
-    private @CheckForNull String fragment;
+    private @Nullable StringBuilder builder;
+    private @Nullable String scheme;
+    private @Nullable String authority;
+    private @Nullable String path;
+    private @Nullable String query;
+    private @Nullable String fragment;
 
     /**
      * Constructs a new URI builder.
@@ -373,7 +374,7 @@ public final class UriBuilder {
      *
      * @return The URI scheme component.
      */
-    @CheckForNull
+    @Nullable
     public String getScheme() {
         return scheme;
     }
@@ -383,7 +384,7 @@ public final class UriBuilder {
      *
      * @param  scheme the URI scheme component.
      */
-    public void setScheme(final @CheckForNull String scheme) {
+    public void setScheme(final @Nullable String scheme) {
         this.scheme = scheme;
     }
 
@@ -393,7 +394,7 @@ public final class UriBuilder {
      * @param  scheme the URI scheme component.
      * @return {@code this}
      */
-    public UriBuilder scheme(@CheckForNull String scheme) {
+    public UriBuilder scheme(@Nullable String scheme) {
         setScheme(scheme);
         return this;
     }
@@ -405,7 +406,7 @@ public final class UriBuilder {
      *
      * @return The URI authority component.
      */
-    @CheckForNull
+    @Nullable
     public String getAuthority() {
         return authority;
     }
@@ -415,7 +416,7 @@ public final class UriBuilder {
      *
      * @param  authority the URI authority component.
      */
-    public void setAuthority(final @CheckForNull String authority) {
+    public void setAuthority(final @Nullable String authority) {
         this.authority = authority;
     }
 
@@ -425,7 +426,7 @@ public final class UriBuilder {
      * @param  authority the URI authority component.
      * @return {@code this}
      */
-    public UriBuilder authority(@CheckForNull String authority) {
+    public UriBuilder authority(@Nullable String authority) {
         setAuthority(authority);
         return this;
     }
@@ -438,7 +439,7 @@ public final class UriBuilder {
      *
      * @return The URI path component.
      */
-    @CheckForNull
+    @Nullable
     public String getPath() {
         return path;
     }
@@ -448,7 +449,7 @@ public final class UriBuilder {
      *
      * @param  path the URI path component.
      */
-    public void setPath(final @CheckForNull String path) {
+    public void setPath(final @Nullable String path) {
         this.path = path;
     }
 
@@ -458,7 +459,7 @@ public final class UriBuilder {
      * @param  path the URI path component.
      * @return {@code this}
      */
-    public UriBuilder path(@CheckForNull String path) {
+    public UriBuilder path(@Nullable String path) {
         setPath(path);
         return this;
     }
@@ -470,7 +471,7 @@ public final class UriBuilder {
      *
      * @return The URI query component.
      */
-    @CheckForNull
+    @Nullable
     public String getQuery() {
         return query;
     }
@@ -480,7 +481,7 @@ public final class UriBuilder {
      *
      * @param  query the URI query component.
      */
-    public void setQuery(final @CheckForNull String query) {
+    public void setQuery(final @Nullable String query) {
         this.query = query;
     }
 
@@ -490,7 +491,7 @@ public final class UriBuilder {
      * @param  query the URI query component.
      * @return {@code this}
      */
-    public UriBuilder query(@CheckForNull String query) {
+    public UriBuilder query(@Nullable String query) {
         setQuery(query);
         return this;
     }
@@ -501,7 +502,7 @@ public final class UriBuilder {
      *
      * @param  pathQuery the combined URI path and query components.
      */
-    public void setPathQuery(final @CheckForNull String pathQuery) {
+    public void setPathQuery(final @Nullable String pathQuery) {
         final int i;
         if (null != pathQuery && 0 <= (i = pathQuery.indexOf('?'))) {
             this.path = pathQuery.substring(0, i);
@@ -519,7 +520,7 @@ public final class UriBuilder {
      * @param  pathQuery the combined URI path and query components.
      * @return {@code this}
      */
-    public UriBuilder pathQuery(@CheckForNull String pathQuery) {
+    public UriBuilder pathQuery(@Nullable String pathQuery) {
         setPathQuery(pathQuery);
         return this;
     }
@@ -529,7 +530,7 @@ public final class UriBuilder {
      *
      * @return The URI fragment component.
      */
-    @CheckForNull
+    @Nullable
     public String getFragment() {
         return fragment;
     }
@@ -539,7 +540,7 @@ public final class UriBuilder {
      *
      * @param  fragment the URI fragment component.
      */
-    public void setFragment(final @CheckForNull String fragment) {
+    public void setFragment(final @Nullable String fragment) {
         this.fragment = fragment;
     }
 
@@ -549,7 +550,7 @@ public final class UriBuilder {
      * @param  fragment the URI fragment component.
      * @return {@code this}
      */
-    public UriBuilder fragment(@CheckForNull String fragment) {
+    public UriBuilder fragment(@Nullable String fragment) {
         setFragment(fragment);
         return this;
     }

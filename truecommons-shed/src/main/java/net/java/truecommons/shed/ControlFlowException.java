@@ -5,7 +5,8 @@
 package net.java.truecommons.shed;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import javax.annotation.CheckForNull;
+
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -51,7 +52,7 @@ public class ControlFlowException extends Error {
 
     public ControlFlowException() { this(null, true); }
 
-    public ControlFlowException(@CheckForNull Throwable cause) {
+    public ControlFlowException(@Nullable Throwable cause) {
         this(cause, true);
     }
 
@@ -59,7 +60,7 @@ public class ControlFlowException extends Error {
         this(null, enableSuppression);
     }
 
-    public ControlFlowException(@CheckForNull Throwable cause, boolean enableSuppression) {
+    public ControlFlowException(@Nullable Throwable cause, boolean enableSuppression) {
         super(null == cause ? null : cause.toString(), cause, enableSuppression, TRACEABLE);
     }
 

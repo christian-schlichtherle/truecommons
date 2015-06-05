@@ -4,9 +4,10 @@
  */
 package net.java.truecommons.shed;
 
-import static java.util.Objects.requireNonNull;
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Abstract implementation of an exception builder.
@@ -22,7 +23,7 @@ public abstract class AbstractExceptionBuilder< I extends Throwable,
                                                 O extends Throwable>
 implements ExceptionBuilder<I, O> {
 
-    private @CheckForNull O assembly;
+    private @Nullable O assembly;
 
     /**
      * {@inheritDoc}
@@ -77,7 +78,7 @@ implements ExceptionBuilder<I, O> {
      *         has already been checked out.
      * @return The next assembled (output) exception, never {@code null}.
      */
-    protected abstract O update(I input, @CheckForNull O assembly);
+    protected abstract O update(I input, @Nullable O assembly);
 
     /**
      * This function gets called to post-process the given result of the

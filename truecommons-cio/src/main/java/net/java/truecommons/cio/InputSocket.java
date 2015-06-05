@@ -5,11 +5,12 @@
 package net.java.truecommons.cio;
 
 import edu.umd.cs.findbugs.annotations.CreatesObligation;
+
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.NonWritableChannelException;
 import java.nio.channels.SeekableByteChannel;
-import javax.annotation.CheckForNull;
 
 /**
  * A <em>stateless</em> factory for input streams and seekable byte channels
@@ -34,7 +35,7 @@ public interface InputSocket<E extends Entry> extends IoSocket<E> {
      * @throws IOException on any I/O error.
      */
     @CreatesObligation
-    InputStream stream(@CheckForNull OutputSocket<? extends Entry> peer)
+    InputStream stream(@Nullable OutputSocket<? extends Entry> peer)
     throws IOException;
 
     /**
@@ -54,6 +55,6 @@ public interface InputSocket<E extends Entry> extends IoSocket<E> {
      * @throws IOException on any I/O error.
      */
     @CreatesObligation
-    SeekableByteChannel channel(@CheckForNull OutputSocket<? extends Entry> peer)
+    SeekableByteChannel channel(@Nullable OutputSocket<? extends Entry> peer)
     throws IOException;
 }

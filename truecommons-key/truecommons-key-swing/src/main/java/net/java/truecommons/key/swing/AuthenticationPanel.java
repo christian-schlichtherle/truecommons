@@ -4,18 +4,18 @@
  */
 package net.java.truecommons.key.swing;
 
-import java.awt.EventQueue;
-import java.awt.Window;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
-import java.io.File;
-import java.util.ResourceBundle;
-import javax.annotation.CheckForNull;
+import net.java.truecommons.key.swing.io.FileComboBoxBrowser;
+
+import javax.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
-import net.java.truecommons.key.swing.io.FileComboBoxBrowser;
+import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
+import java.io.File;
+import java.util.ResourceBundle;
 
 /**
  * A panel displaying a password panel or a key file panel in order to let
@@ -62,7 +62,7 @@ public final class AuthenticationPanel extends JPanel {
      * Sets the file system view which is used for the key file combo box
      * and its associated file chooser.
      */
-    public void setFileSystemView(@CheckForNull FileSystemView fsv) {
+    public void setFileSystemView(@Nullable FileSystemView fsv) {
         fcbb.setFileSystemView(fsv);
     }
 
@@ -80,7 +80,7 @@ public final class AuthenticationPanel extends JPanel {
      * Sets the directory which is used for the key file combo box and its
      * associated file chooser.
      */
-    public void setDirectory(@CheckForNull File dir) {
+    public void setDirectory(@Nullable File dir) {
         fcbb.setDirectory(dir);
     }
 

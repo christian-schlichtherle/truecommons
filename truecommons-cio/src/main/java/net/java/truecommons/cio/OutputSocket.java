@@ -5,11 +5,12 @@
 package net.java.truecommons.cio;
 
 import edu.umd.cs.findbugs.annotations.CreatesObligation;
+
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.NonReadableChannelException;
 import java.nio.channels.SeekableByteChannel;
-import javax.annotation.CheckForNull;
 
 /**
  * A <em>stateless</em> factory for output streams and seekable byte channels
@@ -34,7 +35,7 @@ public interface OutputSocket<E extends Entry> extends IoSocket<E> {
      * @throws IOException on any I/O error.
      */
     @CreatesObligation
-    OutputStream stream(@CheckForNull InputSocket<? extends Entry> peer)
+    OutputStream stream(@Nullable InputSocket<? extends Entry> peer)
     throws IOException;
 
     /**
@@ -54,6 +55,6 @@ public interface OutputSocket<E extends Entry> extends IoSocket<E> {
      * @throws IOException on any I/O error.
      */
     @CreatesObligation
-    SeekableByteChannel channel(@CheckForNull InputSocket<? extends Entry> peer)
+    SeekableByteChannel channel(@Nullable InputSocket<? extends Entry> peer)
     throws IOException;
 }

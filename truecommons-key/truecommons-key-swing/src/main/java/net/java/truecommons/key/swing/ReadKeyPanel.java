@@ -7,7 +7,7 @@ package net.java.truecommons.key.swing;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.java.truecommons.key.spec.prompting.PromptingPbeParameters;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -75,7 +75,7 @@ final class ReadKeyPanel extends KeyPanel {
     @Override
     @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
     public void setResource(final URI resource) {
-        final @CheckForNull URI lastResource = view.getLastResource();
+        final @Nullable URI lastResource = view.getLastResource();
         if (null != lastResource && !resource.equals(lastResource)) {
             this.resource.setForeground(Color.RED);
         } else {

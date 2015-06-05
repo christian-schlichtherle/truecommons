@@ -4,12 +4,14 @@
  */
 package net.java.truecommons.services;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
 
 /**
  * Loads resources and classes on the class path by using a given class loader
@@ -35,7 +37,7 @@ public final class Loader {
      * @param loader the nullable primary class loader.
      *        If this is {@code null}, then the system class loader is used.
      */
-    public Loader(final @CheckForNull ClassLoader loader) {
+    public Loader(final @Nullable ClassLoader loader) {
         this.primary = null != loader ? loader : ClassLoader.getSystemClassLoader();
     }
 
@@ -146,7 +148,7 @@ public final class Loader {
      */
     public @Nullable <S> S instanceOf(
             final Class<S> spec,
-            final @CheckForNull Class<? extends S> impl)
+            final @Nullable Class<? extends S> impl)
     throws ServiceConfigurationError {
         final String name = System.getProperty(spec.getName(),
                 null == impl ? null : impl.getName());
@@ -214,8 +216,8 @@ public final class Loader {
      *         {@code object} is {@code null}.
      * @throws IllegalArgumentException if any promotion step fails.
      */
-    public static @CheckForNull <T> T promote(
-            @CheckForNull Object object,
+    public static @Nullable <T> T promote(
+            @Nullable Object object,
             final Class<T> type)
     throws IllegalArgumentException {
         try {

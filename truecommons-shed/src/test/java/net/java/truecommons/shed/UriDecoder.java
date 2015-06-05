@@ -4,16 +4,17 @@
  */
 package net.java.truecommons.shed;
 
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderResult;
+
 import static java.nio.charset.CoderResult.OVERFLOW;
 import static java.nio.charset.CoderResult.UNDERFLOW;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * Unescapes characters in URI components according to
@@ -36,7 +37,7 @@ final class UriDecoder {
 
     private final CharsetDecoder decoder;
 
-    private @CheckForNull StringBuilder stringBuilder;
+    private @Nullable StringBuilder stringBuilder;
 
     /**
      * Constructs a new URI decoder which uses the UTF-8 character set to
@@ -57,7 +58,7 @@ final class UriDecoder {
      *        Note that providing any other value than {@code null} or
      *        {@code UTF-8} will void interoperability with most applications.
      */
-    UriDecoder(@CheckForNull Charset charset) {
+    UriDecoder(@Nullable Charset charset) {
         if (null == charset) charset = UTF8;
         this.decoder = charset.newDecoder();
     }
@@ -104,9 +105,9 @@ final class UriDecoder {
      * @throws URISyntaxException on any decoding error.
      *         This exception will leave {@code eS} in an undefined state.
      */
-    public @CheckForNull StringBuilder decode(
+    public @Nullable StringBuilder decode(
             final String eS,
-            @CheckForNull StringBuilder dS)
+            @Nullable StringBuilder dS)
     throws URISyntaxException {
         final CharBuffer eC = CharBuffer.wrap(eS);  // encoded characters
         ByteBuffer eB = null;                       // encoded bytes

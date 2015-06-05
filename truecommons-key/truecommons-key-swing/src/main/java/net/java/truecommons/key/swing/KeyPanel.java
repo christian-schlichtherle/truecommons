@@ -4,13 +4,14 @@
  */
 package net.java.truecommons.key.swing;
 
-import java.net.URI;
-import javax.annotation.CheckForNull;
 import net.java.truecommons.key.spec.prompting.PromptingPbeParameters;
 import net.java.truecommons.key.swing.feedback.Feedback;
 import net.java.truecommons.key.swing.util.EnhancedPanel;
 import net.java.truecommons.key.swing.util.PanelEvent;
 import net.java.truecommons.key.swing.util.PanelListener;
+
+import javax.annotation.Nullable;
+import java.net.URI;
 
 /**
  * Abstract panel for prompting for authentication keys.
@@ -22,7 +23,7 @@ abstract class KeyPanel extends EnhancedPanel {
 
     private static final long serialVersionUID = 0L;
 
-    private @CheckForNull Feedback feedback;
+    private @Nullable Feedback feedback;
 
     KeyPanel() { super.addPanelListener(new KeyPanelListener()); }
 
@@ -30,13 +31,13 @@ abstract class KeyPanel extends EnhancedPanel {
      * Returns the feedback to run when this panel is shown in its ancestor
      * window.
      */
-    public @CheckForNull Feedback getFeedback() { return feedback; }
+    public @Nullable Feedback getFeedback() { return feedback; }
 
     /**
      * Sets the feedback to run when this panel is shown in its ancestor
      * window.
      */
-    public void setFeedback(final @CheckForNull Feedback feedback) {
+    public void setFeedback(final @Nullable Feedback feedback) {
         this.feedback = feedback;
     }
 
@@ -62,14 +63,14 @@ abstract class KeyPanel extends EnhancedPanel {
     /**
      * Getter for property {@code error}.
      */
-    public abstract @CheckForNull String getError();
+    public abstract @Nullable String getError();
 
     /**
      * Setter for property error.
      *
      * @param error New value of property error.
      */
-    public abstract void setError(@CheckForNull String error);
+    public abstract void setError(@Nullable String error);
 
     final boolean updateParam(final PromptingPbeParameters<?, ?> param) {
         try {
