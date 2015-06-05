@@ -4,18 +4,14 @@
  */
 package net.java.truecommons.key.swing.util;
 
-import java.awt.Container;
-import java.awt.Frame;
-import java.awt.KeyboardFocusManager;
-import java.awt.Window;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
+import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
-import javax.swing.JOptionPane;
 
 /**
  * A utility class for window management.
@@ -64,7 +60,7 @@ public class Windows {
     /**
      * Search the containment hierarchy updwards for the first showing window.
      */
-    private static @CheckForNull Window findFirstShowingWindow(final Window w) {
+    private static @Nullable Window findFirstShowingWindow(final Window w) {
         for (Container c = w; c != null; c = c.getParent())
             if (c instanceof Window && c.isShowing())
                 return (Window) c;
@@ -112,11 +108,11 @@ public class Windows {
         lastFocusedWindow = new WeakReference<Window>(w);
     }
 
-    private static @CheckForNull Window getAnyShowingWindow() {
+    private static @Nullable Window getAnyShowingWindow() {
         return getAnyShowingWindow(Frame.getFrames());
     }
 
-    private static @CheckForNull Window getAnyShowingWindow(
+    private static @Nullable Window getAnyShowingWindow(
             final Window[] windows) {
         for (int i = 0, l = windows.length; i < l; i++) {
             Window window = windows[i];

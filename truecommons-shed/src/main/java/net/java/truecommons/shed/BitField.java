@@ -4,13 +4,13 @@
  */
 package net.java.truecommons.shed;
 
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.Immutable;
 
 /**
  * A type-safe, immutable set of enums which emulates the concept of a bit
@@ -243,7 +243,7 @@ implements Iterable<E>, Serializable {
      * {@code BitField} and contains the same bits.
      */
     @Override
-    public boolean equals(@CheckForNull Object that) {
+    public boolean equals(@Nullable Object that) {
         return this == that
                 || that instanceof BitField<?>
                     && this.bits.equals(((BitField<?>) that).bits);

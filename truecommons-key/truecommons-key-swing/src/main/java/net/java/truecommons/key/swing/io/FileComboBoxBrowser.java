@@ -4,16 +4,16 @@
  */
 package net.java.truecommons.key.swing.io;
 
+import net.java.truecommons.key.swing.util.AbstractComboBoxBrowser;
+
+import javax.annotation.Nullable;
+import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Objects;
-import javax.annotation.CheckForNull;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.filechooser.FileSystemView;
-import net.java.truecommons.key.swing.util.AbstractComboBoxBrowser;
 
 /**
  * Subclasses {@code AbstractComboBoxBrowser} to complete relative and
@@ -35,8 +35,8 @@ public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
 
     private static final long serialVersionUID = -6878885832542209810L;
 
-    private transient @CheckForNull FileSystemView fsv;
-    private transient @CheckForNull File dir;
+    private transient @Nullable FileSystemView fsv;
+    private transient @Nullable File dir;
 
     /**
      * Constructs a new file combo box auto completion browser.
@@ -50,7 +50,7 @@ public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
      * @param comboBox The combo box to enable browsing for auto completions.
      *        May be {@code null}.
      */
-    public FileComboBoxBrowser(final @CheckForNull JComboBox<String> comboBox) {
+    public FileComboBoxBrowser(final @Nullable JComboBox<String> comboBox) {
         super(comboBox);
         if (null != comboBox)
             update0(Objects.toString(comboBox.getSelectedItem(), ""));
@@ -71,7 +71,7 @@ public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
     }
 
     /** Sets the file system view. */
-    public void setFileSystemView(final @CheckForNull FileSystemView fsv) {
+    public void setFileSystemView(final @Nullable FileSystemView fsv) {
         this.fsv = fsv;
     }
 
@@ -93,7 +93,7 @@ public class FileComboBoxBrowser extends AbstractComboBoxBrowser<String> {
     /**
      * Sets the directory which is used for autocompleting relative path names.
      */
-    public void setDirectory(final @CheckForNull File dir) {
+    public void setDirectory(final @Nullable File dir) {
         this.dir = dir;
     }
 

@@ -4,7 +4,7 @@
  */
 package net.java.truecommons.key.swing;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 
 /**
  * Thrown to indicate that password authentication failed for some reason.
@@ -16,13 +16,13 @@ final class AuthenticationException extends Exception {
 
     private static final long serialVersionUID = 0L;
 
-    AuthenticationException(@CheckForNull String message) { super(message); }
+    AuthenticationException(@Nullable String message) { super(message); }
 
-    AuthenticationException(@CheckForNull Throwable cause) { super(cause); }
+    AuthenticationException(@Nullable Throwable cause) { super(cause); }
 
     AuthenticationException(
-            @CheckForNull String message,
-            @CheckForNull Throwable cause ) {
+            @Nullable String message,
+            @Nullable Throwable cause ) {
         super(message, cause);
     }
 }

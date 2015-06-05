@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.jmx;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
@@ -25,7 +24,7 @@ public interface ObjectNameModifier {
      * @param name the object name to encode.
      * @return The encoded object name.
      */
-    @Nullable ObjectName apply(@CheckForNull ObjectName name);
+    @Nullable ObjectName apply(@Nullable ObjectName name);
 
     /**
      * Decodes the given object name.
@@ -33,7 +32,7 @@ public interface ObjectNameModifier {
      * @param name the object name to decode.
      * @return The decoded object name.
      */
-    @Nullable ObjectName unapply(@CheckForNull ObjectName name);
+    @Nullable ObjectName unapply(@Nullable ObjectName name);
 
     /**
      * Encodes the object name in the given object instance.
@@ -41,7 +40,7 @@ public interface ObjectNameModifier {
      * @param instance the object instance with the object name to encode.
      * @return The transformed object instance.
      */
-    @Nullable ObjectInstance apply(@CheckForNull ObjectInstance instance);
+    @Nullable ObjectInstance apply(@Nullable ObjectInstance instance);
 
     /**
      * Decodes the object name in the given object instance.
@@ -49,5 +48,5 @@ public interface ObjectNameModifier {
      * @param instance the object instance with the object name to decode.
      * @return The transformed object instance.
      */
-    @Nullable ObjectInstance unapply(@CheckForNull ObjectInstance instance);
+    @Nullable ObjectInstance unapply(@Nullable ObjectInstance instance);
 }

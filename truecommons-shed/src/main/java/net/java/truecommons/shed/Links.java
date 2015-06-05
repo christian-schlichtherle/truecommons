@@ -4,7 +4,7 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -28,7 +28,7 @@ public final class Links {
      * @return The nullable {@linkplain Link#get() target} of the given
      *         link.
      */
-    public static @CheckForNull <T> T target(@CheckForNull Link<T> link) {
+    public static @Nullable <T> T target(@Nullable Link<T> link) {
         return null == link ? null : link.get();
     }
 }

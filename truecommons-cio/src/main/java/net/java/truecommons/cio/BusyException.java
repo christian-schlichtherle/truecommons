@@ -4,9 +4,9 @@
  */
 package net.java.truecommons.cio;
 
-import java.io.FileNotFoundException;
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
+import java.io.FileNotFoundException;
 
 /**
  * Indicates that an entity (an entry or container) could not get
@@ -22,11 +22,11 @@ import javax.annotation.concurrent.ThreadSafe;
 public class BusyException extends FileNotFoundException {
     private static final long serialVersionUID = 2056108562576389242L;
 
-    public BusyException(@CheckForNull String message) {
+    public BusyException(@Nullable String message) {
         super(message);
     }
 
-    public BusyException(@CheckForNull Throwable cause) {
+    public BusyException(@Nullable Throwable cause) {
         super(null == cause ? null : cause.toString());
         super.initCause(cause);
     }

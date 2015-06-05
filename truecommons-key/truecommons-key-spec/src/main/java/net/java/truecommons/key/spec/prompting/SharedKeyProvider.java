@@ -9,7 +9,7 @@ import net.java.truecommons.key.spec.UnknownKeyException;
 import net.java.truecommons.key.spec.util.SuspensionPenalty;
 import net.java.truecommons.shed.UniqueObject;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
@@ -23,8 +23,8 @@ final class SharedKeyProvider<K extends PromptingKey<K>>
 extends UniqueObject {
 
     private final ThreadLocal<Long> invalidated = new ThreadLocal<>();
-    private @CheckForNull K key;
-    private @CheckForNull PersistentUnknownKeyException exception;
+    private @Nullable K key;
+    private @Nullable PersistentUnknownKeyException exception;
     private volatile State state = State.RESET;
     private int count;
 
@@ -131,12 +131,12 @@ extends UniqueObject {
         return key;
     }
 
-    synchronized @CheckForNull K getKeyClone() {
+    synchronized @Nullable K getKeyClone() {
         final K key = this.key;
         return null == key ? null : key.clone();
     }
 
-    synchronized void setKeyClone(final @CheckForNull K key) {
+    synchronized void setKeyClone(final @Nullable K key) {
         final K old = this.key;
         final boolean set = null != key;
         this.key = set ? key.clone() : null;
@@ -145,12 +145,12 @@ extends UniqueObject {
             old.reset();
     }
 
-    synchronized @CheckForNull PersistentUnknownKeyException getException() {
+    synchronized @Nullable PersistentUnknownKeyException getException() {
         return exception;
     }
 
     synchronized void setException(
-            final @CheckForNull PersistentUnknownKeyException exception) {
+            final @Nullable PersistentUnknownKeyException exception) {
         if (null != (this.exception = exception))
             setKeyClone(null);
     }

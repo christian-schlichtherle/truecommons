@@ -4,8 +4,9 @@
  */
 package net.java.truecommons.key.spec;
 
-import javax.annotation.CheckForNull;
 import net.java.truecommons.shed.ImplementationsShouldExtend;
+
+import javax.annotation.Nullable;
 
 /**
  * A key with properties for password based encryption (PBE).
@@ -30,7 +31,7 @@ extends Key<P> {
      *
      * @return A protective copy of the password char array.
      */
-    @CheckForNull char[] getPassword();
+    @Nullable char[] getPassword();
 
     /**
      * Copies and stores the given password char array for deriving the cipher
@@ -40,17 +41,17 @@ extends Key<P> {
      *
      * @param password the password char array for deriving the cipher key.
      */
-    void setPassword(@CheckForNull char[] password);
+    void setPassword(@Nullable char[] password);
 
     /** Returns the cipher key strength. */
-    @CheckForNull S getKeyStrength();
+    @Nullable S getKeyStrength();
 
     /**
      * Sets the cipher key strength.
      *
      * @param keyStrength the cipher key strength.
      */
-    void setKeyStrength(final @CheckForNull S keyStrength);
+    void setKeyStrength(final @Nullable S keyStrength);
 
     /**
      * Returns a new non-empty array of all available cipher key strengths.

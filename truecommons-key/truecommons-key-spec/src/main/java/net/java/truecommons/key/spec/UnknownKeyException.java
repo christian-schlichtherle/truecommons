@@ -4,8 +4,8 @@
  */
 package net.java.truecommons.key.spec;
 
+import javax.annotation.Nullable;
 import java.security.GeneralSecurityException;
-import javax.annotation.CheckForNull;
 
 /**
  * Thrown to indicate that the retrieval of the key to (over)write or read a
@@ -20,11 +20,11 @@ public class UnknownKeyException extends GeneralSecurityException {
 
     public UnknownKeyException() { }
 
-    public UnknownKeyException(@CheckForNull String msg) { super(msg); }
+    public UnknownKeyException(@Nullable String msg) { super(msg); }
 
-    public UnknownKeyException(@CheckForNull Throwable cause) { super(cause); }
+    public UnknownKeyException(@Nullable Throwable cause) { super(cause); }
 
-    public UnknownKeyException(@CheckForNull String msg, @CheckForNull Throwable cause) {
+    public UnknownKeyException(@Nullable String msg, @Nullable Throwable cause) {
         super(msg, cause);
     }
 }

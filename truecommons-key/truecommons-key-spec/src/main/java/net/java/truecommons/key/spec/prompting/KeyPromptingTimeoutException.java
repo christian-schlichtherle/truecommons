@@ -4,9 +4,10 @@
  */
 package net.java.truecommons.key.spec.prompting;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.ThreadSafe;
 import net.java.truecommons.key.spec.UnknownKeyException;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Thrown to indicate that prompting for a key to open or create a
@@ -23,7 +24,7 @@ public class KeyPromptingTimeoutException extends UnknownKeyException {
         super("Key prompting has timed out!");
     }
 
-    public KeyPromptingTimeoutException(@CheckForNull Throwable cause) {
+    public KeyPromptingTimeoutException(@Nullable Throwable cause) {
         super("Key prompting has timed out!");
         super.initCause(cause);
     }

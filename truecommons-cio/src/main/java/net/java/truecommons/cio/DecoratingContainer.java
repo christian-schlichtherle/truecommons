@@ -5,11 +5,11 @@
 package net.java.truecommons.cio;
 
 import edu.umd.cs.findbugs.annotations.DischargesObligation;
+import net.java.truecommons.shed.UniqueObject;
+
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.Objects;
-import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
-import net.java.truecommons.shed.UniqueObject;
 
 /**
  * An abstract decorator for an entry container.
@@ -39,7 +39,7 @@ extends UniqueObject implements Container<E> {
     public Iterator<E> iterator() { return container.iterator(); }
 
     @Override
-    public @CheckForNull E entry(String name) { return container.entry(name); }
+    public @Nullable E entry(String name) { return container.entry(name); }
 
     @Override
     @DischargesObligation

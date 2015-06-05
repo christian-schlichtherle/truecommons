@@ -4,16 +4,16 @@
  */
 package net.java.truecommons.key.spec.prompting;
 
-import net.java.truecommons.key.spec.prompting.KeyPromptingCancelledException;
-import net.java.truecommons.key.spec.prompting.PromptingKey;
-import java.net.URI;
-import java.util.Objects;
-import java.util.Random;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.ThreadSafe;
 import net.java.truecommons.key.spec.UnknownKeyException;
 import net.java.truecommons.key.spec.prompting.PromptingKey.Controller;
 import net.java.truecommons.key.spec.prompting.PromptingKey.View;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
+import java.net.URI;
+import java.util.Objects;
+import java.util.Random;
+
 import static net.java.truecommons.key.spec.prompting.TestView.Action.ENTER;
 
 /**
@@ -26,8 +26,8 @@ import static net.java.truecommons.key.spec.prompting.TestView.Action.ENTER;
 @ThreadSafe
 public final class TestView<K extends PromptingKey<K>> implements View<K> {
 
-    private volatile @CheckForNull URI resource;
-    private volatile @CheckForNull K key;
+    private volatile @Nullable URI resource;
+    private volatile @Nullable K key;
     private volatile Action action = ENTER;
 
     public Action getAction() { return action; }
@@ -36,15 +36,15 @@ public final class TestView<K extends PromptingKey<K>> implements View<K> {
         this.action = Objects.requireNonNull(action);
     }
 
-    public @CheckForNull URI getResource() { return resource; }
+    public @Nullable URI getResource() { return resource; }
 
-    public void setResource(final @CheckForNull URI resource) {
+    public void setResource(final @Nullable URI resource) {
         this.resource = resource;
     }
 
-    public @CheckForNull K getKey() { return key; }
+    public @Nullable K getKey() { return key; }
 
-    public void setKey(final @CheckForNull K key) { this.key = key; }
+    public void setKey(final @Nullable K key) { this.key = key; }
 
     @Override
     public synchronized void
@@ -79,7 +79,7 @@ public final class TestView<K extends PromptingKey<K>> implements View<K> {
             <K extends PromptingKey<K>> void
             promptKeyForWriting(
                     final Controller<? super K> controller,
-                    final @CheckForNull K key)
+                    final @Nullable K key)
             throws UnknownKeyException {
                 controller.setKeyClone(null);
                 controller.setKeyClone(key);
@@ -89,7 +89,7 @@ public final class TestView<K extends PromptingKey<K>> implements View<K> {
             <K extends PromptingKey<K>> void
             promptKeyForReading(
                     final Controller<? super K> controller,
-                    final @CheckForNull K key)
+                    final @Nullable K key)
             throws UnknownKeyException {
                 controller.setKeyClone(null);
                 controller.setKeyClone(key);
@@ -103,7 +103,7 @@ public final class TestView<K extends PromptingKey<K>> implements View<K> {
             <K extends PromptingKey<K>> void
             promptKeyForWriting(
                     final Controller<? super K> controller,
-                    final @CheckForNull K key)
+                    final @Nullable K key)
             throws UnknownKeyException {
                 if (rnd.nextBoolean()) {
                     throw new KeyPromptingCancelledException();
@@ -116,7 +116,7 @@ public final class TestView<K extends PromptingKey<K>> implements View<K> {
             <K extends PromptingKey<K>> void
             promptKeyForReading(
                     final Controller<? super K> controller,
-                    final @CheckForNull K key)
+                    final @Nullable K key)
             throws UnknownKeyException {
                 if (rnd.nextBoolean()) {
                     throw new KeyPromptingCancelledException();
@@ -131,7 +131,7 @@ public final class TestView<K extends PromptingKey<K>> implements View<K> {
             <K extends PromptingKey<K>> void
             promptKeyForWriting(
                     Controller<? super K> controller,
-                    @CheckForNull K key)
+                    @Nullable K key)
             throws UnknownKeyException {
             }
 
@@ -139,7 +139,7 @@ public final class TestView<K extends PromptingKey<K>> implements View<K> {
             <K extends PromptingKey<K>> void
             promptKeyForReading(
                     Controller<? super K> controller,
-                    @CheckForNull K key)
+                    @Nullable K key)
             throws UnknownKeyException {
             }
         };
@@ -147,13 +147,13 @@ public final class TestView<K extends PromptingKey<K>> implements View<K> {
         abstract <K extends PromptingKey<K>> void
         promptKeyForWriting(
                 Controller<? super K> controller,
-                @CheckForNull K key)
+                @Nullable K key)
         throws UnknownKeyException;
 
         abstract <K extends PromptingKey<K>> void
         promptKeyForReading(
                 Controller<? super K> controller,
-                @CheckForNull K key)
+                @Nullable K key)
         throws UnknownKeyException;
     } // enum Action
 }

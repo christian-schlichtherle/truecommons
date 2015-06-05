@@ -4,12 +4,13 @@
  */
 package net.java.truecommons.cio;
 
+import net.java.truecommons.io.ChannelInputStream;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.SeekableByteChannel;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.Immutable;
-import net.java.truecommons.io.ChannelInputStream;
 
 /**
  * Abstract base class for input sockets.
@@ -35,8 +36,8 @@ extends AbstractIoSocket<E> implements InputSocket<E> {
      *         given peer socket otherwise.
      * @throws IOException if resolving the peer's local target fails.
      */
-    protected static @CheckForNull <E extends Entry> E target(
-            @CheckForNull OutputSocket<E> peer)
+    protected static @Nullable <E extends Entry> E target(
+            @Nullable OutputSocket<E> peer)
     throws IOException {
         return null == peer ? null : peer.target();
     }

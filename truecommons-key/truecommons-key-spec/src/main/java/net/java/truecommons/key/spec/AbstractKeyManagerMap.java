@@ -4,12 +4,13 @@
  */
 package net.java.truecommons.key.spec;
 
-import java.util.Map;
-import java.util.ServiceConfigurationError;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.Immutable;
 import net.java.truecommons.services.Container;
 import net.java.truecommons.shed.UniqueObject;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
+import java.util.Map;
+import java.util.ServiceConfigurationError;
 
 /**
  * An abstract key manager map.
@@ -29,7 +30,7 @@ implements KeyManagerMap, Container<Map<Class<?>, KeyManager<?>>> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public final @CheckForNull <K> KeyManager<K> manager(final Class<K> type) {
+    public final @Nullable <K> KeyManager<K> manager(final Class<K> type) {
         final KeyManager<?> m = get().get(type);
         if (null == m)
             throw new ServiceConfigurationError("No key manager available for " + type + ".");

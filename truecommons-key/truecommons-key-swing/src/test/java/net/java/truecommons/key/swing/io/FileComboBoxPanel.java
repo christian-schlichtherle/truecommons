@@ -4,9 +4,9 @@
  */
 package net.java.truecommons.key.swing.io;
 
+import javax.annotation.Nullable;
+import javax.swing.*;
 import java.io.File;
-import javax.annotation.CheckForNull;
-import javax.swing.JPanel;
 
 /**
  * @author Christian Schlichtherle
@@ -21,7 +21,7 @@ public class FileComboBoxPanel extends JPanel {
     }
 
     /** Creates new form FileComboBoxPanel */
-    public FileComboBoxPanel(@CheckForNull File directory) {
+    public FileComboBoxPanel(@Nullable File directory) {
         initComponents();
         setDirectory0(directory);
     }
@@ -81,11 +81,11 @@ public class FileComboBoxPanel extends JPanel {
      * Setter for property directory.
      * @param directory New value of property directory.
      */
-    public void setDirectory(@CheckForNull File directory) {
+    public void setDirectory(@Nullable File directory) {
         setDirectory0(directory);
     }
 
-    private void setDirectory0(@CheckForNull File directory) {
+    private void setDirectory0(@Nullable File directory) {
         browser1.setDirectory(directory);
         browser2.setDirectory(directory);
     }

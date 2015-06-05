@@ -4,7 +4,7 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -50,7 +50,7 @@ final class UriEncoder {
     private final CharsetEncoder encoder;
     private final boolean encode;
     private final boolean raw;
-    private @CheckForNull StringBuilder stringBuilder;
+    private @Nullable StringBuilder stringBuilder;
 
     /**
      * Constructs a new URI encoder which uses the UTF-8 character set to
@@ -88,7 +88,7 @@ final class UriEncoder {
      *        Note that providing any other value than {@code null} or
      *        {@code UTF-8} will void interoperability with most applications.
      */
-    UriEncoder(@CheckForNull Charset charset) {
+    UriEncoder(@Nullable Charset charset) {
         this(charset, false);
     }
 
@@ -109,7 +109,7 @@ final class UriEncoder {
      * @param raw If {@code true}, then the {@code '%'} character doesn't get
      *        quoted.
      */
-    UriEncoder(@CheckForNull Charset charset, final boolean raw) {
+    UriEncoder(@Nullable Charset charset, final boolean raw) {
         if (!(this.encode = null != charset))
             charset = UTF8;
         this.encoder = charset.newEncoder();
@@ -171,10 +171,10 @@ final class UriEncoder {
      *         codec is UTF-8.
      *         If it occurs however, {@code eS} is left in an undefined state.
      */
-    public @CheckForNull StringBuilder encode(
+    public @Nullable StringBuilder encode(
             final String dS,
             final Encoding comp,
-            @CheckForNull StringBuilder eS)         // encoded String
+            @Nullable StringBuilder eS)         // encoded String
     throws URISyntaxException {
         @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
         final String[] escapes = comp.escapes;

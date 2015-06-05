@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Iterator;
@@ -21,7 +20,7 @@ import java.util.Objects;
 @NotThreadSafe
 public abstract class FilteringIterator<T> implements Iterator<T> {
     private final Iterator<T> it;
-    private @CheckForNull Boolean hasNext;
+    private @Nullable Boolean hasNext;
     private @Nullable T next;
 
     /**

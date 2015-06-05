@@ -4,9 +4,9 @@
  */
 package net.java.truecommons.shed;
 
-import java.util.*;
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
+import java.util.*;
 
 /**
  * Assembles an {@link Exception} from one or more input exceptions by
@@ -46,7 +46,7 @@ extends AbstractExceptionBuilder<X, X> {
     }
 
     @Override
-    protected final X update(final X input, final @CheckForNull X assembly) {
+    protected final X update(final X input, final @Nullable X assembly) {
         exceptions.add(input);
         return null == assembly
                 ? input

@@ -4,7 +4,7 @@
  */
 package net.java.truecommons.cio;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
@@ -21,11 +21,11 @@ import javax.annotation.concurrent.ThreadSafe;
 public class InputBusyException extends BusyException {
     private static final long serialVersionUID = 1983745618753823654L;
 
-    public InputBusyException(@CheckForNull String message) {
+    public InputBusyException(@Nullable String message) {
         super(message);
     }
 
-    public InputBusyException(@CheckForNull Throwable cause) {
+    public InputBusyException(@Nullable Throwable cause) {
         super(cause);
     }
 }

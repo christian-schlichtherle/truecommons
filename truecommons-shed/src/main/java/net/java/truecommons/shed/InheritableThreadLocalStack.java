@@ -4,11 +4,10 @@
  */
 package net.java.truecommons.shed;
 
-import java.lang.ref.WeakReference;
-import java.util.NoSuchElementException;
-import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
+import java.lang.ref.WeakReference;
+import java.util.NoSuchElementException;
 
 /**
  * An inheritable thread local stack of elements.
@@ -62,7 +61,7 @@ public final class InheritableThreadLocalStack<T> {
      * @return The nullable top element on this stack unless it's empty,
      *         in which case {@code elze} gets returned.
      */
-    public @Nullable T peekOrElse(final @CheckForNull T elze) {
+    public @Nullable T peekOrElse(final @Nullable T elze) {
         final Node<T> node = nodes.get();
         return null != node ? node.element : elze;
     }
@@ -73,7 +72,7 @@ public final class InheritableThreadLocalStack<T> {
      * @param  element the nullable element to push onto this stack.
      * @return {@code element} - for fluent programming.
      */
-    public @Nullable T push(final @CheckForNull T element) {
+    public @Nullable T push(final @Nullable T element) {
         final Node<T> previous = nodes.get();
         final Node<T> next = new Node<>(previous, element);
         nodes.set(next);
@@ -103,9 +102,9 @@ public final class InheritableThreadLocalStack<T> {
      * @throws IllegalStateException If the given element is not the top
      *         element on this stack.
      */
-    public void popIf(final @CheckForNull T expected) {
+    public void popIf(final @Nullable T expected) {
         try {
-            final @CheckForNull T got = pop();
+            final @Nullable T got = pop();
             if (got != expected) {
                 push(got);
                 throw new IllegalStateException(got + " (expected " + expected + " as the top element of the inheritable thread local stack)");
@@ -117,11 +116,11 @@ public final class InheritableThreadLocalStack<T> {
 
     private static class Node<T> extends WeakReference<Thread> {
 
-        final @CheckForNull Node<T> previous;
-        @CheckForNull T element;
+        final @Nullable Node<T> previous;
+        @Nullable T element;
 
-        Node(   final @CheckForNull Node<T> previous,
-                final @CheckForNull T element) {
+        Node(   final @Nullable Node<T> previous,
+                final @Nullable T element) {
             super(Thread.currentThread());
             this.previous = previous;
             this.element = element;

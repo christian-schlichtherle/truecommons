@@ -4,13 +4,14 @@
  */
 package net.java.truecommons.jmx.qonm;
 
-import java.util.Hashtable;
-import java.util.Objects;
-import javax.annotation.CheckForNull;
+import net.java.truecommons.jmx.AbstractObjectNameModifier;
+
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import net.java.truecommons.jmx.AbstractObjectNameModifier;
+import java.util.Hashtable;
+import java.util.Objects;
 
 /**
  * Adds a key-value qualifier to an object name.
@@ -43,7 +44,7 @@ public class QualifierObjectNameModifier extends AbstractObjectNameModifier {
     }
 
     @Override
-    public ObjectName apply(final @CheckForNull ObjectName name) {
+    public ObjectName apply(final @Nullable ObjectName name) {
         if (null == name) return null;
         final String domain = name.getDomain();
         final Hashtable<String, String> table = keyPropertyList.apply(name);

@@ -4,8 +4,9 @@
  */
 package net.java.truecommons.key.spec.prompting;
 
-import javax.annotation.CheckForNull;
 import net.java.truecommons.key.spec.PersistentUnknownKeyException;
+
+import javax.annotation.Nullable;
 
 /**
  * Thrown to indicate that the retrieval of the key to open or create a
@@ -24,7 +25,7 @@ public class KeyPromptingCancelledException extends PersistentUnknownKeyExceptio
         super("Key prompting has been cancelled!");
     }
 
-    public KeyPromptingCancelledException(@CheckForNull Throwable cause) {
+    public KeyPromptingCancelledException(@Nullable Throwable cause) {
         super("Key prompting has been cancelled!", cause);
     }
 }

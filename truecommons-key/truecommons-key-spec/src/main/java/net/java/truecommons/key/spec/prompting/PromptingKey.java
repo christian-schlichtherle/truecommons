@@ -4,11 +4,11 @@
  */
 package net.java.truecommons.key.spec.prompting;
 
-import java.net.URI;
-import javax.annotation.CheckForNull;
-import javax.annotation.concurrent.NotThreadSafe;
 import net.java.truecommons.key.spec.Key;
 import net.java.truecommons.key.spec.UnknownKeyException;
+
+import javax.annotation.Nullable;
+import java.net.URI;
 
 /**
  * A prompting key for writing and reading protected resources.
@@ -154,7 +154,7 @@ extends Key<K> {
          * @throws IllegalStateException if getting key is not legal in the
          *         current state.
          */
-        @CheckForNull K getKeyClone();
+        @Nullable K getKeyClone();
 
         /**
          * Sets the protected resource's key to a clone of the given key or
@@ -165,6 +165,6 @@ extends Key<K> {
          * @throws IllegalStateException if setting key is not legal in the
          *         current state.
          */
-        void setKeyClone(@CheckForNull K key);
+        void setKeyClone(@Nullable K key);
     }
 }
