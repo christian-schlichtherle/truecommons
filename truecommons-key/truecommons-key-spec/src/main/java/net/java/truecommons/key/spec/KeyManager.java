@@ -17,8 +17,8 @@ import net.java.truecommons.shed.ImplementationsShouldExtend;
  * <p>
  * Implementations must be safe for multi-threading.
  *
- * @param  <K> The type of the keys.
- * @see    KeyManagerMap
+ * @param <K> The type of the keys.
+ * @see KeyManagerMap
  * @since TrueCommons 2.2
  * @author Christian Schlichtherle
  */
