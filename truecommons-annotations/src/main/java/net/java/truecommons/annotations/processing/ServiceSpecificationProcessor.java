@@ -20,7 +20,7 @@ import net.java.truecommons.annotations.ServiceSpecification;
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 @SupportedAnnotationTypes("*")
-public final class ServiceSpecificationProcessor extends ServiceProcessor {
+public final class ServiceSpecificationProcessor extends ServiceAnnnotationProcessor {
 
     @Override
     public boolean process(
@@ -44,23 +44,24 @@ public final class ServiceSpecificationProcessor extends ServiceProcessor {
                 warning("Bad practice: Not a top-level class or interface.", loc);
             }
         }
-        final Collection<ExecutableElement>
-                ctors = new LinkedList<ExecutableElement>();
+        final Collection<ExecutableElement> constructors = new LinkedList<>();
         for (final Element elem : spec.getEnclosedElements())
             if (elem.getKind() == CONSTRUCTOR)
-                ctors.add((ExecutableElement) elem);
-        return ctors.isEmpty() || valid(ctors)
-                || error("No public or protected constructor with zero parameters available.", loc);
+                constructors.add((ExecutableElement) elem);
+        return constructors.isEmpty() || valid(constructors) ||
+                error("No public or protected constructor with zero parameters available.", loc);
     }
 
-    private boolean valid(final Collection<ExecutableElement> ctors) {
-        for (final ExecutableElement ctor : ctors) if (valid(ctor)) return true;
+    private boolean valid(final Collection<ExecutableElement> constructors) {
+        for (final ExecutableElement ctor : constructors)
+            if (valid(ctor))
+                return true;
         return false;
     }
 
     private boolean valid(final ExecutableElement ctor) {
-        return (ctor.getModifiers().contains(PUBLIC)
-                || ctor.getModifiers().contains(PROTECTED))
-                && ctor.getParameters().isEmpty();
+        return (ctor.getModifiers().contains(PUBLIC) ||
+                ctor.getModifiers().contains(PROTECTED)) &&
+                ctor.getParameters().isEmpty();
     }
 }

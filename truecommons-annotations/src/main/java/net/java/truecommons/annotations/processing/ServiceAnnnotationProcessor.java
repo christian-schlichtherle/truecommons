@@ -10,12 +10,12 @@ import javax.lang.model.element.Element;
 import static javax.tools.Diagnostic.Kind.*;
 
 /**
- * Common super class for
- * {@code Service(Specification|Implementation)Processor}.
+ * Common super class for {@link ServiceSpecificationProcessor} and
+ * {@link ServiceImplementationProcessor}.
  *
  * @author Christian Schlichtherle
  */
-public abstract class ServiceProcessor extends AbstractProcessor {
+public abstract class ServiceAnnnotationProcessor extends AbstractProcessor {
 
     boolean isDebugEnabled() { return false; }
 
