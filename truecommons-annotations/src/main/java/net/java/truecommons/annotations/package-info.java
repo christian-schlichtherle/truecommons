@@ -97,11 +97,16 @@
  * configuration files according to its findings.
  * If no specification class or interface is found then an appropriate error
  * message gets emitted.
+ * <p>
+ * Unless noted otherwise, this is a {@code null}-free API:
+ * No parameter and no return value of public methods in public classes is
+ * allowed to be {@code null}.
+ * Likewise, no public field in public classes is allowed to be {@code null},
+ * although such fields should not exist in the first place.
  *
  * @see    java.util.ServiceLoader
  * @see    <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/jar/jar.html#Service%20Provider">JAR File Specification for Java SE 6, Section "Service Provider"</a>
  * @since  TrueCommons 2.1
  * @author Christian Schlichtherle
  */
-@javax.annotation.Nonnull @javax.annotation.ParametersAreNonnullByDefault
 package net.java.truecommons.annotations;

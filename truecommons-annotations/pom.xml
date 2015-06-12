@@ -15,17 +15,7 @@
     <artifactId>truecommons-annotations</artifactId>
 
     <name>TrueCommons Annotations</name>
-    <description>
-    Provides common annotations with processors.
-    You should use the scope "provided" when adding this module as a dependency.
-    </description>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>annotations</artifactId>
-        </dependency>
-    </dependencies>
+    <description>Provides common annotations with processors.</description>
 
     <build>
         <plugins>

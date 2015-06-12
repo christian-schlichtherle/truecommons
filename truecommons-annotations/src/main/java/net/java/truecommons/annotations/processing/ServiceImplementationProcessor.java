@@ -38,7 +38,7 @@ import net.java.truecommons.annotations.ServiceSpecification;
     "net.java.truecommons.annotations.verbose",
     "net.java.truecommons.annotations.processing.verbose"
 })
-public final class ServiceImplementationProcessor extends ServiceProcessor {
+public final class ServiceImplementationProcessor extends ServiceAnnnotationProcessor {
 
     private static final Comparator<TypeElement> TYPE_ELEMENT_COMPARATOR =
             new Comparator<TypeElement>() {
@@ -93,12 +93,11 @@ public final class ServiceImplementationProcessor extends ServiceProcessor {
                 //warning("Bad practice: Not a top-level class.", loc);
             }
         }
-        final Collection<ExecutableElement>
-                ctors = new LinkedList<ExecutableElement>();
+        final Collection<ExecutableElement> constructors = new LinkedList<>();
         for (final Element elem : impl.getEnclosedElements())
             if (elem.getKind() == CONSTRUCTOR)
-                ctors.add((ExecutableElement) elem);
-        return ctors.isEmpty() || valid(ctors)
+                constructors.add((ExecutableElement) elem);
+        return constructors.isEmpty() || valid(constructors)
                 || error("No public constructor with zero parameters available.", loc);
     }
 
@@ -187,13 +186,14 @@ public final class ServiceImplementationProcessor extends ServiceProcessor {
     }
 
     private final class Registry {
+
         final Elements elements = processingEnv.getElementUtils();
-        final Map<TypeElement, Collection<TypeElement>>
-            services = new HashMap<TypeElement, Collection<TypeElement>>();
+        final Map<TypeElement, Collection<TypeElement>> services = new HashMap<>();
 
         void add(final TypeElement impl, final TypeElement spec) {
             Collection<TypeElement> coll = services.get(spec);
-            if (null == coll) coll = new TreeSet<TypeElement>(TYPE_ELEMENT_COMPARATOR);
+            if (null == coll)
+                coll = new TreeSet<>(TYPE_ELEMENT_COMPARATOR);
             coll.add(impl);
             services.put(spec, coll);
         }
@@ -209,14 +209,11 @@ public final class ServiceImplementationProcessor extends ServiceProcessor {
                 try {
                     final FileObject fo = filer
                             .createResource(CLASS_OUTPUT, "", path);
-                    final Writer w = fo.openWriter();
-                    try {
+                    try (Writer w = fo.openWriter()) {
                         for (final TypeElement impl : coll) {
                             w.append(name(impl)).append("\n");
                             debug(String.format("Registered at: %s", path), impl);
                         }
-                    } finally {
-                        w.close();
                     }
                 } catch (final IOException ex) {
                     messager.printMessage(ERROR, String.format("Failed to register %d service implementation class(es) at: %s: %s" , coll.size(), path, ex.getMessage()));
