@@ -5,7 +5,7 @@
 package net.java.truecommons.cio
 
 import net.java.truecommons.cio.Entry._
-import net.java.truecommons.io.Loan._
+import net.java.truecommons.shed.ResourceLoan._
 import org.junit.runner._
 import org.scalacheck._
 import org.scalatest.Matchers._
