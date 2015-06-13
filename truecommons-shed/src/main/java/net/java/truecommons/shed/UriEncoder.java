@@ -43,10 +43,10 @@ final class UriEncoder {
     private static final String DEFAULT_LEGAL_CHARS =
             ALPHANUM_CHARS + MARK_CHARS + ",;$&+=@";
 
+    private final StringBuilder stringBuilder = new StringBuilder();
     private final CharsetEncoder encoder;
     private final boolean encode;
     private final boolean raw;
-    private Option<StringBuilder> stringBuilder = Option.none();
 
     /**
      * Constructs a new URI encoder which uses the UTF-8 character set to
@@ -134,8 +134,9 @@ final class UriEncoder {
      *         codec is UTF-8.
      */
     String encode(Encoding component, String ds) {
+        stringBuilder.setLength(0);
         try {
-            for (StringBuilder esb : encode(component, ds, Option.<StringBuilder>none()))
+            for (StringBuilder esb : encode(component, ds, stringBuilder))
                 return esb.toString();
         } catch (URISyntaxException ex) {
             throw new IllegalArgumentException(ex);
@@ -153,8 +154,8 @@ final class UriEncoder {
      *
      * @param  component the URI component to encode.
      * @param  ds the decoded string to encode.
-     * @param  esb the optional encoded string builder to which all encoded
-     *             characters shall get appended.
+     * @param  esb the encoded string builder to which all encoded characters
+     *             shall get appended.
      * @return If {@code ds} contains only legal characters for the URI
      *         component {@code comp}, then {@code null} gets returned.
      *         Otherwise, if {@code esb} is not {@code null}, then it gets
@@ -171,65 +172,48 @@ final class UriEncoder {
     Option<StringBuilder> encode(
             final Encoding component,
             final String ds,
-            Option<StringBuilder> esb)         // encoded string builder
+            final StringBuilder esb)                // encoded string builder
     throws URISyntaxException {
-        final Option[] escapes = component.escapes;
-        final CharBuffer dcb = CharBuffer.wrap(ds);  // decoded character buffer
-        Option<ByteBuffer> ebb = Option.none();      // encoded byte buffer
-        final boolean encode = this.encode;
+        final Option[] oess = component.escapes;    // optional escape sequences
+        final CharBuffer dcb = CharBuffer.wrap(ds); // decoded character buffer
+        Option<ByteBuffer> oebb = Option.none();    // optional encoded byte buffer
         while (dcb.hasRemaining()) {
             dcb.mark();
-            final char dc = dcb.get();               // decoded character
+            final char dc = dcb.get(); // decoded character
             if (dc < 0x80) {
-                final Option<String> es = escapes[dc];      // escape sequence
-                if (!(es.isEmpty() || '%' == dc && raw)) {
-                    if (ebb.isEmpty()) {
-                        if (esb.isEmpty()) {
-                            if ((esb = stringBuilder).isEmpty())
-                                esb = stringBuilder = Option.some(new StringBuilder());
-                            else
-                                esb.get().setLength(0);
-                            esb.get().append(ds, 0, dcb.position() - 1); // prefix until current character
-                        }
-                        ebb = Option.some(ByteBuffer.allocate(3));
-                    }
-                    esb.get().append(es.get());
-                }  else if (!esb.isEmpty()) {
-                    esb.get().append(dc);
+                final Option<String> oes = oess[dc]; // optional escape sequence
+                if (!(oes.isEmpty() || '%' == dc && isRaw())) {
+                    if (oebb.isEmpty())
+                        oebb = Option.some(ByteBuffer.allocate(3));
+                    esb.append(oes.get());
+                }  else {
+                    esb.append(dc);
                 }
             } else if (Character.isISOControl(dc) ||
                        Character.isSpaceChar(dc)  ||
                        encode) {
-                if (ebb.isEmpty()) {
-                    if (esb.isEmpty()) {
-                        if ((esb = stringBuilder).isEmpty())
-                            esb = stringBuilder = Option.some(new StringBuilder());
-                        else
-                            esb.get().setLength(0);
-                        esb.get().append(ds, 0, dcb.position() - 1); // prefix until current character
-                    }
-                    ebb = Option.some(ByteBuffer.allocate(3));
-                }
+                if (oebb.isEmpty())
+                    oebb = Option.some(ByteBuffer.allocate(3));
                 final int p = dcb.position();
                 dcb.reset();
                 dcb.limit(p);
-                { // Encode dC -> eB.
+                { // Encode dcb -> ebb.
                     CoderResult cr;
-                    if (UNDERFLOW != (cr = encoder.reset().encode(dcb, ebb.get(), true))
-                            || UNDERFLOW != (cr = encoder.flush(ebb.get()))) {
+                    if (UNDERFLOW != (cr = encoder.reset().encode(dcb, oebb.get(), true))
+                            || UNDERFLOW != (cr = encoder.flush(oebb.get()))) {
                         assert OVERFLOW != cr;
                         throw new QuotedUriSyntaxException(ds, cr.toString());
                     }
                 }
-                ebb.get().flip();
-                quote(ebb.get(), esb.get());
-                ebb.get().clear();
+                oebb.get().flip();
+                quote(oebb.get(), esb);
+                oebb.get().clear();
                 dcb.limit(dcb.capacity());
-            } else if (!esb.isEmpty()) {
-                esb.get().append(dc);
+            } else {
+                esb.append(dc);
             }
         }
-        return ebb.isEmpty() ? Option.<StringBuilder>none() : esb;
+        return oebb.isEmpty() ? Option.<StringBuilder>none() : Option.some(esb);
     }
 
     private static void quote(char dc, StringBuilder eS) {

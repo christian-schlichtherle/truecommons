@@ -24,8 +24,8 @@ import static net.java.truecommons.shed.UriEncoder.Encoding.*;
  * Each URI is composed of the five components scheme, authority, path, query
  * and fragment.
  * When done with setting the properties for the URI components, the resulting
- * URI can be composed by calling any of the methods {@link #buildUri()},
- * {@link #toUri()}, {@link #buildString()} or {@link #toString()}.
+ * URI can be composed by calling any of the methods {@link #toUriChecked()},
+ * {@link #toUriUnchecked()}, {@link #toStringChecked()} or {@link #toStringUnchecked()}.
  * <p>
  * This class quotes illegal characters wherever required for the respective
  * URI component.
@@ -56,8 +56,8 @@ import static net.java.truecommons.shed.UriEncoder.Encoding.*;
  *     .toUri()
  *     .equals(u);
  * }</pre>
- * These identity productions apply for the method {@link #toUri()} as well as
- * the method {@link #buildUri()}.
+ * These identity productions apply for the method {@link #toUriUnchecked()} as well as
+ * the method {@link #toUriChecked()}.
  *
  * @see    <a href="http://www.ietf.org/rfc/rfc2396.txt">
  *         RFC&nbsp;2396: Uniform Resource Identifiers (URI): Generic Syntax</a>
@@ -67,8 +67,8 @@ import static net.java.truecommons.shed.UriEncoder.Encoding.*;
  */
 public final class UriBuilder {
 
+    private final StringBuilder builder = new StringBuilder();
     private final UriEncoder encoder;
-    private Option<StringBuilder> builder = Option.none();
     private Option<String> scheme = Option.none();
     private Option<String> authority = Option.none();
     private Option<String> path = Option.none();
@@ -104,12 +104,11 @@ public final class UriBuilder {
      * @return A valid URI string which is composed from the properties of
      *         this URI builder.
      * @throws IllegalStateException if composing a valid URI is not possible.
-     * @see    #buildString()
+     * @see    #toStringChecked()
      */
-    @Override
-    public String toString() {
+    public String toStringUnchecked() {
         try {
-            return buildString();
+            return toStringChecked();
         } catch (URISyntaxException ex) {
             throw new IllegalStateException(ex);
         }
@@ -127,71 +126,63 @@ public final class UriBuilder {
      *         this URI builder.
      * @throws URISyntaxException if composing a valid URI is not possible due
      *         to an invalid scheme.
-     * @see    #toString()
+     * @see    #toStringUnchecked()
      */
-    public String buildString() throws URISyntaxException {
-        final StringBuilder r = resetBuilder(); // result
-        final Option<StringBuilder> or = Option.some(r);
+    public String toStringChecked() throws URISyntaxException {
+        builder.setLength(0);
         int errIdx = -1;                        // error index
         Option<String> errMsg = Option.none();  // error message
-        final Option<String> s = scheme, a = authority, p = path, q = query, f = fragment;
-        final boolean absUri = !s.isEmpty();
-        if (absUri)
-            r.append(s.get()).append(':');
-        final int ssp = r.length();             // index of scheme specific part
+        final Option<String> a = authority, p = path, q = query, f = fragment;
+        boolean absUri = false;
+        for (String s : scheme) {
+            absUri = true;
+            builder.append(s).append(':');
+        }
+        final int ssp = builder.length();             // index of scheme specific part
         final boolean hasAuth = !a.isEmpty();
         if (hasAuth) {
-            r.append("//");
-            encoder.encode(AUTHORITY, a.get(), or);
+            builder.append("//");
+            encoder.encode(AUTHORITY, a.get(), builder);
         }
         boolean absPath = false;
         if (!p.isEmpty() && !p.get().isEmpty()) {
             if (p.get().startsWith("/")) {
                 absPath = true;
-                encoder.encode(ABSOLUTE_PATH, p.get(), or);
+                encoder.encode(ABSOLUTE_PATH, p.get(), builder);
             } else if (hasAuth) {
                 absPath = true;
-                errIdx = r.length();
+                errIdx = builder.length();
                 errMsg = Option.some("Relative path with " + (a.isEmpty() ? "" : "non-") + "empty authority");
-                encoder.encode(ABSOLUTE_PATH, p.get(), or);
+                encoder.encode(ABSOLUTE_PATH, p.get(), builder);
             } else if (absUri) {
-                encoder.encode(QUERY, p.get(), or);
+                encoder.encode(QUERY, p.get(), builder);
             } else {
-                encoder.encode(PATH, p.get(), or);
+                encoder.encode(PATH, p.get(), builder);
             }
         }
         if (!q.isEmpty()) {
-            r.append('?');
+            builder.append('?');
             if (absUri && !absPath) {
-                errIdx = r.length();
+                errIdx = builder.length();
                 errMsg = Option.some("Query in opaque URI");
             }
-            encoder.encode(QUERY, q.get(), or);
+            encoder.encode(QUERY, q.get(), builder);
         }
         assert absUri == 0 < ssp;
-        if (absUri && ssp >= r.length()){
-            errIdx = r.length();
+        if (absUri && ssp >= builder.length()){
+            errIdx = builder.length();
             errMsg = Option.some("Empty scheme specific part in absolute URI");
         }
         if (!f.isEmpty()) {
-            r.append('#');
-            encoder.encode(FRAGMENT, f.get(), or);
+            builder.append('#');
+            encoder.encode(FRAGMENT, f.get(), builder);
         }
         if (absUri)
-            validateScheme((CharBuffer) CharBuffer.wrap(r).limit(s.get().length()));
-        final String u = r.toString();
+            validateScheme((CharBuffer) CharBuffer.wrap(builder).limit(scheme.get().length()));
+        final String u = builder.toString();
         if (0 <= errIdx)
             throw new QuotedUriSyntaxException(u, errMsg.get(), errIdx);
         return u;
-    }
-
-    private StringBuilder resetBuilder() {
-        Option<StringBuilder> builder = this.builder;
-        if (builder.isEmpty())
-            this.builder = builder = Option.some(new StringBuilder());
-        else
-            builder.get().setLength(0);
-        return builder.get();
     }
 
     /**
@@ -252,11 +243,11 @@ public final class UriBuilder {
      * @return A valid URI which is composed from the properties of
      *         this URI builder.
      * @throws IllegalStateException if composing a valid URI is not possible.
-     * @see    #buildUri()
+     * @see    #toUriChecked()
      */
-    public URI toUri() {
+    public URI toUriUnchecked() {
         try {
-            return buildUri();
+            return toUriChecked();
         } catch (URISyntaxException ex) {
             throw new IllegalStateException(ex);
         }
@@ -273,10 +264,10 @@ public final class UriBuilder {
      * @return A valid URI which is composed from the properties of
      *         this URI builder.
      * @throws URISyntaxException if composing a valid URI is not possible.
-     * @see    #toUri()
+     * @see    #toUriUnchecked()
      */
-    public URI buildUri() throws URISyntaxException {
-        final String s = buildString();
+    public URI toUriChecked() throws URISyntaxException {
+        final String s = toStringChecked();
         try {
             return new URI(s);
         } catch (URISyntaxException ex) {

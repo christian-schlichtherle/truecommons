@@ -26,8 +26,8 @@ public class UriBuilderTest {
 
     @Test
     public void testDefaults() {
-        assertEquals("", builder.toString());
-        assertEquals(URI.create(""), builder.toUri());
+        assertEquals("", builder.toStringUnchecked());
+        assertEquals(URI.create(""), builder.toUriUnchecked());
     }
 
     @Test
@@ -72,7 +72,7 @@ public class UriBuilderTest {
             // Test parsing.
             builder = new UriBuilder();
             builder.uri(u);
-            assertEquals(test[0], builder.toString());
+            assertEquals(test[0], builder.toStringUnchecked());
 
             // Test composition.
             builder = new UriBuilder();
@@ -81,11 +81,11 @@ public class UriBuilderTest {
                     .path(test[3])
                     .query(test[4])
                     .fragment(test[5]);
-            assertEquals(test[0], builder.toString());
+            assertEquals(test[0], builder.toStringUnchecked());
             
             // Test identities.
-            assertEquals(u, builder.toUri());
-            assertEquals(u, builder.uri(u).toUri());
+            assertEquals(u, builder.toUriUnchecked());
+            assertEquals(u, builder.uri(u).toUriUnchecked());
         }
     }
 
@@ -136,30 +136,30 @@ public class UriBuilderTest {
                     .query(test[3])
                     .fragment(test[4]);
             try {
-                builder.buildString();
+                builder.toStringChecked();
                 fail();
             } catch (URISyntaxException expected) {
             }
             try {
-                builder.toString();
+                builder.toStringUnchecked();
                 fail();
             } catch (IllegalStateException expected) {
             }
             try {
-                builder.buildUri();
+                builder.toUriChecked();
                 fail();
             } catch (URISyntaxException expected) {
             }
             try {
-                builder.toUri();
+                builder.toUriUnchecked();
                 fail();
             } catch (IllegalStateException expected) {
             }
 
             // Recover to legal state and assert success.
             builder.uri(URI.create(""));
-            assertEquals("", builder.toString());
-            assertEquals(URI.create(""), builder.toUri());
+            assertEquals("", builder.toStringUnchecked());
+            assertEquals(URI.create(""), builder.toUriUnchecked());
         }
     }
 }

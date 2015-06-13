@@ -16,8 +16,8 @@ import org.junit.Test;
  */
 public class UriCodecTest {
 
-    private static final BitField<Encoding>
-            ENCODING_MASK = BitField.allOf(Encoding.class);
+    private static final BitField<Encoding> ENCODING_MASK =
+            BitField.allOf(Encoding.class);
 
     private UriEncoder encoder;
     private UriDecoder decoder;
