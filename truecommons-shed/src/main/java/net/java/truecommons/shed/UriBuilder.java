@@ -65,6 +65,7 @@ import static net.java.truecommons.shed.UriEncoder.Encoding.*;
  *         RFC&nbsp;2732: Format for Literal IPv6 Addresses in URL's</a>
  * @author Christian Schlichtherle
  */
+@SuppressWarnings("LoopStatementThatDoesntLoop")
 public final class UriBuilder {
 
     private final StringBuilder builder = new StringBuilder();
@@ -130,58 +131,60 @@ public final class UriBuilder {
      */
     public String toStringChecked() throws URISyntaxException {
         builder.setLength(0);
-        int errIdx = -1;                        // error index
-        Option<String> errMsg = Option.none();  // error message
-        final Option<String> a = authority, p = path, q = query, f = fragment;
+        int errorIndex = -1;                        // error index
+        Option<String> errorMessage = Option.none();  // error message
         boolean absUri = false;
-        for (String s : scheme) {
+        for (final String s : scheme) {
             absUri = true;
             builder.append(s).append(':');
         }
         final int ssp = builder.length();             // index of scheme specific part
-        final boolean hasAuth = !a.isEmpty();
-        if (hasAuth) {
+        boolean hasAuth = false;
+        for (final String a : authority) {
+            hasAuth = true;
             builder.append("//");
-            encoder.encode(AUTHORITY, a.get(), builder);
+            encoder.encode(AUTHORITY, a, builder);
         }
         boolean absPath = false;
-        if (!p.isEmpty() && !p.get().isEmpty()) {
-            if (p.get().startsWith("/")) {
-                absPath = true;
-                encoder.encode(ABSOLUTE_PATH, p.get(), builder);
-            } else if (hasAuth) {
-                absPath = true;
-                errIdx = builder.length();
-                errMsg = Option.some("Relative path with " + (a.isEmpty() ? "" : "non-") + "empty authority");
-                encoder.encode(ABSOLUTE_PATH, p.get(), builder);
-            } else if (absUri) {
-                encoder.encode(QUERY, p.get(), builder);
-            } else {
-                encoder.encode(PATH, p.get(), builder);
+        for (final String p : path) {
+            if (!p.isEmpty()) {
+                if (p.startsWith("/")) {
+                    absPath = true;
+                    encoder.encode(ABSOLUTE_PATH, p, builder);
+                } else if (hasAuth) {
+                    absPath = true;
+                    errorIndex = builder.length();
+                    errorMessage = Option.some("Relative path with " + (authority.isEmpty() ? "" : "non-") + "empty authority");
+                    encoder.encode(ABSOLUTE_PATH, p, builder);
+                } else if (absUri) {
+                    encoder.encode(QUERY, p, builder);
+                } else {
+                    encoder.encode(PATH, p, builder);
+                }
             }
         }
-        if (!q.isEmpty()) {
+        for (final String q : query) {
             builder.append('?');
             if (absUri && !absPath) {
-                errIdx = builder.length();
-                errMsg = Option.some("Query in opaque URI");
+                errorIndex = builder.length();
+                errorMessage = Option.some("Query in opaque URI");
             }
-            encoder.encode(QUERY, q.get(), builder);
+            encoder.encode(QUERY, q, builder);
         }
         assert absUri == 0 < ssp;
         if (absUri && ssp >= builder.length()){
-            errIdx = builder.length();
-            errMsg = Option.some("Empty scheme specific part in absolute URI");
+            errorIndex = builder.length();
+            errorMessage = Option.some("Empty scheme specific part in absolute URI");
         }
-        if (!f.isEmpty()) {
+        for (final String f : fragment) {
             builder.append('#');
-            encoder.encode(FRAGMENT, f.get(), builder);
+            encoder.encode(FRAGMENT, f, builder);
         }
         if (absUri)
             validateScheme((CharBuffer) CharBuffer.wrap(builder).limit(scheme.get().length()));
         final String u = builder.toString();
-        if (0 <= errIdx)
-            throw new QuotedUriSyntaxException(u, errMsg.get(), errIdx);
+        for (String msg : errorMessage)
+            throw new QuotedUriSyntaxException(u, errorMessage.get(), errorIndex);
         return u;
     }
 
@@ -350,13 +353,13 @@ public final class UriBuilder {
      * @return {@code this}
      */
     public UriBuilder pathQuery(String pathQuery) {
-        final Option<String> pathQuery1 = Option.apply(pathQuery);
+        final Option<String> opq = Option.apply(pathQuery);
         final int i;
-        if (!pathQuery1.isEmpty() && 0 <= (i = pathQuery1.get().indexOf('?'))) {
-            this.path = Option.some(pathQuery1.get().substring(0, i));
-            this.query = Option.some(pathQuery1.get().substring(i + 1));
+        if (!opq.isEmpty() && 0 <= (i = opq.get().indexOf('?'))) {
+            this.path = Option.some(opq.get().substring(0, i));
+            this.query = Option.some(opq.get().substring(i + 1));
         } else {
-            this.path = pathQuery1;
+            this.path = opq;
             this.query = Option.none();
         }
         return this;
