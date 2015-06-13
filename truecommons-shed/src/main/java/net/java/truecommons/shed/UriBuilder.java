@@ -4,11 +4,10 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 
 import static net.java.truecommons.shed.UriEncoder.Encoding.*;
 
@@ -22,12 +21,11 @@ import static net.java.truecommons.shed.UriEncoder.Encoding.*;
  * This class complements the immutable {@link URI} class by enabling its
  * clients to compose a URI from its components which can get read or written
  * as independent properties.
- * Each URI is composed of the five components {@link #getScheme() scheme},
- * {@link #getAuthority() authority}, {@link #getPath() path},
- * {@link #getQuery() query} and {@link #getFragment fragment}.
+ * Each URI is composed of the five components scheme, authority, path, query
+ * and fragment.
  * When done with setting the properties for the URI components, the resulting
- * URI can be composed by calling any of the methods {@link #getUri()},
- * {@link #toUri()}, {@link #getString()} or {@link #toString()}.
+ * URI can be composed by calling any of the methods {@link #buildUri()},
+ * {@link #toUri()}, {@link #buildString()} or {@link #toString()}.
  * <p>
  * This class quotes illegal characters wherever required for the respective
  * URI component.
@@ -59,7 +57,7 @@ import static net.java.truecommons.shed.UriEncoder.Encoding.*;
  *     .equals(u);
  * }</pre>
  * These identity productions apply for the method {@link #toUri()} as well as
- * the method {@link #getUri()}.
+ * the method {@link #buildUri()}.
  *
  * @see    <a href="http://www.ietf.org/rfc/rfc2396.txt">
  *         RFC&nbsp;2396: Uniform Resource Identifiers (URI): Generic Syntax</a>
@@ -67,16 +65,15 @@ import static net.java.truecommons.shed.UriEncoder.Encoding.*;
  *         RFC&nbsp;2732: Format for Literal IPv6 Addresses in URL's</a>
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public final class UriBuilder {
 
     private final UriEncoder encoder;
-    private @Nullable StringBuilder builder;
-    private @Nullable String scheme;
-    private @Nullable String authority;
-    private @Nullable String path;
-    private @Nullable String query;
-    private @Nullable String fragment;
+    private Option<StringBuilder> builder = Option.none();
+    private Option<String> scheme = Option.none();
+    private Option<String> authority = Option.none();
+    private Option<String> path = Option.none();
+    private Option<String> query = Option.none();
+    private Option<String> fragment = Option.none();
 
     /**
      * Constructs a new URI builder.
@@ -93,45 +90,7 @@ public final class UriBuilder {
      *        quoted.
      */
     public UriBuilder(boolean raw) {
-        this.encoder = new UriEncoder(null, raw);
-    }
-
-    /**
-     * Constructs a new URI builder.
-     * Equivalent to {@link #UriBuilder(URI, boolean) UriBuilder(uri, false)}.
-     *
-     * @param uri the uri for initializing the initial state.
-     */
-    public UriBuilder(URI uri) {
-        this(uri, false);
-    }
-
-    /**
-     * Constructs a new URI builder.
-     *
-     * @param uri the uri for initializing the initial state.
-     * @param raw If {@code true}, then the {@code '%'} character doesn't get
-     *        quoted.
-     */
-    public UriBuilder(URI uri, boolean raw) {
-        this.encoder = new UriEncoder(null, raw);
-        setUri(uri); // OK - class is final!
-    }
-
-    /**
-     * Clears the state of this URI builder.
-     * Calling this method is effectively the same as setting all URI component
-     * properties to {@code null}.
-     *
-     * @return {@code this}
-     */
-    public UriBuilder clear() {
-        scheme = null;
-        authority = null;
-        path = null;
-        query = null;
-        fragment = null;
-        return this;
+        this.encoder = new UriEncoder(Option.<Charset>none(), raw);
     }
 
     /**
@@ -145,12 +104,12 @@ public final class UriBuilder {
      * @return A valid URI string which is composed from the properties of
      *         this URI builder.
      * @throws IllegalStateException if composing a valid URI is not possible.
-     * @see    #getString()
+     * @see    #buildString()
      */
     @Override
     public String toString() {
         try {
-            return getString();
+            return buildString();
         } catch (URISyntaxException ex) {
             throw new IllegalStateException(ex);
         }
@@ -170,66 +129,69 @@ public final class UriBuilder {
      *         to an invalid scheme.
      * @see    #toString()
      */
-    public String getString() throws URISyntaxException {
+    public String buildString() throws URISyntaxException {
         final StringBuilder r = resetBuilder(); // result
+        final Option<StringBuilder> or = Option.some(r);
         int errIdx = -1;                        // error index
-        String errMsg = null;                   // error message
-        final String    s = scheme,
-                        a = authority, p = path, q = query,
-                        f = fragment;
-        final boolean absUri = null != s;
+        Option<String> errMsg = Option.none();  // error message
+        final Option<String> s = scheme, a = authority, p = path, q = query, f = fragment;
+        final boolean absUri = !s.isEmpty();
         if (absUri)
-            r.append(s).append(':');
+            r.append(s.get()).append(':');
         final int ssp = r.length();             // index of scheme specific part
-        final boolean hasAuth = null != a;
-        if (hasAuth)
-            encoder.encode(a, AUTHORITY, r.append("//"));
+        final boolean hasAuth = !a.isEmpty();
+        if (hasAuth) {
+            r.append("//");
+            encoder.encode(AUTHORITY, a.get(), or);
+        }
         boolean absPath = false;
-        if (null != p && !p.isEmpty()) {
-            if (p.startsWith("/")) {
+        if (!p.isEmpty() && !p.get().isEmpty()) {
+            if (p.get().startsWith("/")) {
                 absPath = true;
-                encoder.encode(p, ABSOLUTE_PATH, r);
+                encoder.encode(ABSOLUTE_PATH, p.get(), or);
             } else if (hasAuth) {
                 absPath = true;
                 errIdx = r.length();
-                errMsg = "Relative path with " + (a.isEmpty() ? "" : "non-") + "empty authority";
-                encoder.encode(p, ABSOLUTE_PATH, r);
+                errMsg = Option.some("Relative path with " + (a.isEmpty() ? "" : "non-") + "empty authority");
+                encoder.encode(ABSOLUTE_PATH, p.get(), or);
             } else if (absUri) {
-                encoder.encode(p, QUERY, r);
+                encoder.encode(QUERY, p.get(), or);
             } else {
-                encoder.encode(p, PATH, r);
+                encoder.encode(PATH, p.get(), or);
             }
         }
-        if (null != q) {
+        if (!q.isEmpty()) {
             r.append('?');
             if (absUri && !absPath) {
                 errIdx = r.length();
-                errMsg = "Query in opaque URI";
+                errMsg = Option.some("Query in opaque URI");
             }
-            encoder.encode(q, QUERY, r);
+            encoder.encode(QUERY, q.get(), or);
         }
         assert absUri == 0 < ssp;
         if (absUri && ssp >= r.length()){
             errIdx = r.length();
-            errMsg = "Empty scheme specific part in absolute URI";
+            errMsg = Option.some("Empty scheme specific part in absolute URI");
         }
-        if (null != f)
-            encoder.encode(f, FRAGMENT, r.append('#'));
+        if (!f.isEmpty()) {
+            r.append('#');
+            encoder.encode(FRAGMENT, f.get(), or);
+        }
         if (absUri)
-            validateScheme((CharBuffer) CharBuffer.wrap(r).limit(s.length()));
+            validateScheme((CharBuffer) CharBuffer.wrap(r).limit(s.get().length()));
         final String u = r.toString();
         if (0 <= errIdx)
-            throw new QuotedUriSyntaxException(u, errMsg, errIdx);
+            throw new QuotedUriSyntaxException(u, errMsg.get(), errIdx);
         return u;
     }
 
     private StringBuilder resetBuilder() {
-        StringBuilder builder = this.builder;
-        if (null == builder)
-            this.builder = builder = new StringBuilder();
+        Option<StringBuilder> builder = this.builder;
+        if (builder.isEmpty())
+            this.builder = builder = Option.some(new StringBuilder());
         else
-            builder.setLength(0);
-        return builder;
+            builder.get().setLength(0);
+        return builder.get();
     }
 
     /**
@@ -275,23 +237,9 @@ public final class UriBuilder {
      * @param  uri the URI string.
      * @throws IllegalArgumentException if {@code uri} does not conform to the
      *         syntax constraints of the {@link URI} class.
-     */
-    public void setString(String uri) {
-        setUri(URI.create(uri));
-    }
-
-    /**
-     * Initializes all URI components from the given URI string.
-     *
-     * @param  uri the URI string.
-     * @throws IllegalArgumentException if {@code uri} does not conform to the
-     *         syntax constraints of the {@link URI} class.
      * @return {@code this}
      */
-    public UriBuilder string(String uri) {
-        setString(uri);
-        return this;
-    }
+    public UriBuilder string(String uri) { return uri(URI.create(uri)); }
 
     /**
      * Returns a new URI which conforms to the syntax constraints
@@ -304,11 +252,11 @@ public final class UriBuilder {
      * @return A valid URI which is composed from the properties of
      *         this URI builder.
      * @throws IllegalStateException if composing a valid URI is not possible.
-     * @see    #getUri()
+     * @see    #buildUri()
      */
     public URI toUri() {
         try {
-            return getUri();
+            return buildUri();
         } catch (URISyntaxException ex) {
             throw new IllegalStateException(ex);
         }
@@ -327,10 +275,10 @@ public final class UriBuilder {
      * @throws URISyntaxException if composing a valid URI is not possible.
      * @see    #toUri()
      */
-    public URI getUri() throws URISyntaxException {
-        String u = getString();
+    public URI buildUri() throws URISyntaxException {
+        final String s = buildString();
         try {
-            return new URI(u);
+            return new URI(s);
         } catch (URISyntaxException ex) {
             // See http://java.net/jira/browse/TRUEZIP-180
             throw new AssertionError(ex);
@@ -341,217 +289,96 @@ public final class UriBuilder {
      * Initializes all URI components from the given URI.
      *
      * @param  uri the URI.
-     */
-    public void setUri(final URI uri) {
-        if (encoder.isRaw()) {
-            setScheme(uri.getScheme());
-            setAuthority(uri.getRawAuthority());
-            setPath(uri.isOpaque() ? uri.getRawSchemeSpecificPart() : uri.getRawPath());
-            setQuery(uri.getRawQuery());
-            setFragment(uri.getRawFragment());
-        } else {
-            setScheme(uri.getScheme());
-            setAuthority(uri.getAuthority());
-            setPath(uri.isOpaque() ? uri.getSchemeSpecificPart() : uri.getPath());
-            setQuery(uri.getQuery());
-            setFragment(uri.getFragment());
-        }
-    }
-
-    /**
-     * Initializes all URI components from the given URI.
-     *
-     * @param  uri the URI.
      * @return {@code this}
      */
     public UriBuilder uri(URI uri) {
-        setUri(uri);
-        return this;
-    }
-
-    /**
-     * Returns the URI scheme component.
-     *
-     * @return The URI scheme component.
-     */
-    @Nullable
-    public String getScheme() {
-        return scheme;
-    }
-
-    /**
-     * Sets the URI scheme component.
-     *
-     * @param  scheme the URI scheme component.
-     */
-    public void setScheme(final @Nullable String scheme) {
-        this.scheme = scheme;
-    }
-
-    /**
-     * Sets the URI scheme component.
-     *
-     * @param  scheme the URI scheme component.
-     * @return {@code this}
-     */
-    public UriBuilder scheme(@Nullable String scheme) {
-        setScheme(scheme);
-        return this;
-    }
-
-    /**
-     * Returns the URI authority component.
-     * If this URI builder has been {@link #setUri(URI) initialized} from an
-     * {@link URI#isOpaque() opaque} URI, then this property is {@code null}.
-     *
-     * @return The URI authority component.
-     */
-    @Nullable
-    public String getAuthority() {
-        return authority;
-    }
-
-    /**
-     * Sets the URI authority component.
-     *
-     * @param  authority the URI authority component.
-     */
-    public void setAuthority(final @Nullable String authority) {
-        this.authority = authority;
-    }
-
-    /**
-     * Sets the URI authority component.
-     *
-     * @param  authority the URI authority component.
-     * @return {@code this}
-     */
-    public UriBuilder authority(@Nullable String authority) {
-        setAuthority(authority);
-        return this;
-    }
-
-    /**
-     * Returns the URI path component.
-     * If this URI builder has been {@link #setUri(URI) initialized} from an
-     * {@link URI#isOpaque() opaque} URI, then this property contains the
-     * scheme specific part of the URI.
-     *
-     * @return The URI path component.
-     */
-    @Nullable
-    public String getPath() {
-        return path;
-    }
-
-    /**
-     * Sets the URI path component.
-     *
-     * @param  path the URI path component.
-     */
-    public void setPath(final @Nullable String path) {
-        this.path = path;
-    }
-
-    /**
-     * Sets the URI path component.
-     *
-     * @param  path the URI path component.
-     * @return {@code this}
-     */
-    public UriBuilder path(@Nullable String path) {
-        setPath(path);
-        return this;
-    }
-
-    /**
-     * Returns the URI query component.
-     * If this URI builder has been {@link #setUri(URI) initialized} from an
-     * {@link URI#isOpaque() opaque} URI, then this property is {@code null}.
-     *
-     * @return The URI query component.
-     */
-    @Nullable
-    public String getQuery() {
-        return query;
-    }
-
-    /**
-     * Sets the URI query component.
-     *
-     * @param  query the URI query component.
-     */
-    public void setQuery(final @Nullable String query) {
-        this.query = query;
-    }
-
-    /**
-     * Sets the URI query component.
-     *
-     * @param  query the URI query component.
-     * @return {@code this}
-     */
-    public UriBuilder query(@Nullable String query) {
-        setQuery(query);
-        return this;
-    }
-
-    /**
-     * Sets the URI path an query components by splitting the given string at
-     * the first occurence of the query separator {@code '?'}.
-     *
-     * @param  pathQuery the combined URI path and query components.
-     */
-    public void setPathQuery(final @Nullable String pathQuery) {
-        final int i;
-        if (null != pathQuery && 0 <= (i = pathQuery.indexOf('?'))) {
-            this.path = pathQuery.substring(0, i);
-            this.query = pathQuery.substring(i + 1);
+        if (encoder.isRaw()) {
+            return scheme(uri.getScheme())
+                    .authority(uri.getRawAuthority())
+                    .path(uri.isOpaque() ? uri.getRawSchemeSpecificPart() : uri.getRawPath())
+                    .query(uri.getRawQuery())
+                    .fragment(uri.getRawFragment());
         } else {
-            this.path = pathQuery;
-            this.query = null;
+            return scheme(uri.getScheme())
+                    .authority(uri.getAuthority())
+                    .path(uri.isOpaque() ? uri.getSchemeSpecificPart() : uri.getPath())
+                    .query(uri.getQuery())
+                    .fragment(uri.getFragment());
         }
     }
 
     /**
-     * Sets the URI path an query components by splitting the given string at
-     * the first occurence of the query separator {@code '?'}.
+     * Sets the nullable URI scheme component.
      *
-     * @param  pathQuery the combined URI path and query components.
+     * @param  scheme the nullable URI scheme component.
      * @return {@code this}
      */
-    public UriBuilder pathQuery(@Nullable String pathQuery) {
-        setPathQuery(pathQuery);
+    public UriBuilder scheme(String scheme) {
+        this.scheme = Option.apply(scheme);
         return this;
     }
 
     /**
-     * Returns the URI fragment component.
+     * Sets the nullable URI authority component.
      *
-     * @return The URI fragment component.
-     */
-    @Nullable
-    public String getFragment() {
-        return fragment;
-    }
-
-    /**
-     * Sets the URI fragment component.
-     *
-     * @param  fragment the URI fragment component.
-     */
-    public void setFragment(final @Nullable String fragment) {
-        this.fragment = fragment;
-    }
-
-    /**
-     * Sets the URI fragment component.
-     *
-     * @param  fragment the URI fragment component.
+     * @param  authority the nullable URI authority component.
      * @return {@code this}
      */
-    public UriBuilder fragment(@Nullable String fragment) {
-        setFragment(fragment);
+    public UriBuilder authority(String authority) {
+        this.authority = Option.apply(authority);
+        return this;
+    }
+
+    /**
+     * Sets the nullable URI path component.
+     *
+     * @param  path the nullable URI path component.
+     * @return {@code this}
+     */
+    public UriBuilder path(String path) {
+        this.path = Option.apply(path);
+        return this;
+    }
+
+    /**
+     * Sets the nullable URI query component.
+     *
+     * @param  query the nullable URI query component.
+     * @return {@code this}
+     */
+    public UriBuilder query(String query) {
+        this.query = Option.apply(query);
+        return this;
+    }
+
+    /**
+     * Sets the URI path and query components by splitting the given nullable
+     * string at the first occurence of the query separator {@code '?'}.
+     *
+     * @param  pathQuery the nullable combined URI path and query components.
+     * @return {@code this}
+     */
+    public UriBuilder pathQuery(String pathQuery) {
+        final Option<String> pathQuery1 = Option.apply(pathQuery);
+        final int i;
+        if (!pathQuery1.isEmpty() && 0 <= (i = pathQuery1.get().indexOf('?'))) {
+            this.path = Option.some(pathQuery1.get().substring(0, i));
+            this.query = Option.some(pathQuery1.get().substring(i + 1));
+        } else {
+            this.path = pathQuery1;
+            this.query = Option.none();
+        }
+        return this;
+    }
+
+    /**
+     * Sets the nullable URI fragment component.
+     *
+     * @param  fragment the nullable URI fragment component.
+     * @return {@code this}
+     */
+    public UriBuilder fragment(String fragment) {
+        this.fragment = Option.apply(fragment);
         return this;
     }
 }

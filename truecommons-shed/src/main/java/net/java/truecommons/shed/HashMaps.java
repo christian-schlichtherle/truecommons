@@ -4,14 +4,13 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.concurrent.Immutable;
-
 /**
  * Utility functions for hash maps.
+ * <p>
+ * This class is trivially immutable.
  *
  * @author Christian Schlichtherle
  */
-@Immutable
 public class HashMaps {
 
     /**

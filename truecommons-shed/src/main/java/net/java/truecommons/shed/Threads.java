@@ -4,14 +4,13 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.concurrent.Immutable;
-
 /**
  * Static utility methods for {@link Thread}s.
+ * <p>
+ * This class is trivially immutable.
  * 
  * @author Christian Schlichtherle
  */
-@Immutable
 public class Threads {
 
     private Threads() { }

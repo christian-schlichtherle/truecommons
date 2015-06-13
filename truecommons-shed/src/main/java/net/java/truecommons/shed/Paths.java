@@ -6,15 +6,15 @@ package net.java.truecommons.shed;
 
 import java.io.File;
 import java.util.Locale;
-import javax.annotation.concurrent.Immutable;
 
 /**
  * Static utility methods for path names.
+ * <p>
+ * This class is trivially immutable.
  *
  * @author Christian Schlichtherle
  */
-@Immutable
-public final class Paths {
+public class Paths {
 
     private Paths() { }
 

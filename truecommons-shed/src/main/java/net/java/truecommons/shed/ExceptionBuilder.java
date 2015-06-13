@@ -4,8 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 /**
  * An exception builder is an exception handler which assembles an exception
  * of the parameter type {@code O} from one or more exceptions of the parameter
@@ -21,7 +19,6 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @param  <O> the type of the assembled (output) exceptions.
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public interface ExceptionBuilder<I extends Throwable, O extends Throwable>
 extends ExceptionHandler<I, O> {
 

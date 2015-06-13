@@ -4,16 +4,12 @@
  */
 package net.java.truecommons.shed;
 
-import edu.umd.cs.findbugs.annotations.CleanupObligation;
-import edu.umd.cs.findbugs.annotations.DischargesObligation;
-
 /**
  * A resource which can release itself to its associated {@link Pool}.
  *
  * @param  <X> The type of the exceptions thrown by this releasable.
  * @author Christian Schlichtherle
  */
-@CleanupObligation
 public interface Releasable<X extends Exception> {
 
     /**
@@ -21,6 +17,5 @@ public interface Releasable<X extends Exception> {
      *
      * @throws X if releasing the resource fails for any reason.
      */
-    @DischargesObligation
     void release() throws X;
 }

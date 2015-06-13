@@ -4,8 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 /**
  * A generic callback interface designed to be implemented by client
  * applications in order to inject an exception handling strategy into a
@@ -82,7 +80,6 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @param  <O> the type of the output exceptions.
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public interface ExceptionHandler<I extends Throwable, O extends Throwable> {
 
     /**

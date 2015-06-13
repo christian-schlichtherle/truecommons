@@ -4,13 +4,12 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.AbstractCollection;
+import java.util.NoSuchElementException;
 
 /**
- * An immutable collection of at most one element.
+ * An immutable collection of at most one item.
  * As with any collection, the most idiomatic way to use it is as follows:
  * <pre>{@code
  * Option<String> option = Option.apply("Hello world!"); // or Option.apply(null)
@@ -40,11 +39,7 @@ import java.util.*;
  * }</pre>
  * <p>
  * This class is inspired by the Scala Library and checked with Google's Guava
- * Library:
- * A noteable difference to Scala's {@code Option} class is that this
- * collection class cannot contain null elements because I can't imagine a
- * valid use case - not even when considering interoperability with other
- * collections of nullable items.
+ * Library.
  * <p>
  * A noteable difference to Guava's {@code Optional} class is that this class
  * is a collection while {@code Optional} is not, so you can't use a for-loop
@@ -54,12 +49,13 @@ import java.util.*;
  * a generic Function interface.
  * This is because without support for closures in Java 7, using a generic
  * functional interface in Java is not as convenient as the for-loop.
+ * <p>
+ * This class is immutable. The same constraint must apply to its subclasses.
  *
- * @param  <E> The type of the optional element in this container.
+ * @param  <E> The type of the optional item in this container.
  * @since  TrueCommons 2.4
  * @author Christian Schlichtherle
  */
-@Immutable
 public abstract class Option<E>
 extends AbstractCollection<E> implements Serializable {
 
@@ -68,61 +64,59 @@ extends AbstractCollection<E> implements Serializable {
     Option() { }
 
     /**
-     * Returns an option for the given nullable element.
+     * Returns an option for the given nullable item.
      *
-     * @param <T> The type of the nullable element.
-     * @param element the element.
-     * @return An option for the given nullable element.
+     * @param <T> The type of the nullable item.
+     * @param item the nullable item.
+     * @return An option for the given nullable item.
      */
-    public static <T> Option<T> apply(@Nullable T element) {
-        return null != element ? some(element) : Option.<T>none();
+    public static <T> Option<T> apply(T item) {
+        return null != item ? some(item) : Option.<T>none();
     }
 
     /**
-     * Returns an option with the given element.
+     * Returns an option with the given nullable item.
      *
-     * @param <T> the type of the element.
-     * @param element the element in this option.
-     * @return An option with the given element.
-     * @throws NullPointerException if {@code element} is {@code null}.
+     * @param <T> the type of the item.
+     * @param item the nullable item in this option.
+     * @return An option with the given nullable item.
      */
-    public static <T> Option<T> some(T element) { return new Some<>(element); }
+    public static <T> Option<T> some(T item) { return new Some<>(item); }
 
     /**
-     * Returns an option with no element.
+     * Returns an option with no item.
      *
-     * @param <T> the type of the absent element.
-     * @return An option with no element.
+     * @param <T> the type of the absent item.
+     * @return An option with no item.
      */
     @SuppressWarnings("unchecked")
     public static <T> Option<T> none() { return (Option<T>) None.SINGLETON; }
 
     /**
-     * If present, returns the single element contained in this collection,
+     * If present, returns the single item contained in this collection,
      * or otherwise throws an exception.
      *
-     * @return The single element in this collection.
-     * @throws NoSuchElementException if no element is present in this
-     *         collection.
+     * @return The single item in this collection.
+     * @throws NoSuchElementException if no item is present in this collection.
      */
     public abstract E get() throws NoSuchElementException;
 
     /**
-     * If present, returns the single element contained in this collection,
+     * If present, returns the single item contained in this collection,
      * or otherwise the given alternative.
      *
-     * @param alternative the alternative element.
+     * @param alternative the alternative item.
      */
-    public abstract @Nullable E getOrElse(@Nullable E alternative);
+    public abstract E getOrElse(E alternative);
 
     /**
      * Equivalent to {@link #getOrElse getOrElse(null)}, but probably more
      * efficient.
      */
-    public abstract @Nullable E orNull();
+    public abstract E orNull();
 
     /**
-     * If an element is present in this collection, then this collection is
+     * If an item is present in this collection, then this collection is
      * returned, or otherwise the given alternative.
      *
      * @param alternative the alternative option.

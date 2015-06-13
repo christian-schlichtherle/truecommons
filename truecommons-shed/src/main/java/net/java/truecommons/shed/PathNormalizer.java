@@ -4,14 +4,11 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 /**
  * A normalizer for path names.
  * 
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public class PathNormalizer {
 
     private final char separatorChar;

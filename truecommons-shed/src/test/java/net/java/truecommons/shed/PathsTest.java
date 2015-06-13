@@ -132,7 +132,7 @@ public class PathsTest {
 
     private void assertSplit(final String path) {
         final File file = new File(path);
-        final String parent = file.getParent();
+        final Option<String> parent = Option.apply(file.getParent());
         final String member = file.getName();
 
         final PathSplitter splitter = Paths.split(path, File.separatorChar, false);

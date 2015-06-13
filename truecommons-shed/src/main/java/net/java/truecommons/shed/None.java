@@ -4,8 +4,7 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.Nullable;
-import java.io.*;
+import java.io.ObjectStreamException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -39,12 +38,10 @@ final class None extends Option<Object> {
     public Object get() { throw new NoSuchElementException(); }
 
     @Override
-    public @Nullable Object getOrElse(@Nullable Object alternative) {
-        return alternative;
-    }
+    public Object getOrElse(Object alternative) { return alternative; }
 
     @Override
-    public @Nullable Object orNull() { return null; }
+    public Object orNull() { return null; }
 
     @Override
     public boolean equals(Object other) { return other instanceof None; }

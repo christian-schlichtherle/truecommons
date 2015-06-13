@@ -37,13 +37,13 @@ public class UriCodecTest {
         }
 
         try {
-            encoder.encode(null, ANY);
+            encoder.encode(ANY, null);
             fail();
         } catch (NullPointerException expected) {
         }
 
         try {
-            encoder.encode("", null);
+            encoder.encode(null, "");
             fail();
         } catch (NullPointerException expected) {
         }
@@ -104,7 +104,7 @@ public class UriCodecTest {
             { ENCODING_MASK, "a\u00c4b\u00d6c\u00dcd\u00dfe\u00e4f\u00f6g\u00fch", "a%C3%84b%C3%96c%C3%9Cd%C3%9Fe%C3%A4f%C3%B6g%C3%BCh" }, // dito embedded
         }) {
             for (final Encoding component : (BitField<Encoding>) test[0])
-                assertEquals(test[2], encoder.encode(test[1].toString(), component));
+                assertEquals(test[2], encoder.encode(component, test[1].toString()));
             assertEquals(test[1], decoder.decode(test[2].toString()));
         }
     }

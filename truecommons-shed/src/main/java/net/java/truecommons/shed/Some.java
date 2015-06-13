@@ -4,29 +4,25 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.Nullable;
-import java.io.*;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
 
 /**
- * An option which holds a non-{@code null} element.
+ * An option which holds a nullable item.
  *
  * @see Option
  * @author Christian Schlichtherle
  */
 final class Some<T> extends Option<T> {
 
-    private final T element;
+    private final T item;
 
-    Some(final T element) {
-        this.element = Objects.requireNonNull(element);
-    }
+    Some(final T item) { this.item = item; }
 
     @Override
     public Iterator<T> iterator() {
-        return Collections.singleton(element).iterator();
+        return Collections.singleton(item).iterator();
     }
 
     @Override
@@ -36,21 +32,21 @@ final class Some<T> extends Option<T> {
     public boolean isEmpty() { return false; }
 
     @Override
-    public T get() { return element; }
+    public T get() { return item; }
 
     @Override
-    public T getOrElse(@Nullable T alternative) { return element; }
+    public T getOrElse(T alternative) { return item; }
 
     @Override
-    public T orNull() { return element; }
+    public T orNull() { return item; }
 
     @Override
     public boolean equals(Object that) {
-        return this == that
-                || that instanceof Some
-                && this.element.equals(((Some<?>) that).element);
+        return this == that ||
+                that instanceof Some &&
+                        Objects.equals(this.item, ((Some<?>) that).item);
     }
 
     @Override
-    public int hashCode() { return element.hashCode(); }
+    public int hashCode() { return Objects.hashCode(item); }
 }

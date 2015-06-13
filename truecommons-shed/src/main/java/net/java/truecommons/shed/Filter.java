@@ -11,7 +11,6 @@ package net.java.truecommons.shed;
  * @since  TrueCommons 1.0.11
  * @author Christian Schlichtherle
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public interface Filter<T> {
 
     /**
@@ -24,13 +23,13 @@ public interface Filter<T> {
     boolean accept(T item);
 
     /** A filter which accepts any item. */
-    Filter<Object> ACCEPT_ANY = new Filter() {
+    Filter<Object> ACCEPT_ANY = new Filter<Object>() {
         @Override
         public boolean accept(Object item) { return true; }
     };
 
     /** A filter which accepts no items. */
-    Filter<Object> ACCEPT_NONE = new Filter() {
+    Filter<Object> ACCEPT_NONE = new Filter<Object>() {
         @Override
         public boolean accept(Object item) { return false; }
     };

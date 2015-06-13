@@ -4,11 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
-
 /**
  * Indicates a condition which requires non-local control flow.
  * A control flow exception needs to get catched and resolved by the same
@@ -37,12 +32,12 @@ import javax.annotation.concurrent.Immutable;
  *     resource.cleanup(); // finally-block ensures cleanup
  * }
  * }</pre>
+ * <p>
+ * This class is immutable.
  *
  * @author Christian Schlichtherle
  */
-@Immutable
 @SuppressWarnings("serial") // serializing control flow exceptions is nonsense!
-@SuppressFBWarnings("NM_CLASS_NOT_EXCEPTION")
 public class ControlFlowException extends Error {
 
     private static final String TRACEABLE_PROPERTY_KEY =
@@ -52,15 +47,33 @@ public class ControlFlowException extends Error {
 
     public ControlFlowException() { this(null, true); }
 
-    public ControlFlowException(@Nullable Throwable cause) {
+    /**
+     * Constructs a new control flow exception.
+     *
+     * @param cause the nullable cause.
+     */
+    public ControlFlowException(Throwable cause) {
         this(cause, true);
     }
 
+    /**
+     * Constructs a new control flow exception.
+     *
+     * @param enableSuppression whether or not suppression is enabled or
+     *                          disabled.
+     */
     public ControlFlowException(boolean enableSuppression) {
         this(null, enableSuppression);
     }
 
-    public ControlFlowException(@Nullable Throwable cause, boolean enableSuppression) {
+    /**
+     * Constructs a new control flow exception.
+     *
+     * @param cause the nullable cause.
+     * @param enableSuppression whether or not suppression is enabled or
+     *                          disabled.
+     */
+    public ControlFlowException(Throwable cause, boolean enableSuppression) {
         super(null == cause ? null : cause.toString(), cause, enableSuppression, TRACEABLE);
     }
 

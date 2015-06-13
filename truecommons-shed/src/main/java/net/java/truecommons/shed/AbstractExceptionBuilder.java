@@ -4,37 +4,34 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
-
 import static java.util.Objects.requireNonNull;
 
 /**
  * Abstract implementation of an exception builder.
- * Subclasses must implement {@link #update(Throwable, Throwable)} and may
+ * Subclasses must implement {@link #update(Throwable, Option)} and may
  * override {@link #post(Throwable)}.
  *
  * @param  <I> the type of the input exceptions.
  * @param  <O> the type of the assembled (output) exceptions.
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
+@SuppressWarnings("LoopStatementThatDoesntLoop")
 public abstract class AbstractExceptionBuilder< I extends Throwable,
                                                 O extends Throwable>
 implements ExceptionBuilder<I, O> {
 
-    private @Nullable O assembly;
+    private Option<O> assembly = Option.none();
 
     /**
      * {@inheritDoc}
      *
-     * @see #update(Throwable, Throwable)
+     * @see #update(Throwable, Option)
      * @see #post(Throwable)
      */
     @Override
     public final O fail(I input) {
         final O assembly = update(input);
-        this.assembly = null;
+        this.assembly = Option.none();
         return post(assembly);
     }
 
@@ -45,10 +42,10 @@ implements ExceptionBuilder<I, O> {
      * the given exception to the assembly for subsequent rethrowing upon a
      * call to {@link #check()}.
      *
-     * @see #update(Throwable, Throwable)
+     * @see #update(Throwable, Option)
      */
     @Override
-    public final void warn(I input) { this.assembly = update(input); }
+    public final void warn(I input) { assembly = Option.some(update(input)); }
 
     /**
      * {@inheritDoc}
@@ -57,28 +54,25 @@ implements ExceptionBuilder<I, O> {
      */
     @Override
     public final void check() throws O {
-        final O assembly = this.assembly;
-        if (null != assembly) {
-            this.assembly = null;
-            throw post(assembly);
+        final Option<O> assembly = this.assembly;
+        for (final O t : assembly) {
+            this.assembly = Option.none();
+            throw post(t);
         }
     }
 
     private O update(I input) {
-        return update(requireNonNull(input), this.assembly);
+        return update(requireNonNull(input), assembly);
     }
 
     /**
-     * This function gets called to update the given {@code previous} result of
-     * the assembly with the given input exception.
+     * Updates the given result of the assembly with the given input exception.
      *
      * @param  input the input exception to handle.
-     * @param  assembly the current assembled (output) exception or {@code null}
-     *         if this is the first call to this method or the last assembly
-     *         has already been checked out.
+     * @param  assembly the optional previous result of the assembled exception.
      * @return The next assembled (output) exception, never {@code null}.
      */
-    protected abstract O update(I input, @Nullable O assembly);
+    protected abstract O update(I input, Option<O> assembly);
 
     /**
      * This function gets called to post-process the given result of the

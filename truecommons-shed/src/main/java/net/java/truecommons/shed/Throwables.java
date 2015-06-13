@@ -5,14 +5,14 @@
 package net.java.truecommons.shed;
 
 import java.lang.reflect.InvocationTargetException;
-import javax.annotation.concurrent.Immutable;
 
 /**
  * Static utility methods for {@link Throwable}s.
+ * <p>
+ * This class is trivially immutable.
  * 
  * @author Christian Schlichtherle
  */
-@Immutable
 public class Throwables {
 
     private Throwables() { }
