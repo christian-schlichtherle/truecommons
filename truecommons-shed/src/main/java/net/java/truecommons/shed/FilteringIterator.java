@@ -4,8 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -17,11 +15,12 @@ import java.util.Objects;
  * @param   <T> The type of elements returned by this iterator.
  * @author  Christian Schlichtherle
  */
-@NotThreadSafe
+@SuppressWarnings("LoopStatementThatDoesntLoop")
 public abstract class FilteringIterator<T> implements Iterator<T> {
+
     private final Iterator<T> it;
-    private @Nullable Boolean hasNext;
-    private @Nullable T next;
+    private Option<Boolean> hasNext = Option.none();
+    private Option<T> next = Option.none();
 
     /**
      * Constructs a new filtering iterator which filters the given iterable.
@@ -43,34 +42,33 @@ public abstract class FilteringIterator<T> implements Iterator<T> {
 
     /**
      * Returns {@code true} if and only if this filtering iterator accepts the
-     * given element.
+     * given nullable item.
      * 
-     * @param  element the element to test
+     * @param  item the nullable item to test.
      * @return {@code true} if and only if this filtering iterator accepts the
      *         given element.
      */
-    protected abstract boolean accept(@Nullable T element);
+    protected abstract boolean accept(T item);
 
     @Override
     public boolean hasNext() {
-        if (null != hasNext)
-            return hasNext;
+        for (final Boolean b : hasNext)
+            return b;
         while (it.hasNext())
-            if (accept(next = it.next()))
-                return hasNext = true;
-        return hasNext = false;
+            if (accept((next = Option.some(it.next())).get()))
+                return (hasNext = Option.some(true)).get();
+        return (hasNext = Option.some(false)).get();
     }
 
     @Override
-    public @Nullable T next() {
-        if (!hasNext())
-            throw new NoSuchElementException();
-        hasNext = null; // consume
-        return next;
+    public T next() {
+        if (hasNext()) {
+            hasNext = Option.none(); // consume
+            return next.get();
+        }
+        throw new NoSuchElementException();
     }
 
     @Override
-    public void remove() {
-        it.remove();
-    }
+    public void remove() { it.remove(); }
 }

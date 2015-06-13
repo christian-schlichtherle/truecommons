@@ -10,10 +10,9 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
-import static java.nio.charset.CodingErrorAction.*;
-import static java.nio.charset.StandardCharsets.*;
-import javax.annotation.Nullable;
-import javax.annotation.Nullable;
+
+import static java.nio.charset.CodingErrorAction.REPLACE;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Provides utility functions for encoding and decoding
@@ -29,16 +28,30 @@ public final class Buffers {
 
     private Buffers() { }
 
-    public static @Nullable ByteBuffer byteBuffer(@Nullable String string) {
+    /**
+     *
+     * @param string a nullable string.
+     * @return a nullable byte buffer.
+     */
+    public static ByteBuffer byteBuffer(String string) {
         return null == string ? null : byteBuffer(CharBuffer.wrap(string));
     }
 
-    public static @Nullable ByteBuffer byteBuffer(@Nullable char[] password) {
+    /**
+     *
+     * @param password a nullable array with the password characters.
+     * @return a nullable byte buffer.
+     */
+    public static ByteBuffer byteBuffer(char[] password) {
         return null == password ? null : byteBuffer(CharBuffer.wrap(password));
     }
 
-    public static @Nullable ByteBuffer byteBuffer(
-            final @Nullable CharBuffer cb) {
+    /**
+     *
+     * @param cb a nullable character buffer.
+     * @return a nullable byte buffer.
+     */
+    public static ByteBuffer byteBuffer(final CharBuffer cb) {
         if (null == cb) return null;
         try {
             return encode(cb, UTF_8.newEncoder()
@@ -71,12 +84,22 @@ public final class Buffers {
         }
     }
 
-    public static @Nullable String string(@Nullable ByteBuffer bb) {
+    /**
+     *
+     * @param bb a nullable byte buffer.
+     * @return a nullable string.
+     */
+    public static String string(ByteBuffer bb) {
         return null == bb ? null : charBuffer(bb).toString();
     }
 
-    public static @Nullable char[] charArray(
-            final @Nullable ByteBuffer bb) {
+    /**
+     *
+     * @param bb a nullable byte buffer.
+     * @return a nullable character array.
+     */
+    public static char[] charArray(
+            final ByteBuffer bb) {
         if (null == bb)
             return null;
         final CharBuffer ocb = charBuffer(bb);
@@ -86,8 +109,13 @@ public final class Buffers {
         return oca;
     }
 
-    public static @Nullable CharBuffer charBuffer(
-            final @Nullable ByteBuffer bb) {
+    /**
+     *
+     * @param bb a nullable byte buffer.
+     * @return a nullable character buffer.
+     */
+    public static CharBuffer charBuffer(
+            final ByteBuffer bb) {
         if (null == bb)
             return null;
         final CharsetDecoder dec = UTF_8.newDecoder()
@@ -126,12 +154,12 @@ public final class Buffers {
      * Overwrites the remaining bytes of the given byte buffer with the
      * given value.
      *
-     * @param bb the byte buffer to fill.
+     * @param bb the nullable byte buffer to fill.
      *        The properties of this buffer remain unchanged.
      * @param value the byte value to use for filling the buffer.
      */
     public static void fill(
-            final @Nullable ByteBuffer bb,
+            final ByteBuffer bb,
             final byte value) {
         if (null == bb)
             return;
@@ -145,12 +173,12 @@ public final class Buffers {
      * Overwrites the remaining characters of the given char buffer with the
      * given value.
      *
-     * @param cb the char buffer to fill.
+     * @param cb the nullable char buffer to fill.
      *        The properties of this buffer remain unchanged.
      * @param value the char value to use for filling the buffer.
      */
     public static void fill(
-            final @Nullable CharBuffer cb,
+            final CharBuffer cb,
             final char value) {
         if (null == cb)
             return;
@@ -163,11 +191,12 @@ public final class Buffers {
     /**
      * Copies the given byte buffer into a new direct byte buffer.
      *
-     * @param  bb the byte buffer to copy.
+     * @param  bb the nullable byte buffer to copy.
      *         The properties of this buffer remain unchanged.
-     * @return the new direct byte buffer with the copied data.
+     * @return the nullable or otherwise new direct byte buffer with the copied
+     *         data.
      */
-    public static @Nullable ByteBuffer copy(@Nullable ByteBuffer bb) {
+    public static ByteBuffer copy(ByteBuffer bb) {
         return null == bb
                 ? null
                 : (ByteBuffer) ByteBuffer

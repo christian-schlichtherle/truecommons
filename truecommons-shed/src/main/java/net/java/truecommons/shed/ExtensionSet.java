@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.regex.Pattern;
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * An ordered set of canonicalized extensions.
@@ -55,18 +54,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  *
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public final class ExtensionSet extends CanonicalStringSet {
-
-    /** A canonicalizer for file extensions. */
-    private static class ExtensionMapper implements Canonicalizer {
-        @Override public String map(final Object o) {
-            String extension = o.toString();
-            while (0 < extension.length() && extension.charAt(0) == PREFIX)
-                extension = extension.substring(1);
-            return extension.toLowerCase(Locale.ROOT);
-        }
-    } // ExtensionMapper
 
     /** The separator for extensions in lists, which is {@value}. */
     public static final char SEPARATOR = '|';
@@ -126,6 +114,16 @@ public final class ExtensionSet extends CanonicalStringSet {
                         .toString());
         } else {
             return Pattern.compile("\\00"); // NOT "\00"! Effectively never matches anything. // NOI18N
+        }
+    }
+
+    /** A canonicalizer for file extensions. */
+    private static class ExtensionMapper implements Canonicalizer {
+        @Override public String map(final Object o) {
+            String extension = o.toString();
+            while (0 < extension.length() && extension.charAt(0) == PREFIX)
+                extension = extension.substring(1);
+            return extension.toLowerCase(Locale.ROOT);
         }
     }
 }

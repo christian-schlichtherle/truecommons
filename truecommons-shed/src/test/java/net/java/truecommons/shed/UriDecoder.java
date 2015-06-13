@@ -4,8 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -15,6 +13,7 @@ import java.nio.charset.CoderResult;
 
 import static java.nio.charset.CoderResult.OVERFLOW;
 import static java.nio.charset.CoderResult.UNDERFLOW;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Unescapes characters in URI components according to
@@ -30,22 +29,18 @@ import static java.nio.charset.CoderResult.UNDERFLOW;
  * @see UriEncoder
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
+@SuppressWarnings("LoopStatementThatDoesntLoop")
 final class UriDecoder {
-
-    private static final Charset UTF8 = Charset.forName("UTF-8");
 
     private final CharsetDecoder decoder;
 
-    private @Nullable StringBuilder stringBuilder;
+    private Option<StringBuilder> stringBuilder = Option.none();
 
     /**
      * Constructs a new URI decoder which uses the UTF-8 character set to
      * decode non-US-ASCII characters.
      */
-    UriDecoder() {
-        this(null);
-    }
+    UriDecoder() { this(Option.<Charset>none()); }
 
     /**
      * Constructs a new URI decoder which uses the given character set to
@@ -58,9 +53,10 @@ final class UriDecoder {
      *        Note that providing any other value than {@code null} or
      *        {@code UTF-8} will void interoperability with most applications.
      */
-    UriDecoder(@Nullable Charset charset) {
-        if (null == charset) charset = UTF8;
-        this.decoder = charset.newDecoder();
+    UriDecoder(Option<Charset> charset) {
+        if (charset.isEmpty())
+            charset = Option.some(UTF_8);
+        this.decoder = charset.get().newDecoder();
     }
 
     /**
@@ -69,19 +65,20 @@ final class UriDecoder {
      * gets substituted with the corresponding single byte and the resulting
      * string gets decoded using the character set provided to the constructor.
      * 
-     * @param  eS the encoded string to decode.
+     * @param  es the encoded string to decode.
      * @return The decoded string.
      * @throws IllegalArgumentException on any decoding error with a
      *         {@link URISyntaxException} as its
      *         {@link IllegalArgumentException#getCause() cause}.
      */
-    public String decode(String eS) {
+    String decode(String es) {
         try {
-            StringBuilder dS = decode(eS, null);
-            return null != dS ? dS.toString() : eS;
+            for (StringBuilder dsb : decode(es, Option.<StringBuilder>none()))
+                return dsb.toString();
         } catch (URISyntaxException ex) {
             throw new IllegalArgumentException(ex);
         }
+        return es;
     }
 
     /**
@@ -91,83 +88,78 @@ final class UriDecoder {
      * string gets decoded to the string builder {@code dS} using the character
      * set provided to the constructor.
      * 
-     * @param  eS the encoded string to decode.
-     * @param  dS the string builder to which all decoded characters shall get
-     *         appended.
-     * @return If {@code eS} contains no escape sequences, then {@code null}
+     * @param  es the encoded string to decode.
+     * @param  dsb the optional string builder to which all decoded characters
+     *             shall get appended.
+     * @return If {@code es} contains no escape sequences, then {@code null}
      *         gets returned.
-     *         Otherwise, if {@code dS} is not {@code null}, then it gets
+     *         Otherwise, if {@code dsb} is not {@code null}, then it gets
      *         returned with all decoded characters appended to it.
      *         Otherwise, a temporary string builder gets returned which solely
      *         contains all decoded characters.
      *         This temporary string builder may get cleared and reused upon
      *         the next call to <em>any</em> method of this object.
      * @throws URISyntaxException on any decoding error.
-     *         This exception will leave {@code eS} in an undefined state.
+     *         This exception will leave {@code dsb} in an undefined state.
      */
-    public @Nullable StringBuilder decode(
-            final String eS,
-            @Nullable StringBuilder dS)
+    Option<StringBuilder> decode(
+            final String es,
+            Option<StringBuilder> dsb)
     throws URISyntaxException {
-        final CharBuffer eC = CharBuffer.wrap(eS);  // encoded characters
-        ByteBuffer eB = null;                       // encoded bytes
-        CharBuffer dC = null;                       // decoded characters
-        CharsetDecoder dec = null;
+        final CharBuffer ecb = CharBuffer.wrap(es);  // encoded character buffer
+        Option<ByteBuffer> ebb = Option.none();      // encoded byte buffer
+        Option<CharBuffer> dcb = Option.none();      // decoded character buffer
         while (true) {
-            eC.mark();
-            final int ec = eC.hasRemaining() ? eC.get() : -1; // char is unsigned!
+            ecb.mark();
+            final int ec = ecb.hasRemaining() ? ecb.get() : -1; // encoded char is unsigned!
             if ('%' == ec) {
-                if (null == eB) {
-                    if (null == dS) {
-                        if (null == (dS = stringBuilder))
-                            dS = stringBuilder = new StringBuilder();
+                if (ebb.isEmpty()) {
+                    if (dsb.isEmpty()) {
+                        if ((dsb = stringBuilder).isEmpty())
+                            dsb = stringBuilder = Option.some(new StringBuilder());
                         else
-                            dS.setLength(0);
-                        dS.append(eS, 0, eC.position() - 1); // prefix until current character
+                            dsb.get().setLength(0);
+                        dsb.get().append(es, 0, ecb.position() - 1); // prefix until current character
                     }
-                    int l = eC.remaining();
+                    int l = ecb.remaining();
                     l = (l + 1) / 3;
-                    eB = ByteBuffer.allocate(l);
-                    dC = CharBuffer.allocate(l);
-                    dec = decoder;
+                    ebb = Option.some(ByteBuffer.allocate(l));
+                    dcb = Option.some(CharBuffer.allocate(l));
                 }
-                final int eb = dequote(eC);         // encoded byte
+                final int eb = dequote(ecb);         // encoded byte
                 if (eb < 0)
-                    throw new URISyntaxException(
-                            eS,
-                            "illegal escape sequence",
-                            eC.reset().position());
-                eB.put((byte) eb);
+                    throw new URISyntaxException(es, "illegal escape sequence", ecb.reset().position());
+                ebb.get().put((byte) eb);
             } else {
-                if (null != eB && 0 < eB.position()) {
-                    eB.flip();
-                    { // Decode eB -> dC.
+                if (!ebb.isEmpty() && 0 < ebb.get().position()) {
+                    ebb.get().flip();
+                    { // Decode ebb -> dcb.
                         CoderResult cr;
-                        if (UNDERFLOW != (cr = dec.reset().decode(eB, dC, true))
-                                || UNDERFLOW != (cr = dec.flush(dC))) {
+                        if (UNDERFLOW != (cr = decoder.reset().decode(ebb.get(), dcb.get(), true))
+                                || UNDERFLOW != (cr = decoder.flush(dcb.get()))) {
                             assert OVERFLOW != cr;
-                            throw new QuotedUriSyntaxException(eS, cr.toString());
+                            throw new QuotedUriSyntaxException(es, cr.toString());
                         }
                     }
-                    eB.clear();
-                    dC.flip();
-                    dS.append(dC);
-                    dC.clear();
+                    ebb.get().clear();
+                    dcb.get().flip();
+                    dsb.get().append(dcb.get());
+                    dcb.get().clear();
                 }
                 if (0 > ec)
                     break;
-                if (null != dS)
-                    dS.append((char) ec);
+                if (!dsb.isEmpty())
+                    dsb.get().append((char) ec);
             }
         }
-        return null == eB ? null : dS;
+        return ebb.isEmpty() ? Option.<StringBuilder>none() : dsb;
     }
 
-    private static int dequote(final CharBuffer eC) {
-        if (eC.hasRemaining()) {
-            final char ec0 = eC.get();
-            if (eC.hasRemaining()) {
-                final char ec1 = eC.get();
+    private static int dequote(final CharBuffer ecb) {
+        if (ecb.hasRemaining()) {
+            final char ec0 = ecb.get();
+            if (ecb.hasRemaining()) {
+                final char ec1 = ecb.get();
                 return (dequote(ec0) << 4) | dequote(ec1);
             }
         }
@@ -175,11 +167,11 @@ final class UriDecoder {
     }
 
     private static int dequote(char ec) {
-	if ('0' <= ec && ec <= '9')
-	    return ec - '0';
+        if ('0' <= ec && ec <= '9')
+            return ec - '0';
         ec &= ~(2 << 4); // toUpperCase for 'a' to 'z'
-	if ('A' <= ec && ec <= 'F')
-	    return ec - 'A' + 10;
-	return -1;
+        if ('A' <= ec && ec <= 'F')
+            return ec - 'A' + 10;
+        return -1;
     }
 }

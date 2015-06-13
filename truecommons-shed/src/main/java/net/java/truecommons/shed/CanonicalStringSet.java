@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -260,39 +259,41 @@ public class CanonicalStringSet extends AbstractSet<String> {
         String map(Object o);
     } // Canonicalizer
 
-    private class CanonicalStringIterator implements Iterator<String> {
+    @SuppressWarnings("LoopStatementThatDoesntLoop")
+    private final class CanonicalStringIterator implements Iterator<String> {
+
         private final StringTokenizer tokenizer;
-        private @Nullable String canonical;
+        private Option<String> canonical = Option.none();
 
         private CanonicalStringIterator(final String list) {
             tokenizer = new StringTokenizer(list, "" + separator); // NOI18N
             advance();
         }
 
-        private void advance() {
+        void advance() {
             while (tokenizer.hasMoreTokens())
-                if (null != (canonical = canonicalizer.map(tokenizer.nextToken())))
+                if (!(canonical = Option.apply(canonicalizer.map(tokenizer.nextToken()))).isEmpty())
                     return;
-            canonical = null; // no such element
+            canonical = Option.none();
         }
 
         @Override
         public boolean hasNext() {
-            return null != canonical;
+            return !canonical.isEmpty();
         }
 
         @Override
         public String next() {
-            final String canonical = this.canonical;
-            if (null == canonical)
-                throw new NoSuchElementException();
-            advance();
-            return canonical;
+            for (final String s : canonical) {
+                advance();
+                return s;
+            }
+            throw new NoSuchElementException();
         }
 
         @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
-    } // CanonicalStringIterator
+    }
 }

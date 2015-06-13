@@ -5,14 +5,12 @@
 package net.java.truecommons.shed;
 
 import java.net.URISyntaxException;
-import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Quotes the input string before passing it to the super class constructor.
  * 
  * @author Christian Schlichtherle
  */
-@ThreadSafe
 public class QuotedUriSyntaxException extends URISyntaxException {
     private static final long serialVersionUID = 2452323414521345231L;
 

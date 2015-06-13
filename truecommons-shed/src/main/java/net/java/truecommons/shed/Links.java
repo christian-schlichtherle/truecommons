@@ -4,16 +4,14 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
-
 /**
  * Static utility methods for links.
+ * <p>
+ * This class is trivially immutable.
  *
  * @author Christian Schlichtherle
  */
-@Immutable
-public final class Links {
+public class Links {
 
     private Links() { }
 
@@ -28,7 +26,7 @@ public final class Links {
      * @return The nullable {@linkplain Link#get() target} of the given
      *         link.
      */
-    public static @Nullable <T> T target(@Nullable Link<T> link) {
+    public static <T> T target(Link<T> link) {
         return null == link ? null : link.get();
     }
 }

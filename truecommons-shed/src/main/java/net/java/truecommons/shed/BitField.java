@@ -4,8 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,12 +15,13 @@ import java.util.Iterator;
  * field, i.e. a set of predefined bits.
  * As an immutable class, it's inherently thread-safe.
  * All modifying methods return a modified clone of this instance.
+ * <p>
+ * This class is immutable.
  *
  * @param  <E> The type of {@link Enum} objects contained in this set.
  * @author Christian Schlichtherle
  */
 // TODO: Add more modifying methods.
-@Immutable
 public final class BitField<E extends Enum<E>>
 implements Iterable<E>, Serializable {
 
@@ -243,7 +242,7 @@ implements Iterable<E>, Serializable {
      * {@code BitField} and contains the same bits.
      */
     @Override
-    public boolean equals(@Nullable Object that) {
+    public boolean equals(Object that) {
         return this == that
                 || that instanceof BitField<?>
                     && this.bits.equals(((BitField<?>) that).bits);

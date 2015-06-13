@@ -4,11 +4,13 @@
  */
 package net.java.truecommons.shed;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Christian Schlichtherle
@@ -24,30 +26,19 @@ public class UriBuilderTest {
 
     @Test
     public void testDefaults() {
-        assertNull(builder.getScheme());
-        assertNull(builder.getAuthority());
-        assertNull(builder.getPath());
-        assertNull(builder.getQuery());
-        assertNull(builder.getFragment());
         assertEquals("", builder.toString());
         assertEquals(URI.create(""), builder.toUri());
     }
 
     @Test
-    public void testClear1() {
-        builder .uri(URI.create("scheme://authority/path?query#fragment"))
-                .clear();
-        testDefaults();
-    }
-
-    @Test
-    public void testClear2() {
-        builder .uri(URI.create("scheme://authority/path?query#fragment"))
-                .scheme(null)
-                .authority(null)
-                .path(null)
-                .query(null)
-                .fragment(null);
+    public void testClear() {
+        assertSame(builder,
+                builder.uri(URI.create("scheme://authority/path?query#fragment"))
+                        .scheme(null)
+                        .authority(null)
+                        .path(null)
+                        .query(null)
+                        .fragment(null));
         testDefaults();
     }
 
@@ -79,17 +70,13 @@ public class UriBuilderTest {
             final URI u = URI.create(test[0]);
 
             // Test parsing.
-            builder.setUri(u);
-            assertEquals(test[1], builder.getScheme());
-            assertEquals(test[2], builder.getAuthority());
-            assertEquals(test[3], builder.getPath());
-            assertEquals(test[4], builder.getQuery());
-            assertEquals(test[5], builder.getFragment());
+            builder = new UriBuilder();
+            builder.uri(u);
             assertEquals(test[0], builder.toString());
 
             // Test composition.
-            builder .clear()
-                    .scheme(test[1])
+            builder = new UriBuilder();
+            builder .scheme(test[1])
                     .authority(test[2])
                     .path(test[3])
                     .query(test[4])
@@ -142,14 +129,14 @@ public class UriBuilderTest {
             { "scheme", null, "path", "query", "fragment" },
         }) {
             // Set to illegal state and assert failure.
-            builder .clear()
-                    .scheme(test[0])
+            builder = new UriBuilder();
+            builder .scheme(test[0])
                     .authority(test[1])
                     .path(test[2])
                     .query(test[3])
                     .fragment(test[4]);
             try {
-                builder.getString();
+                builder.buildString();
                 fail();
             } catch (URISyntaxException expected) {
             }
@@ -159,7 +146,7 @@ public class UriBuilderTest {
             } catch (IllegalStateException expected) {
             }
             try {
-                builder.getUri();
+                builder.buildUri();
                 fail();
             } catch (URISyntaxException expected) {
             }

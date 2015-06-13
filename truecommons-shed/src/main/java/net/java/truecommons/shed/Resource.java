@@ -4,8 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import edu.umd.cs.findbugs.annotations.CleanupObligation;
-import edu.umd.cs.findbugs.annotations.DischargesObligation;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -17,7 +15,6 @@ import java.io.IOException;
  *         the {@link Closeable} interface, too.
  * @author Christian Schlichtherle
  */
-@CleanupObligation
 public abstract class Resource<X extends Exception> implements AutoCloseable {
 
     private boolean closed;
@@ -40,7 +37,6 @@ public abstract class Resource<X extends Exception> implements AutoCloseable {
      *         {@link #onAfterClose()}.
      */
     @Override
-    @DischargesObligation
     public void close() throws X {
         if (closed) return;
         onBeforeClose();

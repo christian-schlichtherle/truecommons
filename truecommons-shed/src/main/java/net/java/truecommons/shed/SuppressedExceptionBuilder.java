@@ -5,7 +5,6 @@
 package net.java.truecommons.shed;
 
 import java.util.Comparator;
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * Assembles an {@link Exception} from one or more input exceptions by
@@ -15,7 +14,6 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @param  <X> the type of the input and assembled (output) exceptions.
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public class SuppressedExceptionBuilder<X extends Throwable>
 extends PriorityExceptionBuilder<X> {
 
@@ -30,11 +28,13 @@ extends PriorityExceptionBuilder<X> {
     }
 
     private static final class Null implements Comparator<Throwable> {
+
         static final Null INSTANCE = new Null();
 
+        @SuppressWarnings("ComparatorMethodParameterNotUsed")
         @Override
         public int compare(Throwable o1, Throwable o2) {
             return 0;
         }
-    } // Null
+    }
 }

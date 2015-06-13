@@ -24,8 +24,7 @@ public class ConcurrencyUtils {
      * The number of threads for doing I/O intensive tasks considering 90%
      * blocking factor.
      */
-    public static final int NUM_IO_THREADS =
-            10 * NUM_CPU_THREADS;
+    public static final int NUM_IO_THREADS = 10 * NUM_CPU_THREADS;
 
     private ConcurrencyUtils() { }
 
@@ -38,6 +37,7 @@ public class ConcurrencyUtils {
         try {
             for (int threadNum = 0; threadNum < numThreads; threadNum++) {
                 final Callable<?> task = factory.newTask(threadNum);
+
                 final class Starter implements Callable<Void> {
                     @Override
                     public Void call() throws Exception {
@@ -46,12 +46,15 @@ public class ConcurrencyUtils {
                         return null;
                     }
                 }
+
                 results.add(executor.submit(new Starter()));
             }
         } finally {
             executor.shutdown();
         }
+
         final class TaskJoinerImpl implements TaskJoiner {
+
             @Override
             public void cancel() {
                 //executor.shutdownNow(); // TODO: Explain why this doesn't work sometimes!
@@ -68,12 +71,13 @@ public class ConcurrencyUtils {
                         result.get(); // check exception from task
                     } catch (ExecutionException ex) {
                         builder.warn(ex);
-                    } catch (CancellationException cancelled) {
+                    } catch (CancellationException ignored) {
                     }
                 }
                 builder.check();
             }
-        } // TaskJoinerImpl
+        }
+
         return new TaskJoinerImpl();
     }
 
@@ -84,7 +88,9 @@ public class ConcurrencyUtils {
 
     @SuppressWarnings("PublicInnerClass")
     public interface TaskJoiner {
+
         public void cancel();
+
         public void join() throws InterruptedException, ExecutionException;
     }
 }

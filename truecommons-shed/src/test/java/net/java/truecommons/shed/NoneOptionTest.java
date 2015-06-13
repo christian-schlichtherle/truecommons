@@ -4,10 +4,8 @@
  */
 package net.java.truecommons.shed;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -20,7 +18,7 @@ import static org.junit.Assert.*;
 public final class NoneOptionTest extends OptionTestSuite {
 
     @Override
-    @Nullable String string() { return null; }
+    String string() { return null; }
 
     @Override
     void assertOptionEquals(Option<String> expected, Option<String> actual) {

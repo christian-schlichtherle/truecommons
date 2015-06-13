@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -16,7 +15,6 @@ import static java.util.Objects.requireNonNull;
  * @param  <E> the type of the iterated elements.
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public final class CompoundIterator<E> implements Iterator<E> {
     private Iterator<? extends E> first, second;
 

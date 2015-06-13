@@ -4,22 +4,18 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
-
 /**
  * Splits a given path name into its parent path name and member name,
  * whereby platform specific file system roots get recognized.
  *
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public class PathSplitter {
     
     private final char separatorChar;
     private final int fixum;
-    private @Nullable String parentPath;
-    private String memberName;
+    private Option<String> parentPath = Option.none();
+    private Option<String> memberName = Option.none();
 
     /**
      * Constructs a new splitter.
@@ -47,8 +43,8 @@ public class PathSplitter {
         final int prefixLen = Paths.prefixLength(path, separatorChar, false);
         int memberEnd = path.length() - 1;
         if (prefixLen > memberEnd) {
-            parentPath = null;
-            memberName = "";
+            parentPath = Option.none();
+            memberName = Option.some("");
             return this;
         }
         memberEnd = lastIndexNot(path, separatorChar, memberEnd);
@@ -56,17 +52,17 @@ public class PathSplitter {
         memberEnd++;
         final int parentEnd;
         if (prefixLen >= memberEnd) {
-            parentPath = null;
-            memberName = "";
+            parentPath = Option.none();
+            memberName = Option.some("");
         } else if (prefixLen >= memberInd) {
-            parentPath = 0 >= prefixLen ? null : path.substring(0, prefixLen);
-            memberName = path.substring(prefixLen, memberEnd);
+            parentPath = 0 >= prefixLen ? Option.<String>none() : Option.some(path.substring(0, prefixLen));
+            memberName = Option.some(path.substring(prefixLen, memberEnd));
         } else if (prefixLen >= (parentEnd = lastIndexNot(path, separatorChar, memberInd - 1) + 1)) {
-            parentPath = path.substring(0, prefixLen);
-            memberName = path.substring(memberInd, memberEnd);
+            parentPath = Option.some(path.substring(0, prefixLen));
+            memberName = Option.some(path.substring(memberInd, memberEnd));
         } else {
-            parentPath = path.substring(0, parentEnd + fixum);
-            memberName = path.substring(memberInd, memberEnd);
+            parentPath = Option.some(path.substring(0, parentEnd + fixum));
+            memberName = Option.some(path.substring(memberInd, memberEnd));
         }
         return this;
     }
@@ -82,8 +78,7 @@ public class PathSplitter {
      * 
      * @return The parent path name.
      */
-    @Nullable
-    public String getParentPath() {
+    public Option<String> getParentPath() {
         return parentPath;
     }
 
@@ -93,6 +88,6 @@ public class PathSplitter {
      * @return The member name.
      */
     public String getMemberName() {
-        return memberName;
+        return memberName.get();
     }
 }

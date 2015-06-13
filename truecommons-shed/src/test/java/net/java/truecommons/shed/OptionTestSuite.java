@@ -4,22 +4,20 @@
  */
 package net.java.truecommons.shed;
 
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Matcher;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 /**
  * @author Christian Schlichtherle
@@ -31,7 +29,8 @@ public abstract class OptionTestSuite {
 
     private Option<String> optionalString;
 
-    abstract @Nullable String string();
+    /** Returns the nullable string. */
+    abstract String string();
 
     final Option<String> optionalString() {
         return null != optionalString

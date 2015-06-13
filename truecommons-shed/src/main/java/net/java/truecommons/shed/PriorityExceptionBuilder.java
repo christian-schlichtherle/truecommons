@@ -4,8 +4,6 @@
  */
 package net.java.truecommons.shed;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.*;
 
 /**
@@ -18,7 +16,7 @@ import java.util.*;
  * @param  <X> the type of the input and assembled (output) exceptions.
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
+@SuppressWarnings("LoopStatementThatDoesntLoop")
 public class PriorityExceptionBuilder<X extends Throwable>
 extends AbstractExceptionBuilder<X, X> {
 
@@ -46,11 +44,11 @@ extends AbstractExceptionBuilder<X, X> {
     }
 
     @Override
-    protected final X update(final X input, final @Nullable X assembly) {
+    protected final X update(final X input, final Option<X> assembly) {
         exceptions.add(input);
-        return null == assembly
-                ? input
-                : comparator.compare(input, assembly) > 0 ? input : assembly;
+        for (final X t : assembly)
+            return comparator.compare(input, t) > 0 ? input : t;
+        return input;
     }
 
     @Override
@@ -59,7 +57,8 @@ extends AbstractExceptionBuilder<X, X> {
                 i.hasNext();
                 i.remove()) {
             final X exception = i.next();
-            if (selection != exception) selection.addSuppressed(exception);
+            if (selection != exception)
+                selection.addSuppressed(exception);
         }
         assert exceptions.isEmpty();
         return selection;
