@@ -32,9 +32,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @SuppressWarnings("LoopStatementThatDoesntLoop")
 final class UriDecoder {
 
+    private final StringBuilder stringBuilder = new StringBuilder();
     private final CharsetDecoder decoder;
-
-    private Option<StringBuilder> stringBuilder = Option.none();
 
     /**
      * Constructs a new URI decoder which uses the UTF-8 character set to
@@ -72,8 +71,9 @@ final class UriDecoder {
      *         {@link IllegalArgumentException#getCause() cause}.
      */
     String decode(String es) {
+        stringBuilder.setLength(0);
         try {
-            for (StringBuilder dsb : decode(es, Option.<StringBuilder>none()))
+            for (StringBuilder dsb : decode(es, stringBuilder))
                 return dsb.toString();
         } catch (URISyntaxException ex) {
             throw new IllegalArgumentException(ex);
@@ -89,8 +89,8 @@ final class UriDecoder {
      * set provided to the constructor.
      * 
      * @param  es the encoded string to decode.
-     * @param  dsb the optional string builder to which all decoded characters
-     *             shall get appended.
+     * @param  dsb the string builder to which all decoded characters shall get
+     *             appended.
      * @return If {@code es} contains no escape sequences, then {@code null}
      *         gets returned.
      *         Otherwise, if {@code dsb} is not {@code null}, then it gets
@@ -104,55 +104,53 @@ final class UriDecoder {
      */
     Option<StringBuilder> decode(
             final String es,
-            Option<StringBuilder> dsb)
+            final StringBuilder dsb)                // decoded string builder
     throws URISyntaxException {
-        final CharBuffer ecb = CharBuffer.wrap(es);  // encoded character buffer
-        Option<ByteBuffer> ebb = Option.none();      // encoded byte buffer
-        Option<CharBuffer> dcb = Option.none();      // decoded character buffer
+        Option<StringBuilder> odsb = Option.none(); // optional decoded string builder
+        final CharBuffer ecb = CharBuffer.wrap(es); // encoded character buffer
+        Option<ByteBuffer> oebb = Option.none();    // optional encoded byte buffer
+        Option<CharBuffer> odcb = Option.none();    // optional decoded character buffer
         while (true) {
             ecb.mark();
             final int ec = ecb.hasRemaining() ? ecb.get() : -1; // encoded char is unsigned!
             if ('%' == ec) {
-                if (ebb.isEmpty()) {
-                    if (dsb.isEmpty()) {
-                        if ((dsb = stringBuilder).isEmpty())
-                            dsb = stringBuilder = Option.some(new StringBuilder());
-                        else
-                            dsb.get().setLength(0);
-                        dsb.get().append(es, 0, ecb.position() - 1); // prefix until current character
+                if (oebb.isEmpty()) {
+                    if (odsb.isEmpty()) {
+                        odsb = Option.some(dsb);
+                        dsb.append(es, 0, ecb.position() - 1); // prefix until current character
                     }
                     int l = ecb.remaining();
                     l = (l + 1) / 3;
-                    ebb = Option.some(ByteBuffer.allocate(l));
-                    dcb = Option.some(CharBuffer.allocate(l));
+                    oebb = Option.some(ByteBuffer.allocate(l));
+                    odcb = Option.some(CharBuffer.allocate(l));
                 }
-                final int eb = dequote(ecb);         // encoded byte
+                final int eb = dequote(ecb); // encoded byte
                 if (eb < 0)
                     throw new URISyntaxException(es, "illegal escape sequence", ecb.reset().position());
-                ebb.get().put((byte) eb);
+                oebb.get().put((byte) eb);
             } else {
-                if (!ebb.isEmpty() && 0 < ebb.get().position()) {
-                    ebb.get().flip();
+                if (!oebb.isEmpty() && 0 < oebb.get().position()) {
+                    oebb.get().flip();
                     { // Decode ebb -> dcb.
                         CoderResult cr;
-                        if (UNDERFLOW != (cr = decoder.reset().decode(ebb.get(), dcb.get(), true))
-                                || UNDERFLOW != (cr = decoder.flush(dcb.get()))) {
+                        if (UNDERFLOW != (cr = decoder.reset().decode(oebb.get(), odcb.get(), true))
+                                || UNDERFLOW != (cr = decoder.flush(odcb.get()))) {
                             assert OVERFLOW != cr;
                             throw new QuotedUriSyntaxException(es, cr.toString());
                         }
                     }
-                    ebb.get().clear();
-                    dcb.get().flip();
-                    dsb.get().append(dcb.get());
-                    dcb.get().clear();
+                    oebb.get().clear();
+                    odcb.get().flip();
+                    odsb.get().append(odcb.get());
+                    odcb.get().clear();
                 }
                 if (0 > ec)
                     break;
-                if (!dsb.isEmpty())
-                    dsb.get().append((char) ec);
+                if (!odsb.isEmpty())
+                    odsb.get().append((char) ec);
             }
         }
-        return ebb.isEmpty() ? Option.<StringBuilder>none() : dsb;
+        return oebb.isEmpty() ? Option.<StringBuilder>none() : odsb;
     }
 
     private static int dequote(final CharBuffer ecb) {
