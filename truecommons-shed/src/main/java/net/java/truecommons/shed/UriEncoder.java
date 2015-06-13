@@ -53,9 +53,7 @@ final class UriEncoder {
      * escape non-US-ASCII characters.
      * Equivalent to {@link #UriEncoder(Option, boolean) UriEncoder(UTF8, false)}.
      */
-    UriEncoder() {
-        this(Option.some(UTF_8), false);
-    }
+    UriEncoder() { this(Option.some(UTF_8), false); }
 
     /**
      * Constructs a new URI codec which uses the UTF-8 character set to encode
@@ -65,9 +63,7 @@ final class UriEncoder {
      * @param raw If {@code true}, then the {@code '%'} character doesn't get
      *        quoted.
      */
-    UriEncoder(boolean raw) {
-        this(Option.some(UTF_8), raw);
-    }
+    UriEncoder(boolean raw) { this(Option.some(UTF_8), raw); }
 
     /**
      * Constructs a new URI codec which uses the given character set to encode
@@ -84,9 +80,7 @@ final class UriEncoder {
      *        Note that providing any other value than {@code null} or
      *        {@code UTF-8} will void interoperability with most applications.
      */
-    UriEncoder(Option<Charset> charset) {
-        this(charset, false);
-    }
+    UriEncoder(Option<Charset> charset) { this(charset, false); }
 
     /**
      * Constructs a new URI codec which uses the given character set to escape
@@ -112,9 +106,7 @@ final class UriEncoder {
         this.raw = raw;
     }
 
-    boolean isRaw() {
-        return raw;
-    }
+    boolean isRaw() {return raw; }
 
     /**
      * Encodes all characters in the string {@code dS} which are illegal within
