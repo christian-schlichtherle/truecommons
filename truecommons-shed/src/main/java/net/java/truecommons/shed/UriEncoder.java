@@ -136,8 +136,8 @@ final class UriEncoder {
     String encode(Encoding component, String ds) {
         stringBuilder.setLength(0);
         try {
-            for (StringBuilder esb : encode(component, ds, stringBuilder))
-                return esb.toString();
+            if (encode(component, ds, stringBuilder))
+                return stringBuilder.toString();
         } catch (URISyntaxException ex) {
             throw new IllegalArgumentException(ex);
         }
@@ -156,26 +156,16 @@ final class UriEncoder {
      * @param  ds the decoded string to encode.
      * @param  esb the encoded string builder to which all encoded characters
      *             shall get appended.
-     * @return If {@code ds} contains only legal characters for the URI
-     *         component {@code comp}, then {@code null} gets returned.
-     *         Otherwise, if {@code esb} is not {@code null}, then it gets
-     *         returned with all encoded characters appended to it.
-     *         Otherwise, a temporary string builder gets returned which solely
-     *         contains all encoded characters.
-     *         This temporary string builder may get cleared and reused upon
-     *         the next call to <em>any</em> method of this object.
+     * @return Whether or not any characters in {@code ds} had to be encoded.
      * @throws URISyntaxException on any encoding error.
      *         This exception should never occur if the character set of this
      *         codec is UTF-8.
      *         If it occurs however, {@code esb} is left in an undefined state.
      */
-    Option<StringBuilder> encode(
-            final Encoding component,
-            final String ds,
-            final StringBuilder esb)                // encoded string builder
+    boolean encode(final Encoding component, final String ds, final StringBuilder esb)
     throws URISyntaxException {
-        final Option[] oess = component.escapes;    // optional escape sequences
         final CharBuffer dcb = CharBuffer.wrap(ds); // decoded character buffer
+        final Option[] oess = component.escapes;    // optional escape sequences
         Option<ByteBuffer> oebb = Option.none();    // optional encoded byte buffer
         while (dcb.hasRemaining()) {
             dcb.mark();
@@ -213,7 +203,7 @@ final class UriEncoder {
                 esb.append(dc);
             }
         }
-        return oebb.isEmpty() ? Option.<StringBuilder>none() : Option.some(esb);
+        return !oebb.isEmpty();
     }
 
     private static void quote(char dc, StringBuilder eS) {

@@ -73,8 +73,8 @@ final class UriDecoder {
     String decode(String es) {
         stringBuilder.setLength(0);
         try {
-            for (StringBuilder dsb : decode(es, stringBuilder))
-                return dsb.toString();
+            if (decode(es, stringBuilder))
+                return stringBuilder.toString();
         } catch (URISyntaxException ex) {
             throw new IllegalArgumentException(ex);
         }
@@ -88,41 +88,26 @@ final class UriDecoder {
      * string gets decoded to the string builder {@code dS} using the character
      * set provided to the constructor.
      * 
-     * @param  es the encoded string to decode.
-     * @param  dsb the string builder to which all decoded characters shall get
-     *             appended.
-     * @return If {@code es} contains no escape sequences, then {@code null}
-     *         gets returned.
-     *         Otherwise, if {@code dsb} is not {@code null}, then it gets
-     *         returned with all decoded characters appended to it.
-     *         Otherwise, a temporary string builder gets returned which solely
-     *         contains all decoded characters.
-     *         This temporary string builder may get cleared and reused upon
-     *         the next call to <em>any</em> method of this object.
+     * @param es the encoded string to decode.
+     * @param dsb the string builder to which all decoded characters shall get
+     *            appended.
+     * @return Whether or not any characters in {@code es} had to be decoded.
      * @throws URISyntaxException on any decoding error.
      *         This exception will leave {@code dsb} in an undefined state.
      */
-    Option<StringBuilder> decode(
-            final String es,
-            final StringBuilder dsb)                // decoded string builder
+    boolean decode(final String es, final StringBuilder dsb)
     throws URISyntaxException {
-        Option<StringBuilder> odsb = Option.none(); // optional decoded string builder
         final CharBuffer ecb = CharBuffer.wrap(es); // encoded character buffer
         Option<ByteBuffer> oebb = Option.none();    // optional encoded byte buffer
         Option<CharBuffer> odcb = Option.none();    // optional decoded character buffer
         while (true) {
             ecb.mark();
-            final int ec = ecb.hasRemaining() ? ecb.get() : -1; // encoded char is unsigned!
+            final int ec = ecb.hasRemaining() ? (ecb.get() & 0xFFFF) : -1; // encoded character (unsigned!)
             if ('%' == ec) {
                 if (oebb.isEmpty()) {
-                    if (odsb.isEmpty()) {
-                        odsb = Option.some(dsb);
-                        dsb.append(es, 0, ecb.position() - 1); // prefix until current character
-                    }
-                    int l = ecb.remaining();
-                    l = (l + 1) / 3;
-                    oebb = Option.some(ByteBuffer.allocate(l));
-                    odcb = Option.some(CharBuffer.allocate(l));
+                    final int capacity = (ecb.remaining() + 1) / 3;
+                    oebb = Option.some(ByteBuffer.allocate(capacity));
+                    odcb = Option.some(CharBuffer.allocate(capacity));
                 }
                 final int eb = dequote(ecb); // encoded byte
                 if (eb < 0)
@@ -141,16 +126,15 @@ final class UriDecoder {
                     }
                     oebb.get().clear();
                     odcb.get().flip();
-                    odsb.get().append(odcb.get());
+                    dsb.append(odcb.get());
                     odcb.get().clear();
                 }
                 if (0 > ec)
                     break;
-                if (!odsb.isEmpty())
-                    odsb.get().append((char) ec);
+                dsb.append((char) ec);
             }
         }
-        return oebb.isEmpty() ? Option.<StringBuilder>none() : odsb;
+        return !oebb.isEmpty();
     }
 
     private static int dequote(final CharBuffer ecb) {
