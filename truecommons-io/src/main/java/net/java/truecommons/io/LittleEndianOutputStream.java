@@ -7,8 +7,6 @@ package net.java.truecommons.io;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import javax.annotation.WillCloseWhenClosed;
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * An output stream to write data in Little Endian (LE) format.
@@ -21,7 +19,6 @@ import javax.annotation.concurrent.NotThreadSafe;
  *
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public class LittleEndianOutputStream extends DecoratingOutputStream {
 
     /**
@@ -36,11 +33,7 @@ public class LittleEndianOutputStream extends DecoratingOutputStream {
     /** This buffer is used for writing data. */
     private final byte[] buf = new byte[8];
 
-    protected LittleEndianOutputStream() { }
-
-    public LittleEndianOutputStream(@WillCloseWhenClosed OutputStream out) {
-        super(out);
-    }
+    public LittleEndianOutputStream(OutputStream out) { super(out); }
 
     /**
      * Increases the written counter by the specified value
@@ -64,7 +57,7 @@ public class LittleEndianOutputStream extends DecoratingOutputStream {
      */
     @Override
     public void write(int b) throws IOException {
-	out.write(b);
+	    out.write(b);
         inc(1);
     }
 
@@ -81,8 +74,8 @@ public class LittleEndianOutputStream extends DecoratingOutputStream {
      */
     @Override
     public void write(byte b[], int off, int len) throws IOException {
-	out.write(b, off, len);
-	inc(len);
+        out.write(b, off, len);
+        inc(len);
     }
 
     /**
@@ -97,8 +90,8 @@ public class LittleEndianOutputStream extends DecoratingOutputStream {
      * @throws IOException on any I/O error.
      */
     public final void writeBoolean(boolean b) throws IOException {
-	out.write(b ? 1 : 0);
-	inc(1);
+        out.write(b ? 1 : 0);
+        inc(1);
     }
 
     /**
@@ -111,7 +104,7 @@ public class LittleEndianOutputStream extends DecoratingOutputStream {
      * @throws IOException on any I/O error.
      */
     public final void writeByte(int b) throws IOException {
-	out.write(b);
+    	out.write(b);
         inc(1);
     }
 
@@ -192,7 +185,7 @@ public class LittleEndianOutputStream extends DecoratingOutputStream {
         l >>= 8;
         buf[7] = (byte) l;
         out.write(buf, 0, 8);
-	inc(8);
+    	inc(8);
     }
 
     /**
@@ -208,7 +201,7 @@ public class LittleEndianOutputStream extends DecoratingOutputStream {
      * @see java.lang.Float#floatToIntBits(float)
      */
     public final void writeFloat(float f) throws IOException {
-	writeInt(Float.floatToIntBits(f));
+    	writeInt(Float.floatToIntBits(f));
     }
 
     /**
@@ -224,7 +217,7 @@ public class LittleEndianOutputStream extends DecoratingOutputStream {
      * @see java.lang.Double#doubleToLongBits(double)
      */
     public final void writeDouble(double d) throws IOException {
-	writeLong(Double.doubleToLongBits(d));
+    	writeLong(Double.doubleToLongBits(d));
     }
 
     /**
@@ -238,9 +231,9 @@ public class LittleEndianOutputStream extends DecoratingOutputStream {
      * @throws IOException on any I/O error.
      */
     public final void writeBytes(String s) throws IOException {
-	final int len = s.length();
-	for (int i = 0 ; i < len ; i++)
-	    writeByte(s.charAt(i));
+        final int len = s.length();
+        for (int i = 0 ; i < len ; i++)
+            writeByte(s.charAt(i));
     }
 
     /**
@@ -278,7 +271,5 @@ public class LittleEndianOutputStream extends DecoratingOutputStream {
      * @return The value of the field {@link #written}.
      * @see    java.io.DataOutputStream#size()
      */
-    public final long size() {
-        return written;
-    }
+    public final long size() { return written; }
 }

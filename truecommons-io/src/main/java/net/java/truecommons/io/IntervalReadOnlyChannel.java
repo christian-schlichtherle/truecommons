@@ -4,13 +4,9 @@
  */
 package net.java.truecommons.io;
 
-import edu.umd.cs.findbugs.annotations.DischargesObligation;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
-import javax.annotation.WillCloseWhenClosed;
-import javax.annotation.WillNotClose;
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * Provides read-only access to an interval of its decorated seekable byte
@@ -19,7 +15,6 @@ import javax.annotation.concurrent.NotThreadSafe;
  *
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
 
     /** The start position in the decorated channel. */
@@ -47,6 +42,7 @@ public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
     /**
      * Constructs a new interval seekable byte channel starting at the current
      * position of the file pointer in the decorated seekable byte channel.
+     * Closing this channel will close the given channel.
      * <p>
      * Note that this constructor assumes that it has exclusive access to the
      * decorated seekable byte channel.
@@ -58,9 +54,7 @@ public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
      * @param  size the size of the interval.
      * @throws IOException on any I/O error.
      */
-    public IntervalReadOnlyChannel(
-            final @WillCloseWhenClosed SeekableByteChannel channel,
-            final long size)
+    public IntervalReadOnlyChannel(SeekableByteChannel channel, long size)
     throws IOException {
         this(channel, channel.position(), size, true);
     }
@@ -68,6 +62,7 @@ public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
     /**
      * Constructs a new interval seekable byte channel starting at the given
      * position of the file pointer in the decorated seekable byte channel.
+     * Closing this channel will <em>not</em> close the given channel!
      * <p>
      * Note that this constructor assumes that it does <em>not</em> have
      * exclusive access to the decorated seekable byte channel and positions
@@ -79,10 +74,7 @@ public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
      * @param  size the size of the interval.
      * @throws IOException on any I/O error.
      */
-    public IntervalReadOnlyChannel(
-            final @WillNotClose SeekableByteChannel channel,
-            final long start,
-            final long size)
+    public IntervalReadOnlyChannel(SeekableByteChannel channel, long start, long size)
     throws IOException {
         this(channel, start, size, false);
     }
@@ -105,12 +97,14 @@ public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
     public int read(final ByteBuffer dst) throws IOException {
         // Check no-op first for compatibility with FileChannel.
         int remaining = dst.remaining();
-        if (0 >= remaining) return 0;
+        if (0 >= remaining)
+            return 0;
 
         // Check is open and not at EOF.
         final long pos = position();
         final long size = this.size;
-        if (pos >= size) return -1;
+        if (pos >= size)
+            return -1;
 
         // Setup.
         final long available = size - pos;
@@ -126,7 +120,8 @@ public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
         // Operate.
         final int read;
         try {
-            if (!exclusive) channel.position(start + pos);
+            if (!exclusive)
+                channel.position(start + pos);
             read = channel.read(dst);
         } finally {
             if (0 <= limit) dst.limit(limit);
@@ -176,8 +171,8 @@ public final class IntervalReadOnlyChannel extends ReadOnlyChannel {
      * @throws IOException On any I/O error.
      */
     @Override
-    @DischargesObligation
     public void close() throws IOException {
-        if (exclusive) channel.close();
+        if (exclusive)
+            channel.close();
     }
 }

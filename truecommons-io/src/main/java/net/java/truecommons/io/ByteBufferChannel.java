@@ -4,13 +4,10 @@
  */
 package net.java.truecommons.io;
 
-import edu.umd.cs.findbugs.annotations.DischargesObligation;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ReadOnlyBufferException;
 import java.nio.channels.NonWritableChannelException;
-import java.nio.channels.SeekableByteChannel;
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * Adapts a {@linkplain ByteBuffer byte buffer} to a seekable byte channel.
@@ -34,12 +31,10 @@ import javax.annotation.concurrent.NotThreadSafe;
  * should configure this channel with a byte buffer with a capacity which is
  * large enough to host any data to write.
  * Furthermore, when closing this channel, clients should call
- * {@link #bufferDuplicate()} to obtain a duplicate of the current backing
- * buffer.
+ * {@link #getBuffer()} to obtain a duplicate of the current backing buffer.
  *
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public final class ByteBufferChannel extends AbstractSeekableChannel {
 
     /** The backing buffer with the contents to share. */
@@ -90,18 +85,16 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
      */
     public ByteBuffer getBuffer() { return buffer.duplicate(); }
 
-    /** @deprecated Use {@link #getBuffer} instead. */
-    @Deprecated
-    public ByteBuffer bufferDuplicate() { return getBuffer(); }
-
     @Override
     public int read(final ByteBuffer dst) throws IOException {
         checkOpen();
         int remaining = dst.remaining();
-        if (remaining <= 0) return 0;
+        if (remaining <= 0)
+            return 0;
         final long oldPosition = this.position;
         final ByteBuffer buffer = this.buffer;
-        if (oldPosition >= buffer.limit()) return -1;
+        if (oldPosition >= buffer.limit())
+            return -1;
         buffer.position((int) oldPosition);
         final int available = buffer.remaining();
         final int srcLimit;
@@ -125,7 +118,8 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
     @Override
     public int write(final ByteBuffer src) throws IOException {
         checkOpen();
-        if (this.position > Integer.MAX_VALUE) throw new OutOfMemoryError();
+        if (this.position > Integer.MAX_VALUE)
+            throw new OutOfMemoryError();
         final int oldPosition = (int) this.position;
         final int remaining = src.remaining();
         final int newPosition = oldPosition + remaining; // may overflow!
@@ -142,12 +136,14 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
                 if (buffer.isReadOnly())
                     throw new NonWritableChannelException();
                 int newCapacity = oldCapacity << 1;
-                if (0 > newCapacity - newPosition) newCapacity = newPosition;
-                if (0 > newCapacity) newCapacity = Integer.MAX_VALUE;
+                if (0 > newCapacity - newPosition)
+                    newCapacity = newPosition;
+                if (0 > newCapacity)
+                    newCapacity = Integer.MAX_VALUE;
                 assert newPosition <= newCapacity;
                 this.buffer = buffer = (ByteBuffer) (buffer.isDirect()
-                        ? ByteBuffer.allocateDirect((int) newCapacity)
-                        : ByteBuffer.allocate((int) newCapacity))
+                        ? ByteBuffer.allocateDirect(newCapacity)
+                        : ByteBuffer.allocate(newCapacity))
                         .put((ByteBuffer) buffer.position(0).limit(oldPosition))
                         .limit(newPosition);
             }
@@ -174,7 +170,8 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
     @Override
     public ByteBufferChannel position(long newPosition) throws IOException {
         checkOpen();
-        if (0 > newPosition) throw new IllegalArgumentException();
+        if (0 > newPosition)
+            throw new IllegalArgumentException();
         this.position = newPosition;
         return this;
     }
@@ -188,9 +185,12 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
     @Override
     public ByteBufferChannel truncate(final long size) throws IOException {
         checkOpen();
-        if (buffer.isReadOnly()) throw new NonWritableChannelException();
-        if (buffer.limit() > size) buffer.limit((int) size);
-        if (position > size) position = size;
+        if (buffer.isReadOnly())
+            throw new NonWritableChannelException();
+        if (buffer.limit() > size)
+            buffer.limit((int) size);
+        if (position > size)
+            position = size;
         return this;
     }
 
@@ -198,6 +198,5 @@ public final class ByteBufferChannel extends AbstractSeekableChannel {
     public boolean isOpen() { return !closed; }
 
     @Override
-    @DischargesObligation
     public void close() { closed = true; }
 }

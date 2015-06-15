@@ -6,7 +6,6 @@ package net.java.truecommons.io;
 
 import java.io.IOException;
 import java.io.InputStream;
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * An abstract decorator which protects the decorated stream from all access
@@ -15,14 +14,15 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @see    DisconnectingOutputStream
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public abstract class DisconnectingInputStream extends DecoratingInputStream {
 
-    protected DisconnectingInputStream() { }
-
-    protected DisconnectingInputStream(InputStream in) {
-        super(in);
-    }
+    /**
+     * Constructs a new disconnecting input stream.
+     * Closing this stream will close the given stream.
+     *
+     * @param in the stream to decorate.
+     */
+    protected DisconnectingInputStream(InputStream in) { super(in); }
 
     public abstract boolean isOpen();
 

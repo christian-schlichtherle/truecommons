@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.io;
 
-import edu.umd.cs.findbugs.annotations.CreatesObligation;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.NonReadableChannelException;
@@ -27,7 +26,6 @@ public interface Sink {
      * @throws IOException on any I/O error.
      * @throws IllegalStateException if another output stream is not available.
      */
-    @CreatesObligation
     OutputStream stream() throws IOException;
 
     /**
@@ -47,6 +45,5 @@ public interface Sink {
      * @throws IllegalStateException if another seekable byte channel is not
      *         available.
      */
-    @CreatesObligation
     SeekableByteChannel channel() throws IOException;
 }

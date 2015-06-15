@@ -9,7 +9,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
-import javax.annotation.concurrent.Immutable;
 
 /**
  * A power buffer with immutable properties.
@@ -44,12 +43,13 @@ import javax.annotation.concurrent.Immutable;
  * <p>
  * Mind again that in order to protect the buffer's content, a caller still
  * needs to call {@link #asReadOnlyBuffer()}.
+ * <p>
+ * This class is immutable.
  *
  * @see    #asMutableBuffer()
  * @since  TrueCommons 2.1
  * @author Christian Schlichtherle
  */
-@Immutable
 public final class ImmutableBuffer extends PowerBuffer<ImmutableBuffer> {
 
     //

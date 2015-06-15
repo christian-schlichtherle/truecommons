@@ -4,14 +4,10 @@
  */
 package net.java.truecommons.io;
 
-import edu.umd.cs.findbugs.annotations.DischargesObligation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
-import javax.annotation.WillCloseWhenClosed;
-import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * A decorator which protects all access to its input stream
@@ -20,25 +16,24 @@ import javax.annotation.concurrent.ThreadSafe;
  * @see    LockOutputStream
  * @author Christian Schlichtherle
  */
-@ThreadSafe
 public class LockInputStream extends DecoratingInputStream {
 
     /** The lock on which this object synchronizes. */
     private final Lock lock;
 
-    protected LockInputStream(final Lock lock) {
+    /**
+     * Constructs a new lock input stream.
+     * Closing this stream will close the given stream.
+     *
+     * @param lock the lock to use for synchronization.
+     * @param in the stream to decorate.
+     */
+    public LockInputStream(final Lock lock, final InputStream in) {
+        super(in);
         this.lock = Objects.requireNonNull(lock);
     }
 
-    public LockInputStream(
-            final Lock lock,
-            final @WillCloseWhenClosed InputStream in) {
-        this(lock);
-        this.in = Objects.requireNonNull(in);
-    }
-
     @Override
-    @GuardedBy("lock")
     public int read() throws IOException {
         lock.lock();
         try {
@@ -49,7 +44,6 @@ public class LockInputStream extends DecoratingInputStream {
     }
 
     @Override
-    @GuardedBy("lock")
     public int read(byte[] b, int off, int len) throws IOException {
         lock.lock();
         try {
@@ -60,7 +54,6 @@ public class LockInputStream extends DecoratingInputStream {
     }
 
     @Override
-    @GuardedBy("lock")
     public long skip(long n) throws IOException {
         lock.lock();
         try {
@@ -71,7 +64,6 @@ public class LockInputStream extends DecoratingInputStream {
     }
 
     @Override
-    @GuardedBy("lock")
     public int available() throws IOException {
         lock.lock();
         try {
@@ -82,7 +74,6 @@ public class LockInputStream extends DecoratingInputStream {
     }
 
     @Override
-    @GuardedBy("lock")
     public void mark(int readlimit) {
         lock.lock();
         try {
@@ -93,7 +84,6 @@ public class LockInputStream extends DecoratingInputStream {
     }
 
     @Override
-    @GuardedBy("lock")
     public void reset() throws IOException {
         lock.lock();
         try {
@@ -104,7 +94,6 @@ public class LockInputStream extends DecoratingInputStream {
     }
 
     @Override
-    @GuardedBy("lock")
     public boolean markSupported() {
         lock.lock();
         try {
@@ -115,8 +104,6 @@ public class LockInputStream extends DecoratingInputStream {
     }
 
     @Override
-    @GuardedBy("lock")
-    @DischargesObligation
     public void close() throws IOException {
         lock.lock();
         try {

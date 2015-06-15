@@ -4,14 +4,10 @@
  */
 package net.java.truecommons.io;
 
-import edu.umd.cs.findbugs.annotations.DischargesObligation;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
-import javax.annotation.WillCloseWhenClosed;
-import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * A decorator which protects all access to its output stream
@@ -20,25 +16,24 @@ import javax.annotation.concurrent.ThreadSafe;
  * @see    LockInputStream
  * @author Christian Schlichtherle
  */
-@ThreadSafe
 public class LockOutputStream extends DecoratingOutputStream {
 
     /** The lock on which this object synchronizes. */
     private final Lock lock;
 
-    protected LockOutputStream(final Lock lock) {
+    /**
+     * Constructs a new lock output stream.
+     * Closing this stream will close the given stream.
+     *
+     * @param lock the lock to use for synchronization.
+     * @param out the stream to decorate.
+     */
+    public LockOutputStream(final Lock lock, final OutputStream out) {
+        super(out);
         this.lock = Objects.requireNonNull(lock);
     }
 
-    public LockOutputStream(
-            final Lock lock,
-            final @WillCloseWhenClosed OutputStream out) {
-        this(lock);
-        this.out = Objects.requireNonNull(out);
-    }
-
     @Override
-    @GuardedBy("lock")
     public void write(int b) throws IOException {
         lock.lock();
         try {
@@ -49,7 +44,6 @@ public class LockOutputStream extends DecoratingOutputStream {
     }
 
     @Override
-    @GuardedBy("lock")
     public void write(byte[] b, int off, int len) throws IOException {
         lock.lock();
         try {
@@ -60,7 +54,6 @@ public class LockOutputStream extends DecoratingOutputStream {
     }
 
     @Override
-    @GuardedBy("lock")
     public void flush() throws IOException {
         lock.lock();
         try {
@@ -71,8 +64,6 @@ public class LockOutputStream extends DecoratingOutputStream {
     }
 
     @Override
-    @GuardedBy("lock")
-    @DischargesObligation
     public void close() throws IOException {
         lock.lock();
         try {

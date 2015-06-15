@@ -4,13 +4,10 @@
  */
 package net.java.truecommons.io;
 
-import edu.umd.cs.findbugs.annotations.DischargesObligation;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Objects;
-import javax.annotation.Nullable;
-import javax.annotation.WillCloseWhenClosed;
 
 /**
  * An abstract decorator for a seekable byte channel.
@@ -26,12 +23,16 @@ import javax.annotation.WillCloseWhenClosed;
  */
 public abstract class DecoratingSeekableChannel extends AbstractSeekableChannel {
 
-    /** The nullable decorated seekable byte channel. */
-    protected @Nullable @WillCloseWhenClosed SeekableByteChannel channel;
+    /** The decorated channel. */
+    protected final SeekableByteChannel channel;
 
-    protected DecoratingSeekableChannel() { }
-
-    protected DecoratingSeekableChannel(final @WillCloseWhenClosed SeekableByteChannel channel) {
+    /**
+     * Constructs a new decorating seekable channel.
+     * Closing this channel will close the given channel.
+     *
+     * @param channel the channel to decorate.
+     */
+    protected DecoratingSeekableChannel(final SeekableByteChannel channel) {
         this.channel = Objects.requireNonNull(channel);
     }
 
@@ -73,7 +74,6 @@ public abstract class DecoratingSeekableChannel extends AbstractSeekableChannel 
     }
 
     @Override
-    @DischargesObligation
     public void close() throws IOException {
         channel.close();
     }

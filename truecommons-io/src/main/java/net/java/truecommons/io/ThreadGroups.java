@@ -4,15 +4,13 @@
  */
 package net.java.truecommons.io;
 
-import javax.annotation.concurrent.Immutable;
-
 /**
  * Static utility methods for {@link ThreadGroup}s.
+ * This class is trivially immutable.
  * 
  * @author Christian Schlichtherle
  */
-@Immutable
-final class ThreadGroups {
+class ThreadGroups {
 
     /* Can't touch this - hammer time! */
     private ThreadGroups() { }

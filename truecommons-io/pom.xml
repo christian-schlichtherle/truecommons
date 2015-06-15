@@ -17,13 +17,6 @@
     <name>TrueCommons I/O</name>
     <description>Provides common I/O components.</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>annotations</artifactId>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>

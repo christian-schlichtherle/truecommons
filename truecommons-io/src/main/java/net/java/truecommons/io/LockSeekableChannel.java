@@ -4,15 +4,11 @@
  */
 package net.java.truecommons.io;
 
-import edu.umd.cs.findbugs.annotations.DischargesObligation;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
-import javax.annotation.WillCloseWhenClosed;
-import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Protects all access to its decorated seekable byte channel via a
@@ -20,25 +16,24 @@ import javax.annotation.concurrent.ThreadSafe;
  *
  * @author Christian Schlichtherle
  */
-@ThreadSafe
 public class LockSeekableChannel extends DecoratingSeekableChannel {
 
     /** The lock on which this object synchronizes. */
     private final Lock lock;
 
-    protected LockSeekableChannel(final Lock lock) {
+    /**
+     * Constructs a new lock seekable channel.
+     * Closing this channel will close the given channel.
+     *
+     * @param lock the lock to use for synchronization.
+     * @param channel the channel to decorate.
+     */
+    public LockSeekableChannel(final Lock lock, final SeekableByteChannel channel) {
+        super(channel);
         this.lock = Objects.requireNonNull(lock);
     }
 
-    public LockSeekableChannel(
-            final Lock lock,
-            final @WillCloseWhenClosed SeekableByteChannel channel) {
-        this(lock);
-        this.channel = Objects.requireNonNull(channel);
-    }
-
     @Override
-    @GuardedBy("lock")
     public boolean isOpen() {
         lock.lock();
         try {
@@ -49,7 +44,6 @@ public class LockSeekableChannel extends DecoratingSeekableChannel {
     }
 
     @Override
-    @GuardedBy("lock")
     public int read(ByteBuffer dst) throws IOException {
         lock.lock();
         try {
@@ -60,7 +54,6 @@ public class LockSeekableChannel extends DecoratingSeekableChannel {
     }
 
     @Override
-    @GuardedBy("lock")
     public int write(ByteBuffer src) throws IOException {
         lock.lock();
         try {
@@ -71,7 +64,6 @@ public class LockSeekableChannel extends DecoratingSeekableChannel {
     }
 
     @Override
-    @GuardedBy("lock")
     public long position() throws IOException {
         lock.lock();
         try {
@@ -82,7 +74,6 @@ public class LockSeekableChannel extends DecoratingSeekableChannel {
     }
 
     @Override
-    @GuardedBy("lock")
     public SeekableByteChannel position(long pos) throws IOException {
         lock.lock();
         try { 
@@ -94,7 +85,6 @@ public class LockSeekableChannel extends DecoratingSeekableChannel {
     }
 
     @Override
-    @GuardedBy("lock")
     public long size() throws IOException {
         lock.lock();
         try {
@@ -105,7 +95,6 @@ public class LockSeekableChannel extends DecoratingSeekableChannel {
     }
 
     @Override
-    @GuardedBy("lock")
     public SeekableByteChannel truncate(long size) throws IOException {
         lock.lock();
         try {
@@ -117,8 +106,6 @@ public class LockSeekableChannel extends DecoratingSeekableChannel {
     }
 
     @Override
-    @GuardedBy("lock")
-    @DischargesObligation
     public void close() throws IOException {
         lock.lock();
         try {

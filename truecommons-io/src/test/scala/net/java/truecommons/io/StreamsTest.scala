@@ -5,6 +5,7 @@
 package net.java.truecommons.io
 
 import java.io._
+import java.nio.channels.SeekableByteChannel
 
 import net.java.truecommons.io.Streams._
 import net.java.truecommons.io.StreamsTest._
@@ -206,17 +207,17 @@ class StreamsTest extends WordSpec {
     }
   }
 
-  "Streams.copy(Source, Sink)" should {
+  "Streams.copy(InputStrema, OutputStream)" should {
     "fail with a NullPointerException" when givenA {
-      "null Source" in {
+      "null InputStream" in {
         intercept[NullPointerException] {
-          copy(null.asInstanceOf[Source], new OneTimeSink(new ByteArrayOutputStream))
+          copy(null.asInstanceOf[InputStream], new ByteArrayOutputStream)
         }
       }
 
-      "null Sink" in {
+      "null OutputStream" in {
         intercept[NullPointerException] {
-          copy(new OneTimeSource(new ByteArrayInputStream(Array[Byte]())), null.asInstanceOf[Sink])
+          copy(new ByteArrayInputStream(Array[Byte]()), null.asInstanceOf[OutputStream])
         }
       }
     }
@@ -358,7 +359,17 @@ private object StreamsTest {
 
   val bufferSize = 2 * Streams.FIFO_SIZE * Streams.BUFFER_SIZE
 
-  private def source(in: InputStream) = new OneTimeSource(in)
+  private def source(in: InputStream) = new AbstractSource {
+
+    private var optIn: Option[InputStream] = Some(in)
+
+    override def stream() = {
+      optIn match {
+        case Some(in2) => optIn = None; in2
+        case None => throw new IllegalStateException
+      }
+    }
+  }
 
   private def in = {
     val b = new Array[Byte](bufferSize)
@@ -366,7 +377,17 @@ private object StreamsTest {
     new ByteArrayInputStreamWithBuffer(b)
   }
 
-  private def sink(out: OutputStream) = new OneTimeSink(out)
+  private def sink(out: OutputStream) = new AbstractSink {
+
+    private var optOut: Option[OutputStream] = Some(out)
+
+    override def stream() = {
+      optOut match {
+        case Some(out2) => optOut = None; out2
+        case None => throw new IllegalStateException
+      }
+    }
+  }
 
   private def out = new ByteArrayOutputStream(bufferSize)
 
