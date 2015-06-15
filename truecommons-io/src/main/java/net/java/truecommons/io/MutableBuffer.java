@@ -6,7 +6,6 @@ package net.java.truecommons.io;
 
 import java.nio.ByteBuffer;
 import java.util.Objects;
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * A power buffer with mutable properties.
@@ -22,7 +21,6 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @since  TrueCommons 2.1
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public final class MutableBuffer extends PowerBuffer<MutableBuffer> {
 
     //

@@ -4,9 +4,6 @@
  */
 package net.java.truecommons.io;
 
-import javax.annotation.WillClose;
-import javax.annotation.WillNotClose;
-import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,11 +19,11 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Static utility methods for {@link InputStream}s and {@link OutputStream}s.
+ * This class is trivially immutable.
  *
  * @author Christian Schlichtherle
  */
-@Immutable
-public final class Streams {
+public class Streams {
 
     /**
      * The size of the FIFO used for exchanging I/O buffers between a reader
@@ -44,25 +41,6 @@ public final class Streams {
             = Executors.newCachedThreadPool(new ReaderThreadFactory());
 
     private Streams() { }
-
-    /**
-     * Copies the data from the given input stream to the given output stream
-     * and <em>always</em> closes <em>both</em> streams - even if an exception
-     * occurs.
-     * <p>
-     * This is a high performance implementation which uses a pooled background
-     * thread to fill a FIFO of pooled buffers which is concurrently flushed by
-     * the current thread.
-     * It performs best when used with <em>unbuffered</em> streams.
-     *
-     * @param in the input stream.
-     * @param out the output stream.
-     */
-    public static void copy(@WillClose InputStream in,
-                            @WillClose OutputStream out)
-    throws IOException {
-        copy(new OneTimeSource(in), new OneTimeSink(out));
-    }
 
     /**
      * Copies the data from the given source to the given sink.
@@ -105,6 +83,49 @@ public final class Streams {
 
     /**
      * Copies the data from the given input stream to the given output stream
+     * and <em>always</em> closes <em>both</em> streams - even if an exception
+     * occurs.
+     * <p>
+     * This is a high performance implementation which uses a pooled background
+     * thread to fill a FIFO of pooled buffers which is concurrently flushed by
+     * the current thread.
+     * It performs best when used with <em>unbuffered</em> streams.
+     *
+     * @param in the input stream.
+     *           This method always closes this stream.
+     * @param out the output stream.
+     *           This method always closes this stream.
+     * @deprecated Use {@link #copy(Source, Sink)} instead.
+     */
+    @Deprecated
+    public static void copy(InputStream in, OutputStream out)
+    throws IOException {
+        try (InputStream in2 = in; OutputStream out2 = out) {
+            Throwable t1 = null;
+            try {
+                cat(in2, out2);
+            } catch (final Throwable t2) {
+                t1 = t2;
+                throw t2;
+            } finally {
+                // Help the resource management in TrueVFS by closing the input
+                // stream first.
+                // Note that closing an already closed input stream must have
+                // no side effect, so this should be safe even though close()
+                // will get called once again at the end of the enclosing
+                // try-with-resources statement.
+                try {
+                    in2.close();
+                } catch (final Throwable t2) {
+                    if (null == t1) throw t2;
+                    t1.addSuppressed(t2);
+                }
+            }
+        }
+    }
+
+    /**
+     * Copies the data from the given input stream to the given output stream
      * <em>without</em> closing them.
      * This method calls {@link OutputStream#flush()} unless an
      * {@link IOException} occurs when writing to the output stream.
@@ -121,10 +142,11 @@ public final class Streams {
      * of multiple streams.
      *
      * @param in the input stream.
+     *           This method never closes this stream.
      * @param out the output stream.
+     *           This method never closes this stream.
      */
-    public static void cat(final @WillNotClose InputStream in,
-                           final @WillNotClose OutputStream out)
+    public static void cat(final InputStream in, final OutputStream out)
     throws IOException {
         Objects.requireNonNull(in);
         Objects.requireNonNull(out);
@@ -356,11 +378,10 @@ public final class Streams {
 
     /** A factory for reader threads. */
     private static final class ReaderThreadFactory implements ThreadFactory {
+
         @Override
-        public Thread newThread(Runnable r) {
-            return new ReaderThread(r);
-        }
-    } // ReaderThreadFactory
+        public Thread newThread(Runnable r) { return new ReaderThread(r); }
+    }
 
     /**
      * A pooled and cached daemon thread which runs tasks to read input streams.
@@ -368,9 +389,10 @@ public final class Streams {
      */
     @SuppressWarnings("PublicInnerClass")
     public static final class ReaderThread extends Thread {
+
         private ReaderThread(Runnable r) {
             super(ThreadGroups.getServerThreadGroup(), r, ReaderThread.class.getName());
             setDaemon(true);
         }
-    } // ReaderThread
+    }
 }

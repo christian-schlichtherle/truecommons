@@ -7,7 +7,6 @@ package net.java.truecommons.io;
 import java.nio.ByteBuffer;
 import java.nio.channels.NonWritableChannelException;
 import java.nio.channels.SeekableByteChannel;
-import javax.annotation.WillCloseWhenClosed;
 
 /**
  * An abstract decorator for a seekable byte channel which throws a
@@ -25,11 +24,13 @@ import javax.annotation.WillCloseWhenClosed;
  */
 public class ReadOnlyChannel extends DecoratingSeekableChannel {
 
-    public ReadOnlyChannel() { }
-
-    public ReadOnlyChannel(@WillCloseWhenClosed SeekableByteChannel channel) {
-        super(channel);
-    }
+    /**
+     * Constructs a new read-only channel.
+     * Closing this channel closes the given channel.
+     *
+     * @param channel the channel to decorate.
+     */
+    public ReadOnlyChannel(SeekableByteChannel channel) { super(channel); }
 
     /** @throws NonWritableChannelException always. */
     @Override

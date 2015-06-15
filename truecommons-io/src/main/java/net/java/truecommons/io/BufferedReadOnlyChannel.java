@@ -4,13 +4,11 @@
  */
 package net.java.truecommons.io;
 
-import edu.umd.cs.findbugs.annotations.CreatesObligation;
 import java.io.IOException;
-import static java.lang.Math.min;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
-import javax.annotation.WillCloseWhenClosed;
-import javax.annotation.concurrent.NotThreadSafe;
+
+import static java.lang.Math.min;
 
 /**
  * Provides buffered random read-only access to its decorated seekable byte
@@ -19,7 +17,6 @@ import javax.annotation.concurrent.NotThreadSafe;
  *
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public class BufferedReadOnlyChannel extends ReadOnlyChannel {
 
     private static final long INVALID = Long.MIN_VALUE;
@@ -38,24 +35,23 @@ public class BufferedReadOnlyChannel extends ReadOnlyChannel {
 
     /**
      * Constructs a new buffered read-only channel.
+     * Closing this channel will close the given channel.
      *
      * @param channel the channel to decorate.
      */
-    @CreatesObligation
-    public BufferedReadOnlyChannel(
-            final @WillCloseWhenClosed SeekableByteChannel channel) {
+    public BufferedReadOnlyChannel(SeekableByteChannel channel) {
         this(channel, Streams.BUFFER_SIZE);
     }
 
     /**
      * Constructs a new buffered read-only channel.
+     * Closing this channel will close the given seekable byte channel.
      *
      * @param channel the channel to decorate.
      * @param bufferSize the size of the byte buffer.
      */
-    @CreatesObligation
     public BufferedReadOnlyChannel(
-            final @WillCloseWhenClosed SeekableByteChannel channel,
+            final SeekableByteChannel channel,
             final int bufferSize) {
         super(channel);
         buffer = new byte[bufferSize];
@@ -65,7 +61,8 @@ public class BufferedReadOnlyChannel extends ReadOnlyChannel {
     public int read(final ByteBuffer dst) throws IOException {
         // Check no-op first for compatibility with FileChannel.
         final int remaining = dst.remaining();
-        if (remaining <= 0) return 0;
+        if (remaining <= 0)
+            return 0;
 
         // Check is open and not at EOF.
         final long size = size();
@@ -98,7 +95,8 @@ public class BufferedReadOnlyChannel extends ReadOnlyChannel {
     @Override
     public SeekableByteChannel position(final long pos) throws IOException {
         checkOpen();
-        if (0 > pos) throw new IllegalArgumentException();
+        if (0 > pos)
+            throw new IllegalArgumentException();
         this.pos = pos;
         return this;
     }
@@ -129,7 +127,8 @@ public class BufferedReadOnlyChannel extends ReadOnlyChannel {
         final long pos = this.pos;
         long bufferStart = this.bufferStart;
         final long nextBufferStart = bufferStart + bufferSize;
-        if (bufferStart <= pos && pos < nextBufferStart) return;
+        if (bufferStart <= pos && pos < nextBufferStart)
+            return;
 
         try {
             final SeekableByteChannel channel = this.channel;
@@ -137,7 +136,8 @@ public class BufferedReadOnlyChannel extends ReadOnlyChannel {
             // Move position.
             // Round down to multiple of buffer size.
             this.bufferStart = bufferStart = pos / bufferSize * bufferSize;
-            if (bufferStart != nextBufferStart) channel.position(bufferStart);
+            if (bufferStart != nextBufferStart)
+                channel.position(bufferStart);
 
             // Fill buffer until end of file or buffer.
             // This should normally complete in one loop cycle, but we do not
@@ -147,7 +147,8 @@ public class BufferedReadOnlyChannel extends ReadOnlyChannel {
             final ByteBuffer buffer = ByteBuffer.wrap(this.buffer);
             do {
                 int read = channel.read(buffer);
-                if (read < 0) break;
+                if (read < 0)
+                    break;
                 total += read;
             } while (total < bufferSize);
         } catch (final Throwable ex) {

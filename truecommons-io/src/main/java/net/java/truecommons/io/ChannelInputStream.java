@@ -4,16 +4,11 @@
  */
 package net.java.truecommons.io;
 
-import edu.umd.cs.findbugs.annotations.CleanupObligation;
-import edu.umd.cs.findbugs.annotations.DischargesObligation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Objects;
-import javax.annotation.Nullable;
-import javax.annotation.WillCloseWhenClosed;
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * Adapts a {@link SeekableByteChannel} to an input stream.
@@ -23,14 +18,12 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @see    ChannelOutputStream
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
-@CleanupObligation
 public class ChannelInputStream extends InputStream {
 
-    private final ByteBuffer single = ByteBuffer.allocate(1);
+    /** The adapted seekable byte channel. */
+    protected final SeekableByteChannel channel;
 
-    /** The adapted nullable seekable byte channel. */
-    protected @Nullable SeekableByteChannel channel;
+    private final ByteBuffer single = ByteBuffer.allocate(1);
 
     /**
      * The position of the last mark.
@@ -38,10 +31,13 @@ public class ChannelInputStream extends InputStream {
      */
     private long mark = -1;
 
-    protected ChannelInputStream() { }
-
-    public ChannelInputStream(
-            final @WillCloseWhenClosed SeekableByteChannel channel) {
+    /**
+     * Constructs a new channel input stream.
+     * Closing this stream will close the given channel.
+     *
+     * @param channel the channel to decorate.
+     */
+    public ChannelInputStream(final SeekableByteChannel channel) {
         this.channel = Objects.requireNonNull(channel);
     }
 
@@ -63,7 +59,8 @@ public class ChannelInputStream extends InputStream {
 
     @SuppressWarnings("SleepWhileInLoop")
     private int read(ByteBuffer bb) throws IOException {
-        if (0 == bb.remaining()) return 0;
+        if (0 == bb.remaining())
+            return 0;
         int read;
         while (0 == (read = channel.read(bb))) {
             try {
@@ -77,11 +74,13 @@ public class ChannelInputStream extends InputStream {
 
     @Override
     public long skip(long n) throws IOException {
-        if (n <= 0) return 0;
+        if (n <= 0)
+            return 0;
         final long pos = channel.position(); // should fail when closed
         final long size = channel.size();
         final long rem = size - pos;
-        if (n > rem) n = (int) rem;
+        if (n > rem)
+            n = (int) rem;
         channel.position(pos + n);
         return n;
     }
@@ -93,7 +92,6 @@ public class ChannelInputStream extends InputStream {
     }
 
     @Override
-    @DischargesObligation
     public void close() throws IOException { channel.close(); }
 
     @Override

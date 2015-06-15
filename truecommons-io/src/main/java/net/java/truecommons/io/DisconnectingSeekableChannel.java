@@ -7,7 +7,6 @@ package net.java.truecommons.io;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * An abstract decorator which protects the decorated channel from all access
@@ -15,12 +14,15 @@ import javax.annotation.concurrent.NotThreadSafe;
  *
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
 public abstract class DisconnectingSeekableChannel
 extends DecoratingSeekableChannel {
 
-    protected DisconnectingSeekableChannel() { }
-
+    /**
+     * Constructs a new disconnecting seekable channel.
+     * Closing this channel will close the given channel.
+     *
+     * @param channel the channel to decorate.
+     */
     protected DisconnectingSeekableChannel(SeekableByteChannel channel) {
         super(channel);
     }

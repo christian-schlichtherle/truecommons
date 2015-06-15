@@ -30,8 +30,13 @@
  *         sbc.close();
  *     }
  * </pre>
- * 
+ * <p>
+ * Unless noted otherwise, this is a {@code null}-free API:
+ * No parameter and no return value of public methods in public classes is
+ * allowed to be {@code null}.
+ * Likewise, no public field in public classes is allowed to be {@code null},
+ * although such fields should not exist in the first place.
+ *
  * @author Christian Schlichtherle
  */
-@javax.annotation.Nonnull @javax.annotation.ParametersAreNonnullByDefault
 package net.java.truecommons.io;

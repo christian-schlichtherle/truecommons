@@ -4,7 +4,6 @@
  */
 package net.java.truecommons.io;
 
-import edu.umd.cs.findbugs.annotations.CreatesObligation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.NonWritableChannelException;
@@ -27,7 +26,6 @@ public interface Source {
      * @throws IOException on any I/O error.
      * @throws IllegalStateException if another input stream is not available.
      */
-    @CreatesObligation
     InputStream stream() throws IOException;
 
     /**
@@ -47,6 +45,5 @@ public interface Source {
      * @throws IllegalStateException if another seekable byte channel is not
      *         available.
      */
-    @CreatesObligation
     SeekableByteChannel channel() throws IOException;
 }

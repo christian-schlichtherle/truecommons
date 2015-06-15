@@ -4,13 +4,10 @@
  */
 package net.java.truecommons.io;
 
-import edu.umd.cs.findbugs.annotations.DischargesObligation;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
-import javax.annotation.Nullable;
-import javax.annotation.WillCloseWhenClosed;
 
 /**
  * An abstract decorator for an output stream.
@@ -21,12 +18,16 @@ import javax.annotation.WillCloseWhenClosed;
  */
 public abstract class DecoratingOutputStream extends OutputStream {
 
-    /** The nullable decorated output stream. */
-    protected @Nullable @WillCloseWhenClosed OutputStream out;
+    /** The decorated stream. */
+    protected final OutputStream out;
 
-    protected DecoratingOutputStream() { }
-
-    protected DecoratingOutputStream(final @WillCloseWhenClosed OutputStream out) {
+    /**
+     * Constructs a new decorating output stream.
+     * Closing this stream will close the given stream.
+     *
+     * @param out the stream to decorate.
+     */
+    protected DecoratingOutputStream(final OutputStream out) {
         this.out = Objects.requireNonNull(out);
     }
 
@@ -51,7 +52,6 @@ public abstract class DecoratingOutputStream extends OutputStream {
     }
 
     @Override
-    @DischargesObligation
     public void close() throws IOException {
         out.close();
     }

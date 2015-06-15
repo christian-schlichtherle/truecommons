@@ -4,14 +4,14 @@
  */
 package net.java.truecommons.io
 
-import java.io._
 import java.nio._
 import java.nio.channels._
+
 import org.junit.runner.RunWith
-import org.scalatest.{BeforeAndAfter, WordSpec}
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.Matchers._
-import org.scalatest.mock.MockitoSugar.mock
+import org.scalatest.junit.JUnitRunner
+import org.scalatest.{BeforeAndAfter, WordSpec}
+
 import scala.util._
 
 object ByteBufferChannelTest {

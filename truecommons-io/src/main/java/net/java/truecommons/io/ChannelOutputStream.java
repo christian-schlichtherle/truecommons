@@ -4,16 +4,11 @@
  */
 package net.java.truecommons.io;
 
-import edu.umd.cs.findbugs.annotations.CleanupObligation;
-import edu.umd.cs.findbugs.annotations.DischargesObligation;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.util.Objects;
-import javax.annotation.Nullable;
-import javax.annotation.WillCloseWhenClosed;
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * Adapts a {@link WritableByteChannel} to an output stream.
@@ -21,19 +16,20 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @see    ChannelInputStream
  * @author Christian Schlichtherle
  */
-@NotThreadSafe
-@CleanupObligation
 public class ChannelOutputStream extends OutputStream {
 
     private final ByteBuffer single = ByteBuffer.allocate(1);
 
     /** The adapted nullable writable byte channel. */
-    protected @Nullable WritableByteChannel channel;
+    protected final WritableByteChannel channel;
 
-    protected ChannelOutputStream() { }
-
-    public ChannelOutputStream(
-            final @WillCloseWhenClosed WritableByteChannel channel) {
+    /**
+     * Constructs a new channel output stream.
+     * Closing this stream closes the given channel.
+     *
+     * @param channel the channel to decorate.
+     */
+    public ChannelOutputStream(final WritableByteChannel channel) {
         this.channel = Objects.requireNonNull(channel);
     }
 
@@ -70,6 +66,5 @@ public class ChannelOutputStream extends OutputStream {
     public void flush() throws IOException { }
 
     @Override
-    @DischargesObligation
     public void close() throws IOException { channel.close(); }
 }
