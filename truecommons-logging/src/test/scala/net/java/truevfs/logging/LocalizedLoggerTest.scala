@@ -2,11 +2,11 @@
  * Copyright (C) 2005-2015 Schlichtherle IT Services.
  * All rights reserved. Use is subject to license terms.
  */
-package net.java.truecommons.logging
+package net.java.truecommons3.logging
 
 import java.util._
 
-import net.java.truecommons.logging.Disambiguate._
+import net.java.truecommons3.logging.Disambiguate._
 import org.junit.runner._
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -19,7 +19,7 @@ import org.slf4j._
 @RunWith(classOf[JUnitRunner])
 class LocalizedLoggerTest extends WordSpec {
 
-  import net.java.truecommons.logging.LocalizedLoggerTest._
+  import net.java.truecommons3.logging.LocalizedLoggerTest._
 
   def create(delegate: Logger) = new LocalizedLogger(delegate, bundle)
 
