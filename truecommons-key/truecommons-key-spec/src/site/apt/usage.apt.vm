@@ -7,25 +7,25 @@
 Using the API
 
     The root of the API is the
-    {{{../../apidocs/net/java/truecommons/key/spec/sl/KeyManagerMapLocator#SINGLETON}<<<KeyManagerMapLocator.SINGLETON>>>}}
+    {{{../../apidocs/net/java/truecommons3/key/spec/sl/KeyManagerMapLocator#SINGLETON}<<<KeyManagerMapLocator.SINGLETON>>>}}
     which maps key classes to their respective key manager instances.
     The following method returns this singleton as an instance of the
-    {{{../../apidocs/net/java/truecommons/key/spec/KeyManagerMap}<<<KeyManagerMap>>>}}
+    {{{../../apidocs/net/java/truecommons3/key/spec/KeyManagerMap}<<<KeyManagerMap>>>}}
     interface:
 
-%{snippet|id=getKeyManagerMap|file=${project.build.testSourceDirectory}/net/java/truecommons/key/spec/sample/UsageTestSuite.java}
+%{snippet|id=getKeyManagerMap|file=${project.build.testSourceDirectory}/net/java/truecommons3/key/spec/sample/UsageTestSuite.java}
 
 * Getting a password for writing an encrypted file
 
     The next step is to call this method and use the returned key manager map
     to obtain a
-    {{{../../apidocs/net/java/truecommons/key/spec/KeyManager}<<<KeyManager>>>}}
+    {{{../../apidocs/net/java/truecommons3/key/spec/KeyManager}<<<KeyManager>>>}}
     for the desired type of keys:
 
-%{snippet|id=gettingAPasswordForWritingAnEncryptedFile1|file=${project.build.testSourceDirectory}/net/java/truecommons/key/spec/sample/UsageTestSuite.java}
+%{snippet|id=gettingAPasswordForWritingAnEncryptedFile1|file=${project.build.testSourceDirectory}/net/java/truecommons3/key/spec/sample/UsageTestSuite.java}
 
     I am asking for the key type
-    {{{../../apidocs/net/java/truecommons/key/spec/param/AesPbeParameters}<<<AesPbeParameters>>>}}
+    {{{../../apidocs/net/java/truecommons3/key/spec/param/AesPbeParameters}<<<AesPbeParameters>>>}}
     here because it provides the properties for password based encryption (PBE)
     with the Advanced Encryption Standard (AES), i.e. a password and a key
     strength (128/192/256 bits).
@@ -43,9 +43,9 @@ Using the API
     another good reason to use this key type.
 
     The next step is to ask the key manager for a
-    {{{../../apidocs/net/java/truecommons/key/spec/KeyProvider}<<<KeyProvider>>>}}>
+    {{{../../apidocs/net/java/truecommons3/key/spec/KeyProvider}<<<KeyProvider>>>}}>
 
-%{snippet|id=gettingAPasswordForWritingAnEncryptedFile2|file=${project.build.testSourceDirectory}/net/java/truecommons/key/spec/sample/UsageTestSuite.java}
+%{snippet|id=gettingAPasswordForWritingAnEncryptedFile2|file=${project.build.testSourceDirectory}/net/java/truecommons3/key/spec/sample/UsageTestSuite.java}
 
     I am using the URI for the canonical path for the file here in order to
     make sure that I always get the same provider for the same file, no matter
@@ -78,7 +78,7 @@ Using the API
     The next step is to tell the key provider that I want to write the
     encrypted file:
 
-%{snippet|id=gettingAPasswordForWritingAnEncryptedFile3|file=${project.build.testSourceDirectory}/net/java/truecommons/key/spec/sample/UsageTestSuite.java}
+%{snippet|id=gettingAPasswordForWritingAnEncryptedFile3|file=${project.build.testSourceDirectory}/net/java/truecommons3/key/spec/sample/UsageTestSuite.java}
 
     Depending on the implementation of the key provider, this call may prompt
     the user for a password.
@@ -92,7 +92,7 @@ Using the API
     And finally, I use the <<<AesPbeParameters>>> to obtain the password
     and write the encrypted file:
 
-%{snippet|id=gettingAPasswordForWritingAnEncryptedFile4|file=${project.build.testSourceDirectory}/net/java/truecommons/key/spec/sample/UsageTestSuite.java}
+%{snippet|id=gettingAPasswordForWritingAnEncryptedFile4|file=${project.build.testSourceDirectory}/net/java/truecommons3/key/spec/sample/UsageTestSuite.java}
 
     Note that I nullify the array with the password characters after use in
     order to wipe the password from heap memory.
@@ -112,7 +112,7 @@ Using the API
     The procedure for reading an encrypted file is very similar to writing,
     therefore I show it all at once and discuss the differences below:
 
-%{snippet|id=gettingAPasswordForReadingAnEncryptedFile|file=${project.build.testSourceDirectory}/net/java/truecommons/key/spec/sample/UsageTestSuite.java}
+%{snippet|id=gettingAPasswordForReadingAnEncryptedFile|file=${project.build.testSourceDirectory}/net/java/truecommons3/key/spec/sample/UsageTestSuite.java}
 
     Like before, I start with looking up the key provider.
     This time however, I use a fluent style for conciseness.
@@ -132,6 +132,6 @@ Using the API
 * Documentation
 
     For more information, please refer to the Javadoc for the packages
-    {{{../../apidocs/net/java/truecommons/key/spec/package-summary.html}<<<net.java.truecommons.key.spec>>>}}
+    {{{../../apidocs/net/java/truecommons3/key/spec/package-summary.html}<<<net.java.truecommons.key.spec>>>}}
     and
-    {{{../../apidocs/net/java/truecommons/key/spec/sl/package-summary.html}<<<net.java.truecommons.key.spec.sl>>>}}.
+    {{{../../apidocs/net/java/truecommons3/key/spec/sl/package-summary.html}<<<net.java.truecommons.key.spec.sl>>>}}.
