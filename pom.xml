@@ -18,7 +18,7 @@
 
     <name>TrueCommons</name>
     <description>Common components for open source projects.</description>
-    <url>http://truecommons.java.net</url>
+    <url>https://christian-schlichtherle.bitbucket.io/truecommons</url>
     <inceptionYear>2012</inceptionYear>
     <licenses>
         <license>
@@ -28,13 +28,13 @@
         </license>
     </licenses>
     <issueManagement>
-        <system>JIRA</system>
-        <url>https://java.net/jira/browse/TRUECOMMONS</url>
+        <system>Bitbucket</system>
+        <url>https://bitbucket.org/christian-schlichtherle/truecommons/issues</url>
     </issueManagement>
     <scm>
-        <connection>scm:hg:https://hg.java.net/hg/truecommons~v1</connection>
-        <developerConnection>scm:hg:ssh://hg.java.net/truecommons~v1</developerConnection>
-        <url>http://java.net/projects/truecommons/sources/v1/show</url>
+        <connection>scm:hg:https://bitbucket.org/christian-schlichtherle/truecommons</connection>
+        <developerConnection>scm:hg:ssh://hg@bitbucket.org/christian-schlichtherle/truecommons</developerConnection>
+        <url>https://bitbucket.org/christian-schlichtherle/truecommons</url>
         <tag>truecommons-2.5.0</tag>
     </scm>
 
@@ -44,7 +44,7 @@
             <name>Commons Website</name>
             <!-- DON'T use ${project.groupId}, ${project.artifactId} here.
                  This would change in sub-modules! -->
-            <url>file://${env.HOME}/sites/net.java.truecommons/</url>
+            <url>file://${env.HOME}/sites/christian-schlichtherle.bitbucket.io/truecommons/</url>
         </site>
     </distributionManagement>
 
