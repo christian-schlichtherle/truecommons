@@ -9,7 +9,7 @@
     <parent>
         <groupId>net.java.truecommons</groupId>
         <artifactId>truecommons</artifactId>
-        <version>2.5.0</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>truecommons-cio</artifactId>
@@ -25,6 +25,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>truecommons-shed</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
         </dependency>
     </dependencies>
 
