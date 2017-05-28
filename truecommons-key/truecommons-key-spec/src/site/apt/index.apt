@@ -11,10 +11,10 @@ About
 Using the API
 
     For more information, please refer to the Javadoc for the packages
-    {{{../../apidocs/net/java/truecommons/key/spec/package-summary.html}<<<net.java.truecommons.key.spec>>>}} and
-    {{{../../apidocs/net/java/truecommons/key/spec/sl/package-summary.html}<<<net.java.truecommons.key.spec.sl>>>}} and
+    {{{../../apidocs/net/java/truecommons3/key/spec/package-summary.html}<<<net.java.truecommons3.key.spec>>>}} and
+    {{{../../apidocs/net/java/truecommons3/key/spec/sl/package-summary.html}<<<net.java.truecommons3.key.spec.sl>>>}} and
 
 Writing a plug-in
 
     For more information, please refer to the Javadoc for the package
-    {{{../../apidocs/net/java/truecommons/key/spec/spi/package-summary.html}<<<net.java.truecommons.key.spec.spi>>>}}.
+    {{{../../apidocs/net/java/truecommons3/key/spec/spi/package-summary.html}<<<net.java.truecommons3.key.spec.spi>>>}}.
