@@ -5,7 +5,7 @@
 package net.java.truecommons3.cio
 
 import net.java.truecommons3.cio.Entry._
-import net.java.truecommons3.shed.ResourceLoan._
+import global.namespace.scala.plus.ResourceLoan._
 import org.junit.runner._
 import org.scalacheck._
 import org.scalatest.Matchers._
