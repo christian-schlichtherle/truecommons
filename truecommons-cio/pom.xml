@@ -31,6 +31,10 @@
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>annotations</artifactId>
         </dependency>
+        <dependency>
+            <groupId>global.namespace.scala-plus</groupId>
+            <artifactId>scala-plus_${scala.lang.version}</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
