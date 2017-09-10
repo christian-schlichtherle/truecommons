@@ -13,12 +13,12 @@
     </parent>
 
     <artifactId>truecommons</artifactId>
-    <version>2.5.1-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TrueCommons</name>
     <description>Common components for open source projects.</description>
-    <url>http://truecommons.java.net</url>
+    <url>https://bitbucket.org/christian-schlichtherle/truecommons</url>
     <inceptionYear>2012</inceptionYear>
     <licenses>
         <license>
@@ -28,14 +28,14 @@
         </license>
     </licenses>
     <issueManagement>
-        <system>JIRA</system>
-        <url>https://java.net/jira/browse/TRUECOMMONS</url>
+        <system>Bitbucket</system>
+        <url>https://bitbucket.org/christian-schlichtherle/truecommons/issues</url>
     </issueManagement>
     <scm>
-        <connection>scm:hg:https://hg.java.net/hg/truecommons~v1</connection>
-        <developerConnection>scm:hg:ssh://hg.java.net/truecommons~v1</developerConnection>
-        <url>http://java.net/projects/truecommons/sources/v1/show</url>
-        <tag>truecommons-2.5.0</tag>
+        <connection>scm:hg:https://bitbucket.org/christian-schlichtherle/truecommons</connection>
+        <developerConnection>scm:hg:ssh://hg@bitbucket.org/christian-schlichtherle/truecommons</developerConnection>
+        <url>https://bitbucket.org/christian-schlichtherle/truecommons</url>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
@@ -44,7 +44,7 @@
             <name>Commons Website</name>
             <!-- DON'T use ${project.groupId}, ${project.artifactId} here.
                  This would change in sub-modules! -->
-            <url>file://${env.HOME}/sites/net.java.truecommons/</url>
+            <url>file://${env.HOME}/sites/christian-schlichtherle.bitbucket.io/truecommons</url>
         </site>
     </distributionManagement>
 
@@ -158,6 +158,11 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>global.namespace.scala-plus</groupId>
+                <artifactId>scala-plus_${scala.lang.version}</artifactId>
+                <version>0.1</version>
+            </dependency>
             <dependency>
                 <groupId>net.java.dev.jna</groupId>
                 <artifactId>jna</artifactId>
