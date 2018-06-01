@@ -13,12 +13,12 @@
     </parent>
 
     <artifactId>truecommons</artifactId>
-    <version>2.5.0</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TrueCommons</name>
     <description>Common components for open source projects.</description>
-    <url>https://christian-schlichtherle.bitbucket.io/truecommons</url>
+    <url>https://bitbucket.org/christian-schlichtherle/truecommons</url>
     <inceptionYear>2012</inceptionYear>
     <licenses>
         <license>
@@ -35,7 +35,7 @@
         <connection>scm:hg:https://bitbucket.org/christian-schlichtherle/truecommons</connection>
         <developerConnection>scm:hg:ssh://hg@bitbucket.org/christian-schlichtherle/truecommons</developerConnection>
         <url>https://bitbucket.org/christian-schlichtherle/truecommons</url>
-        <tag>truecommons-2.5.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
@@ -44,7 +44,7 @@
             <name>Commons Website</name>
             <!-- DON'T use ${project.groupId}, ${project.artifactId} here.
                  This would change in sub-modules! -->
-            <url>file://${env.HOME}/sites/christian-schlichtherle.bitbucket.io/truecommons/</url>
+            <url>file://${env.HOME}/sites/christian-schlichtherle.bitbucket.io/truecommons</url>
         </site>
     </distributionManagement>
 
@@ -162,6 +162,11 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>global.namespace.scala-plus</groupId>
+                <artifactId>scala-plus_${scala.lang.version}</artifactId>
+                <version>0.1</version>
+            </dependency>
             <dependency>
                 <groupId>net.java.dev.jna</groupId>
                 <artifactId>jna</artifactId>

@@ -13,7 +13,7 @@
     <publishDate position="right"/>
     <version position="right"/>
     <skin>
-        <groupId>net.java.truecommons</groupId>
+        <groupId>net.java.truecommons3</groupId>
         <artifactId>truecommons-skin</artifactId>
         <version>RELEASE</version>
     </skin>
