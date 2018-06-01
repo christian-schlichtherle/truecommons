@@ -55,6 +55,10 @@
         <!-- clirr-maven-plugin -->
         <comparisonVersion>2.0</comparisonVersion>
 
+        <!-- maven-javadoc-plugin -->
+        <additionalparam>-Xdoclint:none</additionalparam>
+        <quiet>true</quiet>
+
         <!-- maven-surefire-plugin && maven-failsafe-plugin -->
         <parallel>both</parallel>
         <threadCount>10</threadCount>
